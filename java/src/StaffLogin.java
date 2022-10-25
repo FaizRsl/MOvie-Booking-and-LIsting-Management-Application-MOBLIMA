@@ -10,16 +10,14 @@ public class StaffLogin {
 		String username = "";
 		String password = "";
 		Scanner sc = new Scanner(System.in);
-
-		ExcelEditor excel = new ExcelEditor("UserPassword.xlsx");
 		
-		Map<Integer,ArrayList<String>> data = excel.getData(0);
+		ExcelEditor excel = new ExcelEditor("UserPassword.csv");
 		System.out.print("Username: ");
 		username = sc.next();
 		System.out.print("Password: ");
 		password = sc.next();
 		
-		boolean success = checkLogin(data, username,password);
+		boolean success = checkLogin(excel,username,password);
 		
 		if(success) {
 			System.out.println("Login Successful");
@@ -40,30 +38,29 @@ public class StaffLogin {
 					inputList.add((String) sc.next());
 					System.out.println("Enter Password ");
 					inputList.add(sc.next());
-					excel.createRow(inputList, 0);
+					excel.createRow("UserPassword.csv",inputList, 0);
 					break;
 				default:
 					success = false;
 					break;
 			}
 		}
-		
+		sc.close();
 	}
 
-	public static boolean checkLogin(Map<Integer, ArrayList<String>> data, String username, String password) throws IOException{
-		
-		
-		int skip = 1; //skip first row
-		for(Map.Entry<Integer,ArrayList<String>> set : data.entrySet()) {
+	public static boolean checkLogin(ExcelEditor excel, String username, String password) throws IOException{
+
+		ArrayList<ArrayList<String>> csvData = excel.getData();
+		int skip = 1;
+		for(int i = 0; i < csvData.size(); i++) {
 			if(skip == 1) {
 				skip = 0;
 				continue;
 			}
-			ArrayList<String> list = set.getValue();
-			if(!(list.get(0).equals(username) && list.get(1).equals(password))) continue;
-			return true;
+			if(csvData.get(i).get(0).equals(username) && csvData.get(i).get(1).equals(password)) {
+				return true;
+			}
 		}
-
 		return false;
 	}
 	
