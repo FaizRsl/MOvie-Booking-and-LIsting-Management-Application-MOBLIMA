@@ -1,5 +1,7 @@
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 
@@ -11,20 +13,21 @@ public class StaffLogin {
 		String password = "";
 		Scanner sc = new Scanner(System.in);
 		
-		ExcelEditor excel = new ExcelEditor("UserPassword.csv");
+		SerializeDB userDB = new SerializeDB("UserDB.dat");
 		System.out.print("Username: ");
 		username = sc.next();
 		System.out.print("Password: ");
 		password = sc.next();
 		
-		boolean success = checkLogin(excel,username,password);
+		List list = userDB.getObjectsList();
+		boolean success = checkLogin(list, username,password);
 		
 		if(success) {
 			System.out.println("Login Successful");
 		} else {
 			System.out.println("Login Failed!");
 		}
-		
+
 		while(success) {
 			System.out.println("1) Create New User (Testing creating row feature): ");
 			System.out.println("2) Quit");
@@ -33,33 +36,35 @@ public class StaffLogin {
 			switch(input) {
 			
 				case 1:
-					ArrayList<String> inputList = new ArrayList<String>();
 					System.out.println("Enter Username: ");
-					inputList.add((String) sc.next());
+					username = sc.next();
 					System.out.println("Enter Password ");
-					inputList.add(sc.next());
-					excel.createRow("UserPassword.csv",inputList, 0);
+					password = sc.next();
+					User user = new User(username,password);
+					list.add(user);
+					userDB.writeToDB(list);
 					break;
 				default:
 					success = false;
 					break;
 			}
 		}
-		sc.close();
 	}
 
-	public static boolean checkLogin(ExcelEditor excel, String username, String password) throws IOException{
+	public static Boolean checkLogin(List list,String username, String password) {
+		
+		
+		try {
 
-		ArrayList<ArrayList<String>> csvData = excel.getData();
-		int skip = 1;
-		for(int i = 0; i < csvData.size(); i++) {
-			if(skip == 1) {
-				skip = 0;
-				continue;
+			for(int i = 0; i < list.size(); i++) {
+				User user = (User)list.get(i);
+				if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
+					return true;
+				}
 			}
-			if(csvData.get(i).get(0).equals(username) && csvData.get(i).get(1).equals(password)) {
-				return true;
-			}
+
+		} catch (Exception e) {
+			System.out.println( "Exception >> " + e.getMessage());
 		}
 		return false;
 	}
