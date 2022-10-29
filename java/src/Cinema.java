@@ -8,7 +8,12 @@ public class Cinema {
 
     private TicketPrice ticketPrice;
 
-    public Cinema(){}
+    public Cinema(String name, Movie movie, TicketPrice ticketPrice){
+        this.id = UUID.randomUUID();
+        this.name = name;
+        this.movie = movie;
+        this.ticketPrice = ticketPrice;
+    }
 
     public UUID getId() {
         return id;

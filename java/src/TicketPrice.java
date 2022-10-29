@@ -1,34 +1,36 @@
 public class TicketPrice {
 
-    enum TicketType {
-        SENIOR,
-        STUDENT,
-        WEEKDAYS,
-        WEEKENDS,
-        PH
-    }
+//    enum TicketType {
+//        SENIOR,
+//        STUDENT,
+//        WEEKDAYS,
+//        WEEKENDS,
+//        PH
+//    }
+//
+//    enum MovieType {
+//        HORROR,
+//        ROMANCE,
+//        ACTION
+//    }
 
-    enum MovieType {
-        HORROR,
-        ROMANCE,
-        ACTION
-    }
-
-    private TicketType ticketType;
+    private String ticketType;
     private float price;
 
-    private MovieType movieType;
+    private String movieType;
 
 
-    public TicketPrice(){
-
+    public TicketPrice(String ticketPrice, String movieType, float price){
+        this.ticketType = ticketPrice;
+        this.movieType = movieType;
+        this.price = price;
     }
 
-    public TicketType getTicketType() {
+    public String getTicketType() {
         return ticketType;
     }
 
-    public void setTicketType(TicketType ticketType) {
+    public void setTicketType(String ticketType) {
         this.ticketType = ticketType;
     }
 
@@ -40,11 +42,11 @@ public class TicketPrice {
         this.price = price;
     }
 
-    public MovieType getMovieType() {
+    public String getMovieType() {
         return movieType;
     }
 
-    public void setMovieType(MovieType movieType) {
+    public void setMovieType(String movieType) {
         this.movieType = movieType;
     }
 

@@ -9,16 +9,19 @@ public class Movie {
     private String cast;
     private Rating rating;
     private Ticket ticket;
+
+    private MovieDetails movieDetails;
     private boolean seats;
 
     private int totalSales;
 
-    public Movie(String title, String director, String synopsis, String cast){
+    public Movie(String title, String director, String synopsis, String cast, MovieDetails movieDetails){
         this.id = UUID.randomUUID();
         this.title = title;
         this.director = director;
         this.synopsis = synopsis;
         this.cast = cast;
+        this.movieDetails = movieDetails;
     }
 
     public UUID getId() {

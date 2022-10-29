@@ -22,33 +22,37 @@ public class MovieDetails {
         EndOfShowing
     }
 
-    private MovieRating movieRating;
-    private MovieType movieType;
-    private Status status;
+    private String movieRating;
+    private String movieType;
+    private String status;
 
-    public MovieDetails(){}
+    public MovieDetails(String movieRating, String movieType, String status){
+        this.movieRating = movieRating;
+        this.movieType = movieType;
+        this.status = status;
+    }
 
-    public MovieRating getMovieRating() {
+    public String getMovieRating() {
         return movieRating;
     }
 
-    public void setMovieRating(MovieRating movieRating) {
+    public void setMovieRating(String movieRating) {
         this.movieRating = movieRating;
     }
 
-    public MovieType getMovieType() {
+    public String getMovieType() {
         return movieType;
     }
 
-    public void setMovieType(MovieType movieType) {
+    public void setMovieType(String movieType) {
         this.movieType = movieType;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
