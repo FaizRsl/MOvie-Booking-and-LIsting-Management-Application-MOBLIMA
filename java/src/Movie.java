@@ -13,9 +13,12 @@ public class Movie {
 
     private int totalSales;
 
-    public Movie(){
+    public Movie(String title, String director, String synopsis, String cast){
         this.id = UUID.randomUUID();
-        this.title = ticket.getMovieTitle();
+        this.title = title;
+        this.director = director;
+        this.synopsis = synopsis;
+        this.cast = cast;
     }
 
     public UUID getId() {
