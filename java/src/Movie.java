@@ -1,6 +1,9 @@
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Movie {
+public class Movie implements Serializable{
+
+    private static final long serialVersionUID = 5053775386441033506L;
 
     private UUID id;
     private String title;
@@ -96,7 +99,8 @@ public class Movie {
         this.totalSales = totalSales;
     }
 
-    public void getMovieDetails(){
+    public MovieDetails getMovieDetails(){
+        return movieDetails;
     }
 
     public void getPastReviewsAndReview(){

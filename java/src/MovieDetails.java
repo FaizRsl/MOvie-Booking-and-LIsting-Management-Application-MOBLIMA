@@ -1,5 +1,9 @@
-public class MovieDetails {
+import java.io.Serializable;
 
+public class MovieDetails implements Serializable{
+
+    private static final long serialVersionUID = 6174558435927075236L;
+    
     enum MovieRating{
         G,
         PG,
