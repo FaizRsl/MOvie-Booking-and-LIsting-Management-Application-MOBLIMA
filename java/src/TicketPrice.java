@@ -1,54 +1,36 @@
 public class TicketPrice {
 
-//    enum TicketType {
-//        SENIOR,
-//        STUDENT,
-//        WEEKDAYS,
-//        WEEKENDS,
-//        PH
-//    }
-//
-//    enum MovieType {
-//        HORROR,
-//        ROMANCE,
-//        ACTION
-//    }
-
     private String ticketType;
-    private float price;
+    private double price;
 
-    private String movieType;
+    public TicketPrice(){
 
-
-    public TicketPrice(String ticketPrice, String movieType, float price){
-        this.ticketType = ticketPrice;
-        this.movieType = movieType;
-        this.price = price;
     }
 
-    public String getTicketType() {
-        return ticketType;
-    }
-
-    public void setTicketType(String ticketType) {
+    public TicketPrice(String ticketType){
         this.ticketType = ticketType;
+        this.price = getPrice(ticketType);
     }
 
-    public float getPrice() {
-        return price;
+
+    public double getPrice(String ticketType) {
+        if(ticketType.toLowerCase().equals("senior"))
+            return 5;
+        else if(ticketType.toLowerCase().equals("student"))
+            return 5.60;
+        else if(ticketType.toLowerCase().equals("weekdays"))
+            return 5.70;
+        else if(ticketType.toLowerCase().equals("weekends"))
+            return 5.80;
+        else if(ticketType.toLowerCase().equals("ph"))
+            return 5.90;
+
+        System.out.println("Can't be found. Please try again.");
+        return 0; //if return 0 reloop the getprice again
     }
 
     public void setPrice(float price) {
         this.price = price;
     }
-
-    public String getMovieType() {
-        return movieType;
-    }
-
-    public void setMovieType(String movieType) {
-        this.movieType = movieType;
-    }
-
 
 }

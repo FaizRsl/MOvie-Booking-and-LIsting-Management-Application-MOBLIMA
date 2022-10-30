@@ -3,11 +3,18 @@ import java.util.UUID;
 public class Ticket {
 
     private UUID id;
-    private float price;
+    private double price;
     private int seatNumber;
     private String movieTitle;
+    private TicketPrice ticketPrice;
 
-    public Ticket(){}
+    public Ticket(int seatNumber, String movieTitle, String ticketType){
+        this.id = UUID.randomUUID();
+        ticketPrice = new TicketPrice();
+        this.price = ticketPrice.getPrice(ticketType);
+        this.seatNumber = seatNumber;
+        this.movieTitle = movieTitle;
+    }
 
     public UUID getId() {
         return id;
@@ -17,8 +24,8 @@ public class Ticket {
         this.id = id;
     }
 
-    public float getPrice() {
-        return price;
+    public double getPrice(String ticketType) {
+        return ticketPrice.getPrice(ticketType);
     }
 
     public void setPrice(float price) {
@@ -41,5 +48,12 @@ public class Ticket {
         this.movieTitle = movieTitle;
     }
 
+    public TicketPrice getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(TicketPrice ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
 
 }

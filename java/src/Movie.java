@@ -1,4 +1,6 @@
 import java.io.Serializable;
+import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
 public class Movie implements Serializable{
@@ -11,12 +13,12 @@ public class Movie implements Serializable{
     private String synopsis;
     private String cast;
     private Rating rating;
-    private Ticket ticket;
 
+    //private Seats seats;
     private MovieDetails movieDetails;
-    private boolean seats;
 
-    private int totalSales;
+    public Movie(){
+    }
 
     public Movie(String title, String director, String synopsis, String cast, MovieDetails movieDetails){
         this.id = UUID.randomUUID();
@@ -25,6 +27,28 @@ public class Movie implements Serializable{
         this.synopsis = synopsis;
         this.cast = cast;
         this.movieDetails = movieDetails;
+    }
+
+    public void getPastReviewsAndRatings(List<Rating> ratingList){
+
+        if(ratingList.size() == 0){
+            System.out.println("No reviews and rating.");
+            return;
+        }
+
+        for(int i = 0; i < ratingList.size(); i++){
+            rating = (Rating) ratingList.get(i);
+            System.out.print((i+1) + ") " + rating.getRating() + ", " + rating.getReview());
+        }
+    }
+
+    public int getOverallReview(List<Rating> ratingList){
+        int total = 0;
+        for(int i = 0; i < ratingList.size(); i++){
+            rating = (Rating) ratingList.get(i);
+            total += rating.getRating()/(i+1);
+        }
+        return total;
     }
 
     public UUID getId() {
@@ -67,6 +91,10 @@ public class Movie implements Serializable{
         this.cast = cast;
     }
 
+    public MovieDetails getMovieDetails(){
+        return movieDetails;
+    }
+
     public Rating getRating() {
         return rating;
     }
@@ -75,41 +103,41 @@ public class Movie implements Serializable{
         this.rating = rating;
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public void enterNewMovie(List<Movie> movieList){
+        String title;
+        String director;
+        String synopsis;
+        String cast;
+        Rating rating;
+        Ticket ticket;
+        boolean seats;
+        int totalSales;
+
+        MovieDetails movieDetails = null;
+        String movieRatings, movieType, status;
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Movie Title: ");
+        title = sc.nextLine();
+        System.out.println("Director: ");
+        director = sc.nextLine();
+        System.out.println("Synopsis: ");
+        synopsis = sc.nextLine();
+        System.out.println("Cast: ");
+        cast = sc.nextLine();
+        System.out.println("Movie Rating (G, PG, PG13, M16, R): ");
+        movieRatings = sc.nextLine();
+        System.out.println("Movie Type(Horror, Romance, Action, Blockbuster, Comedy): ");
+        movieType = sc.nextLine();
+        System.out.println("Movie Status (Coming Soon, Preview, Now Showing, End Of Showing): ");
+        status = sc.nextLine();
+
+        movieDetails = new MovieDetails(movieRatings, movieType, status);
+
+        Movie mov = new Movie(title, director, synopsis, cast, movieDetails);
+
+        movieList.add(mov);
+
     }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public boolean isSeats() {
-        return seats;
-    }
-
-    public void setSeats(boolean seats) {
-        this.seats = seats;
-    }
-
-    public int getTotalSales() {
-        return totalSales;
-    }
-
-    public void setTotalSales(int totalSales) {
-        this.totalSales = totalSales;
-    }
-
-    public MovieDetails getMovieDetails(){
-        return movieDetails;
-    }
-
-    public void getPastReviewsAndReview(){
-
-    }
-
-    public int getOverallReview(){
-        return 0;
-    }
-
 
 }

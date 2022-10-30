@@ -4,10 +4,17 @@ public class Rating {
 
     private UUID id;
     private int rating;
-
     private String review;
 
-    public Rating(){}
+    public Rating(){
+
+    }
+
+    public Rating(int rating, String review){
+        this.id = UUID.randomUUID();
+        this.rating = rating;
+        this.review = review;
+    }
 
     public UUID getId() {
         return id;
