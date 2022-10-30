@@ -7,15 +7,8 @@ public class Cinema {
     private UUID id;
     private String name;
     private List<Movie> movieList;
-    private Movie movie;
     private Ticket ticket;
-
-    public Seats getSeats() {
-        return seats;
-    }
-
     private Seats seats;
-
     private int totalSales;
 
     public Cinema(){
@@ -26,22 +19,34 @@ public class Cinema {
         this.seats = new Seats();
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Cinema(String name, List<Movie> movieList, Seats seats, int totalSales){
         this.name = name;
+        this.movieList = movieList;
+        this.seats = seats;
+        this.totalSales = totalSales;
     }
 
+    public Cinema(String name, Ticket ticket){
+        this.name = name;
+        this.ticket = ticket;
+    }
+
+    public UUID getId() {return id;}
+
+    public void setId(UUID id) {this.id = id;}
+
+    public String getName() {return name;}
+
+    public void setName(String name) {this.name = name;}
+    public Seats getSeats() {return seats;}
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
     public List<Movie> getMovieList() {
         return movieList;
     }
@@ -50,30 +55,9 @@ public class Cinema {
         this.movieList = movieList;
     }
 
-    public int getTotalSales() {
-        return totalSales;
-    }
+    public int getTotalSales() {return totalSales;}
 
-    public void setTotalSales(int totalSales) {
-        this.totalSales = totalSales;
-    }
-
-//    public List<Movie> getMovieList() {
-//        return movieList;
-//    }
-//
-//    public void setMovieList(List<Movie> movieList) {
-//        this.movieList = movieList;
-//    }
-
-    public Movie getMovie() {
-        return movie;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
+    public void setTotalSales(int totalSales) {this.totalSales = totalSales;}
 
     public void findMovie(String movieName){
         Movie mov = null;
@@ -104,7 +88,6 @@ public class Cinema {
         for(int i = 0; i < movieList.size(); i++){
             mov = (Movie) movieList.get(i);
             System.out.println((i+1) + ") " + mov.getTitle());
-
         }
 
         System.out.println("Select Movie Number to show more details: ");
@@ -124,14 +107,6 @@ public class Cinema {
             System.out.println("No such movie number!");
             System.out.println("Please enter a movie number between 1 and " + (movieList.size()));
         }
-    }
-
-    public Ticket getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
     }
 
 }

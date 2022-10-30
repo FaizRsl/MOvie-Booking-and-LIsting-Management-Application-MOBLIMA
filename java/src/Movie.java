@@ -14,7 +14,6 @@ public class Movie implements Serializable{
     private String cast;
     private Rating rating;
 
-    //private Seats seats;
     private MovieDetails movieDetails;
 
     public Movie(){
@@ -27,6 +26,15 @@ public class Movie implements Serializable{
         this.synopsis = synopsis;
         this.cast = cast;
         this.movieDetails = movieDetails;
+    }
+    public Movie(String title, String director, String synopsis, String cast, MovieDetails movieDetails, Rating rating){
+        this.id = UUID.randomUUID();
+        this.title = title;
+        this.director = director;
+        this.synopsis = synopsis;
+        this.cast = cast;
+        this.movieDetails = movieDetails;
+        this.rating = rating;
     }
 
     public void getPastReviewsAndRatings(List<Rating> ratingList){
