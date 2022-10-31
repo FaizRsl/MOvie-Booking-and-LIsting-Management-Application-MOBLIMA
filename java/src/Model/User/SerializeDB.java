@@ -1,3 +1,5 @@
+package Model.User;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,7 +41,7 @@ public class SerializeDB {
             fileExists = false;
         }
 
-            
+
     }
 
     public List getObjectsList() {
@@ -49,7 +51,7 @@ public class SerializeDB {
     public String getFilename(){
         return filename;
     }
-    
+
     public boolean getFileExists(){
         return fileExists;
     }

@@ -1,5 +1,12 @@
+import Controller.DatabaseController;
+import Model.Cinema.Cinema;
+import Model.Movie.Movie;
+import Model.Ticket.Ticket;
+import Model.User.SerializeDB;
+import Model.User.StaffLogin;
+
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
@@ -61,7 +68,7 @@ public class MOBLIMA {
             }
         }
 
-        Movie movie = new Movie();
+        //Movie movie = new Movie();
 
         while (loop) {
             printAdminMenu();
@@ -99,41 +106,42 @@ public class MOBLIMA {
 
     private static boolean customerMenu(BufferedReader br) throws IOException {
         boolean loop = true;
-        SerializeDB movieDB = new SerializeDB("Movie.dat");
-        List<Movie> movieList = movieDB.getObjectsList();
-        Cinema cinema = new Cinema(movieList);
+//        SerializeDB movieDB = new SerializeDB("Movie.dat");
+//        List<Movie> movieList = movieDB.getObjectsList();
+//        Cinema cinema = new Cinema(movieList);
         //System.out.println(cinema.getMovieList().get(1).getTitle());
         do {
             printCustomerMenu();
             int choice = Integer.parseInt(br.readLine());
             switch(choice) {
                 case 1:
-                    cinema.listAllMovies();
+//                    cinema.listAllMovies();
+
                     break;
                 case 2:
-                    System.out.println("Please enter movie name:");
-                    String movieName = br.readLine();
-                    cinema.findMovie(movieName);
+//                    System.out.println("Please enter movie name:");
+//                    String movieName = br.readLine();
+//                    cinema.findMovie(movieName);
                     break;
                 case 3:
-                    cinema.displayAllMovies();
+//                    cinema.displayAllMovies();
                     break;
                 case 4:
-                    System.out.println("Select movies: ");
-                    cinema.listAllMovies();
-                    int movieChoice = Integer.parseInt(br.readLine());
-                    System.out.println("Select ticket type(Senior, Student, Weekdays, Weekends, PH): ");
-                    String ticketType = br.readLine();
-                    System.out.println("Check seat availability and select seat");
-                    System.out.println("Total seats available are: " + cinema.getSeats().getTotalSeats());
-                    System.out.println("Please enter the number of seats you would like to book:");
-                    int seatsNum = Integer.parseInt(br.readLine());
-                    int[] list = cinema.getSeats().bookSeats(seatsNum);
-                    String title = cinema.getMovieList().get(movieChoice).getTitle();
-                    for(int i=0; i<seatsNum; i++){
-                        Ticket ticket = new Ticket(list[i], title, ticketType);
-                        //add code to store ticket to db
-                    }
+//                    System.out.println("Select movies: ");
+//                    cinema.listAllMovies();
+//                    int movieChoice = Integer.parseInt(br.readLine());
+//                    System.out.println("Select ticket type(Senior, Student, Weekdays, Weekends, PH): ");
+//                    String ticketType = br.readLine();
+//                    System.out.println("Check seat availability and select seat");
+//                    System.out.println("Total seats available are: " + cinema.getSeats().getTotalSeats());
+//                    System.out.println("Please enter the number of seats you would like to book:");
+//                    int seatsNum = Integer.parseInt(br.readLine());
+//                    int[] list = cinema.getSeats().bookSeats(seatsNum);
+//                    String title = cinema.getMovieList().get(movieChoice).getTitle();
+//                    for(int i=0; i<seatsNum; i++){
+//                        Ticket ticket = new Ticket(list[i], title, ticketType);
+//                        //add code to store ticket to db
+//                    }
                     break;
                 case 5:
                     break;
@@ -158,7 +166,7 @@ public class MOBLIMA {
     }
 
     private static void printCinemaList() {
-        System.out.println("---------------- Cinema List -----------------");
+        System.out.println("---------------- Model.Cinema.Cinema List -----------------");
         System.out.println("----------------------------------------------");
         System.out.println("1. Shaw");
         System.out.println("2. Apple");
@@ -168,12 +176,12 @@ public class MOBLIMA {
     private static void printAdminMenu() {
         System.out.println("----------------Admin Menu -----------------");
         System.out.println("--------------------------------------------");
-        System.out.println("1. Create Movie List");
-        System.out.println("2. Update Movie List");
-        System.out.println("3. Remove Movie List");
-        System.out.println("4. Create Cinema Show times and Movies");
-        System.out.println("5. Update Cinema Show times and Movies");
-        System.out.println("6. Remove Cinema Show times and Movies");
+        System.out.println("1. Create Model.Movie.Movie List");
+        System.out.println("2. Update Model.Movie.Movie List");
+        System.out.println("3. Remove Model.Movie.Movie List");
+        System.out.println("4. Create Model.Cinema.Cinema Show times and Movies");
+        System.out.println("5. Update Model.Cinema.Cinema Show times and Movies");
+        System.out.println("6. Remove Model.Cinema.Cinema Show times and Movies");
         System.out.println("7. Configure System Settings");
         System.out.println("8. Go back to Main Menu");
         System.out.println("9. Exit Menu");
@@ -186,8 +194,8 @@ public class MOBLIMA {
         System.out.println("----------------Customer Menu -----------------");
         System.out.println("-----------------------------------------------");
         System.out.println("1. List Movies");
-        System.out.println("2. Search Movie");
-        System.out.println("3. View Movie Details");
+        System.out.println("2. Search Model.Movie.Movie");
+        System.out.println("3. View Model.Movie.Movie Details");
         System.out.println("4. Book and purchase ticket");
         System.out.println("5. View booking history");
         System.out.println("6. List Top 5 ranking by ticket sales");

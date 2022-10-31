@@ -1,3 +1,5 @@
+package Model.User;
+
 import java.util.List;
 public class StaffLogin {
 
