@@ -4,7 +4,6 @@ import Model.Movie.Movie;
 import Model.Ticket.Ticket;
 import Model.User.SerializeDB;
 import Model.User.StaffLogin;
-import Model.User.User;
 
 import javax.xml.crypto.Data;
 import java.io.BufferedReader;
@@ -13,8 +12,6 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class MOBLIMA {
-
-    private static DatabaseManager dbM = new DatabaseManager();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -62,10 +59,10 @@ public class MOBLIMA {
             String username = br.readLine();
             System.out.println("Password");
             String password = br.readLine();
-
-            if(dbM.authorizeUser(username,password)) {
+            StaffLogin sl = new StaffLogin();
+            loggedin = sl.login(username,password);
+            if(loggedin) {
                 System.out.println("Login Successful");
-                loggedin = true;
             } else {
                 System.out.println("Invalid username or password, please try again.");
             }
@@ -78,10 +75,8 @@ public class MOBLIMA {
             int choice = Integer.parseInt(br.readLine());
             switch (choice) {
                 case 1:
-                    dbM.addMovieInput();
                     break;
                 case 2:
-                    dbM.viewAllMovies();
                     break;
                 case 3:
                     break;
