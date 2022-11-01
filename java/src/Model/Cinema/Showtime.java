@@ -3,11 +3,9 @@ package Model.Cinema;
 import Model.Movie.Movie;
 import Model.Movie.MovieType;
 import Model.Seat.SeatLayout;
-import Model.Ticket.Ticket;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Showtime implements Serializable {
 
@@ -17,14 +15,15 @@ public class Showtime implements Serializable {
 
     private Cinema cinema;
 
-    private SeatLayout seatLayout;
+    private MovieType movieType;
 
-    private ArrayList<Ticket> tickets = new ArrayList<>();
+    private SeatLayout seatLayout;
 
     public Showtime(LocalDateTime dateTime, Movie movie, Cinema cinema, MovieType movieType){
         this.dateTime = dateTime;
         this.movie = movie;
         this.cinema = cinema;
+        this.movieType = movieType;
         this.seatLayout = this.cinema.getSeatLayout().getSeatsInformation();
     }
 
@@ -52,27 +51,19 @@ public class Showtime implements Serializable {
         this.cinema = cinema;
     }
 
+    public MovieType getMovieType() {
+        return movieType;
+    }
+
+    public void setMovieType(MovieType movieType) {
+        this.movieType = movieType;
+    }
+
     public SeatLayout getSeatLayout() {
         return seatLayout;
     }
 
     public void setSeatLayout(SeatLayout seatLayout) {
         this.seatLayout = seatLayout;
-    }
-
-    public void addTicket(Ticket ticket) {
-        tickets.add(ticket);
-    }
-
-    public void addTickets(ArrayList<Ticket> listofTicket) {
-        tickets.addAll(listofTicket);
-    }
-
-    public void removeTicket(Ticket ticket) {
-        tickets.remove(ticket);
-    }
-
-    public void removeAllTickets(ArrayList<Ticket> listofTicket) {
-        tickets.removeAll(listofTicket);
     }
 }

@@ -5,16 +5,12 @@ import java.util.ArrayList;
 
 public class Cineplex implements Serializable {
     private String cineplexName;
+
     private ArrayList<Cinema> cinemas;
 
-    public Cineplex(String cineplexName){
+    public Cineplex(String cineplexName, ArrayList<Cinema> cinemaList){
         this.cineplexName = cineplexName;
         this.cinemas = new ArrayList<>();
-    }
-
-    public Cineplex(String cineplexName, ArrayList<Cinema> cinemas) {
-        this.cineplexName = cineplexName;
-        this.cinemas = cinemas;
     }
 
     public String getCineplexName() {

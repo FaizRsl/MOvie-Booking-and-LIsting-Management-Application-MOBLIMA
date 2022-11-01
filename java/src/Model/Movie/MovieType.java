@@ -4,24 +4,21 @@ import Model.Pricing.PriceConfig;
 
 import java.io.Serializable;
 
-public enum MovieType implements Serializable {
-    NORMAL,
-    BLOCKBUSTER,
-    THREED,
-    ROMANCE,
-    COMEDY,
-    HORROR,
-    ACTION,
-    ADVENTURE,
-    MYSTERY;
+public class MovieType implements Serializable {
+
+    private String movieTypeName;
+
+    MovieType(String movieTypeName){this.movieTypeName = movieTypeName;}
+
+    public String getMovieTypeName(){return movieTypeName;}
 
     public double getPriceIncrease(){
-        switch(this){
-            case NORMAL:
+        switch(this.movieTypeName){
+            case "normal":
                 return 0;
-            case THREED:
+            case "threed":
                 return PriceConfig.getInstance().getThreeDMovieIncrease();
-            case BLOCKBUSTER:
+            case "blockbuster":
                 return PriceConfig.getInstance().getBlockbusterIncrease();
             default:
                 return 0;

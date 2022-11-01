@@ -4,26 +4,23 @@ import Model.Seat.SeatLayout;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Cinema implements Serializable {
 
-    private int cinemaRoom;
+    private UUID id;
+    private Cineplex cineplex;
     private CinemaClass cinemaClass;
-    private String cineplexName;
     private SeatLayout seatLayout;
 
     private ArrayList<Showtime> showtimes = new ArrayList<>();
 
-    public Cinema(int cinemaRoom, CinemaClass cinemaClass, String cineplexName, SeatLayout seatLayout){
-        this.cineplexName = cineplexName;
+    public Cinema(Cineplex cineplex, CinemaClass cinemaClass, SeatLayout seatLayout){
+        this.id = UUID.randomUUID();
+        this.cineplex = cineplex;
         this.cinemaClass = cinemaClass;
         this.seatLayout = seatLayout;
-        this.cinemaRoom = cinemaRoom;
     }
-
-    public int getCinemaRoom() {return cinemaRoom;}
-
-    public void setCinemaRoom(int cinemaRoom) {this.cinemaRoom = cinemaRoom;}
 
     public ArrayList<Showtime> getShowtimes() {return showtimes;}
 
@@ -31,6 +28,13 @@ public class Cinema implements Serializable {
         this.showtimes.add(showtime);
     }
 
+    public Cineplex getCineplex() {return cineplex;}
+
+    public void setCineplex(Cineplex cineplex) {this.cineplex = cineplex;}
+
+    public UUID getId() {return id;}
+
+    public void setId(UUID id) {this.id = id;}
     public CinemaClass getCinemaClass() {
         return cinemaClass;
     }
