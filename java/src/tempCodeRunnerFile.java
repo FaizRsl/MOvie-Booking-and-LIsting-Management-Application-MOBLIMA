@@ -1,0 +1,2 @@
+
+        String cast = sc.nextLine();
