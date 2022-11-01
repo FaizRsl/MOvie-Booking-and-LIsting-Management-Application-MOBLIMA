@@ -8,38 +8,39 @@ import Model.Movie.Movie;
 import Model.Movie.MovieCensorship;
 import Model.Movie.MovieDetails;
 import Model.Movie.MovieStatus;
+import Model.User.Admin;
 import Model.User.SerializeDB;
-import Model.User.User;
+
 import Model.Movie.Review;
 
 public class DatabaseManager {
     
     String filePath = new File("").getAbsolutePath() + "\\Database\\";
     String movieFile = filePath + "MovieDB.dat";
-    String userFile = filePath + "UserDB.dat";
+    String adminFile = filePath + "adminDB.dat";
     public DatabaseManager(){
     }
 
-    public void addUser(User user){
-        SerializeDB userDB = new SerializeDB(userFile);
-        List<User> userList = userDB.getObjectsList();
+    public void addAdmin(Admin admin){
+        SerializeDB adminDB = new SerializeDB(adminFile);
+        List<Admin> adminList = adminDB.getObjectsList();
 
-        if(userList == null){
-            userList = new ArrayList<User>();
+        if(adminList == null){
+            adminList = new ArrayList<Admin>();
         }
-        userList.add(user);
+        adminList.add(admin);
 
-        userDB.writeToDB(userList);
+        adminDB.writeToDB(adminList);
         
     }
 
-    public boolean authorizeUser(String username, String password){
-        SerializeDB userDB = new SerializeDB(userFile);
-        List<User> list = userDB.getObjectsList();
+    public boolean authorizeAdmin(String username, String password){
+        SerializeDB userDB = new SerializeDB(adminFile);
+        List<Admin> list = userDB.getObjectsList();
 
         try {
             for(int i = 0; i < list.size(); i++) {
-                User user = list.get(i);
+                Admin user = list.get(i);
                 if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
                     return true;
                 }
