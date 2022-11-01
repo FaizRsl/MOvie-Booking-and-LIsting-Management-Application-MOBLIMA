@@ -1,5 +1,7 @@
 package Model.User;
 
+import Controller.SerializerController;
+
 import java.util.List;
 public class StaffLogin {
 
@@ -8,8 +10,7 @@ public class StaffLogin {
     }
 
     public boolean login(String username, String password){
-        SerializeDB userDB = new SerializeDB("UserDB.dat");
-        List<Admin> list = userDB.getObjectsList();
+        List<Admin> list = SerializerController.deserializeDataFromDAT("resources/UserDB.dat");
         boolean success = checkLogin(list, username,password);
         return success;
     }

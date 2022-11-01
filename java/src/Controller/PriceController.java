@@ -19,7 +19,7 @@ public class PriceController {
 
         price = dayOfWeekPHCalculation(price, ticket.getShowtime().getDateTime().toLocalDate());
 
-        price = movieTypeCalculation(price, ticket.getShowtime().getMovieType());
+        price = movieTypeCalculation(price, ticket.getShowtime().getMovie().getMovieDetails().getMovieType());
 
         price = ageCalculation(price, ticket);
 
