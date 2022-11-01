@@ -1,5 +1,7 @@
 package Model.User;
 
+import Controller.SerializerController;
+
 import java.util.List;
 public class StaffLogin {
 
@@ -8,16 +10,15 @@ public class StaffLogin {
     }
 
     public boolean login(String username, String password){
-        SerializeDB userDB = new SerializeDB("UserDB.dat");
-        List<User> list = userDB.getObjectsList();
+        List<Admin> list = SerializerController.deserializeDataFromDAT("resources/UserDB.dat");
         boolean success = checkLogin(list, username,password);
         return success;
     }
 
-    public static Boolean checkLogin(List<User> list,String username, String password) {
+    public static Boolean checkLogin(List<Admin> list, String username, String password) {
         try {
             for(int i = 0; i < list.size(); i++) {
-                User user = (User)list.get(i);
+                Admin user = (Admin)list.get(i);
                 if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
                     return true;
                 }

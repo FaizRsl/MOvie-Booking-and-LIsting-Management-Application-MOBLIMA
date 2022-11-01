@@ -4,23 +4,18 @@ import Model.Pricing.PriceConfig;
 
 import java.io.Serializable;
 
-public class CinemaClass implements Serializable {
-
-    private String className;
-
-    CinemaClass(String className){
-        this.className = className;
-    }
-
-    public String getClassName() {return className;}
+public enum CinemaClass implements Serializable {
+    NORMAL,
+    GOLD,
+    PLATINUM;
 
     public double getPrice(){
-        switch(this.className){
-            case "normal":
+        switch(this){
+            case NORMAL:
                 return PriceConfig.getInstance().getTicketBasePrice();
-            case "gold":
+            case GOLD:
                 return PriceConfig.getInstance().getTicketGoldBasePrice();
-            case "platinum":
+            case PLATINUM:
                 return PriceConfig.getInstance().getTicketPlatinumBasePrice();
             default:
                 return PriceConfig.getInstance().getTicketBasePrice();

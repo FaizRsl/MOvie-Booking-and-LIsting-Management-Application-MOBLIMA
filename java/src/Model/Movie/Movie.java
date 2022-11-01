@@ -17,10 +17,21 @@ public class Movie implements Serializable{
     private MovieDetails movieDetails;
 
     public Movie(String title, MovieDetails movieDetails){
+        this.id = UUID.randomUUID();
         this.title = title;
         this.movieDetails = movieDetails;
         this.reviews = new ArrayList<Review>();
         this.casts = new ArrayList<String>();
+    }
+
+    public Movie(String title,String director, String synopsis, MovieDetails movieDetails, ArrayList<String> casts) {
+        this.id = UUID.randomUUID();
+        this.title = title;
+        this.director = director;
+        this.synopsis = synopsis;
+        this.movieDetails = movieDetails;
+        this.reviews = new ArrayList<Review>();
+        this.casts = casts;
     }
 
     public UUID getId() {
