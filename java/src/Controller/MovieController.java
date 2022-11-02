@@ -5,6 +5,7 @@ import view.MovieView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class MovieController {
-
     private List<Movie> movies;
 
     private MovieView movieView;
@@ -231,6 +231,62 @@ public class MovieController {
         }
     }
 
+    public void showReviewsByMovie(int choice){
+        ArrayList<Movie> showMovies = getCurrentShowing();
+        if (choice <= showMovies.size()) {
+            movieView.displayReviewsByMovies(choice,showMovies.get(choice-1));
+        }
+    }
+
+    public void addReviews(String name, double rating, String reviewContent, int movieChoice, String status){
+        Review review = new Review(name, rating, reviewContent);
+        ArrayList<Movie> showMovies = getCurrentShowing();
+        Movie movie = getMovieByStatusAndIndex(status, movieChoice);
+        System.out.println(movie.getTitle());
+        movie.getReviews().add(review);
+        double overallRating = Math.round(getOverallRating(movie) * 100.0)/100.0;
+        movie.setRating(overallRating);
+        System.out.println(movie.getReviews().size());
+        updateMovieDetails(movie);
+    }
+
+    public double getOverallRating(Movie movie){
+        double total = 0;
+        int count = 0;
+        for(int i=0; i<movie.getReviews().size(); i++){
+            total += movie.getReviews().get(i).getRating();
+            count++;
+        }
+        return (total/count);
+    }
+    public void getMovieRating(){
+        for(int i=0; i<movies.size(); i++){
+            System.out.print(movies.get(i).getTitle() + " , ");
+            System.out.println(movies.get(i).getRating());
+        }
+    }
+
+    public Movie getMovieByStatusAndIndex(String movieStatus, int movieIndex){
+        Movie movie = new Movie();
+        if(movieStatus.toLowerCase().equals("nowshowing")){
+            ArrayList<Movie> showMovies = getCurrentShowing();
+            for(int i=0; i<showMovies.size(); i++){
+                if((i+1) == movieIndex){
+                    movie = showMovies.get(i);
+                }
+            }
+        }
+        else if(movieStatus.toLowerCase().equals("preview")){
+            ArrayList<Movie> showMovies = getCurrentShowing();
+            for(int i=0; i<showMovies.size(); i++){
+                if((i+1) == movieIndex){
+                    movie = showMovies.get(i);
+                }
+            }
+        }
+        return movie;
+    }
+
     public void showDetailsCurrentShowing(int choice) {
         ArrayList<Movie> showMovies = getCurrentShowing();
         if (choice <= showMovies.size()) {
@@ -240,6 +296,13 @@ public class MovieController {
 
     public void showDetailsPreviewShowing(int choice) {
         ArrayList<Movie> showMovies = getPreviewShowing();
+        if (choice <= showMovies.size()) {
+            movieView.displayMovieDetails(choice,showMovies.get(choice-1));
+        }
+    }
+
+    public void showDetailsEndedShowing(int choice) {
+        ArrayList<Movie> showMovies = getEndedShowing();
         if (choice <= showMovies.size()) {
             movieView.displayMovieDetails(choice,showMovies.get(choice-1));
         }
@@ -256,6 +319,10 @@ public class MovieController {
 
     private ArrayList<Movie> getCurrentShowing() {
         return movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == MovieStatus.NOWSHOWING).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private ArrayList<Movie> getEndedShowing() {
+        return movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == MovieStatus.ENDED).collect(Collectors.toCollection(ArrayList::new));
     }
 
     private ArrayList<Movie> getPreviewShowing() {

@@ -177,6 +177,9 @@ public class MOBLIMA {
                 break;
             case 5:
                 movieController.displayEndedMovies();
+                System.out.println("Please select one of the movies:");
+                choice = Integer.parseInt(br.readLine());
+                loop = endedMovieBookingsMenu(br, choice, "ended");
                 break;
             case 6:
                 movieController.displayAllMovie();
@@ -185,6 +188,7 @@ public class MOBLIMA {
 //                movieController.showDetails(index);
                 break;
             case 7:
+                movieController.getMovieRating();
                 break;
             case 8:
                 break;
@@ -223,8 +227,16 @@ public class MOBLIMA {
                 loop = showtimeMenu(br);
                 break;
             case 3:
+                System.out.println("Please enter your name:");
+                String name = br.readLine();
+                System.out.println("Please enter your rating(1-5):");
+                double rating = Double.parseDouble(br.readLine());
+                System.out.println("Please enter your review:");
+                String reviewContent = br.readLine();
+                movieController.addReviews(name, rating, reviewContent, movieChoice, movieStatus);
                 break;
             case 4:
+                movieController.showReviewsByMovie(movieChoice);
                 break;
             case 5:
                 System.out.println("Sure, returning back to main menu.");
@@ -312,6 +324,51 @@ public class MOBLIMA {
         System.out.println("8. List Top 5 movie by ticket sales");
         System.out.println("9. Go back to Main Menu");
         System.out.println("10. Exit Menu");
+    }
+
+
+    private static boolean endedMovieBookingsMenu(BufferedReader br, int movieChoice, String movieStatus) throws IOException {
+        boolean loop = true;
+        int index;
+        System.out.println();
+        System.out.println("Please choose one of the following options");
+        System.out.println();
+        printListEndedMovieOptionsMenu();
+        String status;
+        int choice = Integer.parseInt(br.readLine());
+
+        switch (choice){
+            case 1:
+                    movieController.showDetailsEndedShowing(movieChoice);
+                break;
+            case 2:
+                System.out.println("Please enter your name:");
+                String name = br.readLine();
+                System.out.println("Please enter your rating(1-5):");
+                double rating = Double.parseDouble(br.readLine());
+                System.out.println("Please enter your review:");
+                String reviewContent = br.readLine();
+                movieController.addReviews(name, rating, reviewContent, movieChoice, movieStatus);
+                break;
+            case 3:
+                movieController.showReviewsByMovie(movieChoice);
+                break;
+            case 4:
+                System.out.println("Sure, returning back to main menu.");
+                break;
+        }
+        return true;
+    }
+
+    private static void printListComingSoonMovieOptionMenu(){
+        System.out.println("1. View Movie Detail");
+        System.out.println("4. Go back to Main Menu");
+    }
+    private static void printListEndedMovieOptionsMenu(){
+        System.out.println("1. View Movie Detail");
+        System.out.println("2. Leave Review");
+        System.out.println("3. Read Reviews");
+        System.out.println("4. Go back to Main Menu");
     }
 
     private static void printListMovieOptionsMenu(){
