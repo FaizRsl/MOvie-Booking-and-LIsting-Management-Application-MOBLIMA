@@ -30,4 +30,21 @@ public class MovieView {
         System.out.printf("Synopsis: %s \n",movie.getSynopsis());
         System.out.printf("Movie Status %s \n",movie.getMovieDetails().getMovieStatus());
     }
+
+    public void displayReviewsByMovies(int index, Movie movie){
+        System.out.printf("Movie Title: %s \n",movie.getTitle());
+        if(movie.getReviews().size() == 0){
+            System.out.println("No reviews for this current movie.");
+            return;
+        }
+        for(int i=0; i<movie.getReviews().size(); i++){
+            System.out.println("Review " + (i+1) + ":");
+            System.out.println("Reviewer Name: " + movie.getReviews().get(i).getReviewerName());
+            System.out.println("Rating: " + movie.getReviews().get(i).getRating());
+            System.out.println("Review Content: " + movie.getReviews().get(i).getReviewContent());
+            System.out.println();
+            System.out.println("------------------------------------------------------------");
+            System.out.println();
+        }
+    }
 }
