@@ -7,9 +7,12 @@ public class MovieDetails implements Serializable{
     private MovieStatus movieStatus;
     private MovieCensorship movieCensorship;
 
-    public MovieDetails(MovieStatus movieStatus, MovieCensorship movieCensorship){
+    private Genre genre;
+
+    public MovieDetails(MovieStatus movieStatus, MovieCensorship movieCensorship,Genre genre){
         this.movieStatus = movieStatus;
         this.movieCensorship = movieCensorship;
+        this.genre = genre;
     }
 
     public MovieStatus getMovieStatus() {
@@ -28,4 +31,11 @@ public class MovieDetails implements Serializable{
         this.movieCensorship = movieCensorship;
     }
 
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
 }

@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 public class Cinema implements Serializable {
 
-    private Cineplex cineplex;
+    private String cineplexName;
     private CinemaClass cinemaClass;
     private int cinemaRoom;
-    private SeatLayout seatLayout;
+    private final SeatLayout seatLayout;
 
     private ArrayList<Showtime> showtimes = new ArrayList<>();
 
-    public Cinema(Cineplex cineplex, CinemaClass cinemaClass, int cinemaRoom, SeatLayout seatLayout){
-        this.cineplex = cineplex;
+    public Cinema(String cineplexName, CinemaClass cinemaClass, int cinemaRoom, SeatLayout seatLayout){
+        this.cineplexName = cineplexName;
         this.cinemaClass = cinemaClass;
         this.seatLayout = seatLayout;
         this.cinemaRoom = cinemaRoom;
@@ -29,9 +29,9 @@ public class Cinema implements Serializable {
     public void addShowTime(Showtime showtime){
         this.showtimes.add(showtime);
     }
-    public Cineplex getCineplex() {return cineplex;}
+    public String getCineplex() {return cineplexName;}
 
-    public void setCineplex(Cineplex cineplex) {this.cineplex = cineplex;}
+    public void setCineplex(String cineplexName) {this.cineplexName = cineplexName;}
     public CinemaClass getCinemaClass() {
         return cinemaClass;
     }
