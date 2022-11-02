@@ -11,25 +11,18 @@ import java.util.List;
 public class DatabaseController {
 
     public static List<Movie> getMovieFromDB() {
-        String filepath = "C:\\Users\\faiz_\\Desktop\\SC2002Assignment\\Moblima\\resources\\MovieDB.dat";
-        //return deserializeDataFromDAT("resources/MovieDB.dat");
-        return deserializeDataFromDAT(filepath);
+        return deserializeDataFromDAT("resources/MovieDB.dat");
     }
     public static void updateMovieDB(List<Movie> movies) {
-        String filepath = "C:\\Users\\faiz_\\Desktop\\SC2002Assignment\\Moblima\\resources\\MovieDB.dat";
-        //serializingDataFromObject(movies,"resources/MovieDB.dat");
-        serializingDataFromObject(movies,filepath);
+        serializingDataFromObject(movies,"resources/MovieDB.dat");
     }
 
     public static List<Admin> getAdminFromDB() {
-        String filepath = "C:\\Users\\faiz_\\Desktop\\SC2002Assignment\\Moblima\\resources\\AdminDB.dat";
-        //return deserializeDataFromDAT("resources/AdminDB.dat");
-        return deserializeDataFromDAT(filepath);
+        return deserializeDataFromDAT("resources/AdminDB.dat");
     }
 
     public static void updateAdminFromDB(List<Admin> users) {
-        String filepath = "C:\\Users\\faiz_\\Desktop\\SC2002Assignment\\Moblima\\resources\\AdminDB.dat";
-        serializingDataFromObject(users,filepath);
+        serializingDataFromObject(users,"resources/AdminDB.dat");
     }
 
 
