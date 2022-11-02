@@ -10,7 +10,7 @@ public class Cineplex implements Serializable {
 
     public Cineplex(String cineplexName, ArrayList<Cinema> cinemaList){
         this.cineplexName = cineplexName;
-        this.cinemas = new ArrayList<>();
+        this.cinemas = cinemaList;
     }
 
     public String getCineplexName() {
@@ -24,7 +24,6 @@ public class Cineplex implements Serializable {
     public ArrayList<Cinema> getCinemas() {
         return cinemas;
     }
-
 
     public void addCinema(Cinema cinema){
         this.cinemas.add(cinema);

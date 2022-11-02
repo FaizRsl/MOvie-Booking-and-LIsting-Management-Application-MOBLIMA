@@ -10,6 +10,7 @@ public class Seats implements Serializable {
     public Seats(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
+        this.booked = false;
     }
     public int getRows() {return rows;}
     public int getCols() {return cols;}

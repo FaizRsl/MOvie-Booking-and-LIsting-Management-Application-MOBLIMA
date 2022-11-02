@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Cinema.Cineplex;
 import Model.Movie.Movie;
 import Model.Pricing.PriceConfig;
 import Model.User.Admin;
@@ -10,6 +11,9 @@ import java.util.List;
 
 public class DatabaseController {
 
+    public static List<Cineplex> getCineplexFromDB() { return deserializeDataFromDAT("resources/CineplexDB.dat"); }
+
+    public static void updateCineplexFromDB(List<Cineplex> cineplexes) { serializingDataFromObject(cineplexes,"resources/CineplexDB.dat");}
     public static List<Movie> getMovieFromDB() {
         return deserializeDataFromDAT("resources/MovieDB.dat");
     }

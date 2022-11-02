@@ -1,20 +1,23 @@
 package Model.Seat;
 
-public class SeatLayout {
+
+import java.io.Serializable;
+
+public class SeatLayout implements Serializable {
 
     private int rows;
 
     private int cols;
 
-    private Seats[] bookedSeats;
+    private Seats[] nonExistenceSeats;
 
     private Seats[][] availableSeats;
 
-    public SeatLayout(int rows, int cols,Seats[] bookedSeats){
+    public SeatLayout(int rows, int cols, Seats[] nonExistenceSeats) {
         this.rows = rows;
         this.cols = cols;
-        this.bookedSeats = bookedSeats;
-        this.availableSeats = new Seats[rows][cols];
+        this.nonExistenceSeats = nonExistenceSeats;
+        this.availableSeats= new Seats[rows][cols];
         initialiseSeats();
     }
 
@@ -43,8 +46,8 @@ public class SeatLayout {
             }
         }
 
-        for (Seats bookedSeats:this.bookedSeats){
-            availableSeats[bookedSeats.getRows()][bookedSeats.getCols()] = null;
+        for (Seats seat: nonExistenceSeats){
+            availableSeats[seat.getRows()][seat.getCols()] = null;
         }
     }
 
@@ -56,7 +59,7 @@ public class SeatLayout {
     }
 
     public SeatLayout getSeatsInformation(){
-        return new SeatLayout(this.rows,this.cols,this.bookedSeats);
+        return new SeatLayout(this.rows,this.cols,this.nonExistenceSeats);
     }
 
     public void printSeatLayout(){
