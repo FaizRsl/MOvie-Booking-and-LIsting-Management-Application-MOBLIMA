@@ -80,18 +80,18 @@ public class MOBLIMA {
                 case 2: // update movie
                     
                     movieController.updateMovieDetails();
-
-                    //movieController.updateMovieDetails(null);
                     break;
                 case 3: //remove movie
+                    movieController.removeMovieByStatus();
                     break;
-                case 4:
+                // Cinema Showtimes
+                case 4: // create showtime
                     break;
-                case 5:
+                case 5: // update showtime
                     break;
-                case 6:
+                case 6: // remove showtime
                     break;
-                case 7:
+                case 7: //Configure System Settings
                     break;
                 case 8:
                     System.out.println("Sure, returning back to main menu.");

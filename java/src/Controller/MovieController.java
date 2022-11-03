@@ -190,6 +190,17 @@ public class MovieController {
         DatabaseController.updateMovieDB(movies);
     }
     
+    public void removeMovieByStatus(){
+        Scanner sc = new Scanner(System.in);
+        displayAllMovie();
+        System.out.println("What movie is to be removed?");
+        int remove = sc.nextInt();
+        sc.nextLine();
+        
+        movies.get(remove).getMovieDetails().setMovieStatus(MovieStatus.ENDED);
+        DatabaseController.updateMovieDB(movies);
+    }
+
     public void updateMovieDetails(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Which movie to update?");
