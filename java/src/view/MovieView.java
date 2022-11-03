@@ -47,4 +47,42 @@ public class MovieView {
             System.out.println();
         }
     }
+
+
+    public void displayUpdateOptions(){
+        System.out.println("What would you like to update?");
+        System.out.println("1) Movie Title");
+        System.out.println("2) Director");
+        System.out.println("3) Cast");
+        System.out.println("4) Age Rating");
+        System.out.println("5) Synopsis");
+        System.out.println("6) Movie Status");
+
+    }
+    
+    public void displayUpdateCastOptions(){
+        System.out.println("1) Add Cast Member");
+        System.out.println("2) Remove Cast Member");
+        System.out.println("3) Change Cast Member's Name");
+        System.out.println("4) Quit");
+    }
+
+    public void displayUpdateAgeRatingOptions(){
+        System.out.println("New Age Rating: ");
+        System.out.println("1) G");
+        System.out.println("2) PG");
+        System.out.println("3) PG13");
+        System.out.println("4) NC16");
+        System.out.println("5) M18");
+        System.out.println("6) R21");
+
+    }
+
+    public void displayUpdateMovieStatusOptions(){
+        System.out.println("New Movie Status: ");
+        System.out.println("1) Coming Soon");
+        System.out.println("2) Preview");
+        System.out.println("3) Now Showing");
+        System.out.println("4) Ending");
+    }
 }

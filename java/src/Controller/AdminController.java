@@ -2,6 +2,7 @@ package Controller;
 
 import Model.User.Admin;
 
+import java.io.File;
 import java.util.List;
 
 public class AdminController {
@@ -17,6 +18,7 @@ public class AdminController {
 
     public static boolean authorizeAdmin(String username, String password){
         List<Admin> adminList = DatabaseController.getAdminFromDB();
+        System.out.println(new File("").getAbsolutePath());
         try {
             for(int i = 0; i < adminList.size(); i++) {
                 Admin user = adminList.get(i);

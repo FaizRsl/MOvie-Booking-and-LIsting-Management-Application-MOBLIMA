@@ -69,19 +69,21 @@ public class MOBLIMA {
         }
 
         //Movie movie = new Movie();
-
+        
         while (loop) {
             printAdminMenu();
             int choice = Integer.parseInt(br.readLine());
             switch (choice) {
-                case 1:
+                case 1: // create movie
                     movieController.createMovie(br);
                     break;
-                case 2:
+                case 2: // update movie
+                    
+                    movieController.updateMovieDetails();
+
+                    //movieController.updateMovieDetails(null);
                     break;
-                case 3:
-                    Admin admin = new Admin("admin","password");
-                    adminController.addAdmin(admin);
+                case 3: //remove movie
                     break;
                 case 4:
                     break;

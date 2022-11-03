@@ -189,16 +189,147 @@ public class MovieController {
         movies.remove(movie);
         DatabaseController.updateMovieDB(movies);
     }
+    
+    public void updateMovieDetails(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Which movie to update?");
+        displayAllMovie();
+        int update = sc.nextInt();
+
+        Movie movie = movies.get(update-1);
+        
+        
+        boolean loop = true;
+        int choice;
+        while(loop){
+            movieView.displayMovieDetails(update, movie );
+            movieView.displayUpdateOptions();
+            choice = sc.nextInt();
+            sc.nextLine();
+            switch(choice){
+                case 1:
+                    System.out.println("Input new movie title: ");
+                    movie.setTitle(sc.nextLine());
+                    break;
+                case 2:
+                    System.out.println("Input new director(s): ");
+                    movie.setDirector(sc.nextLine());
+                    break;
+                case 3:
+                    boolean castLoop = true;
+                    while(castLoop){
+                        movieView.displayUpdateCastOptions();
+                        int castChoice = sc.nextInt();
+                        sc.nextLine();
+                        ArrayList<String> castList = movie.getCasts();
+                        switch(castChoice){
+                            case 1:
+                                System.out.println("Cast Name: ");
+                                castList.add(sc.nextLine());
+                                break;
+                            case 2:
+                                System.out.println("Select which cast member to remove: ");
+                                for(int i = 0; i < castList.size(); i++){
+                                    System.out.println(i+1 + ") " + castList.get(i));
+                                }
+                                castList.remove(sc.nextInt()-1);
+                                sc.nextLine();
+                                break;
+                            case 3:
+                                
+                                System.out.println("Select which cast member to update: ");
+                                for(int i = 0; i < castList.size(); i++){
+                                    System.out.println(i+1 + ") " + castList.get(i));
+                                }
+                                int castIndex = sc.nextInt()-1;
+                                sc.nextLine();
+                                System.out.println("New Cast Name: ");
+                                castList.set(castIndex, sc.nextLine());
+                                break;
+                            case 4:
+                                castLoop = false;
+                                break;
+                        }
+                    }
+                    break;
+                case 4:
+                    movieView.displayUpdateAgeRatingOptions();
+                    int censorChoice = sc.nextInt();
+                    sc.nextLine();
+                    switch(censorChoice){
+                        case 1:
+                            movie.getMovieDetails().setMovieCensorship(MovieCensorship.G);
+                            break;
+                        case 2:
+                            movie.getMovieDetails().setMovieCensorship(MovieCensorship.PG);
+                            break;
+                        case 3:
+                            movie.getMovieDetails().setMovieCensorship(MovieCensorship.PG13);
+                            break;
+                        case 4:
+                            movie.getMovieDetails().setMovieCensorship(MovieCensorship.NC16);
+                            break;
+                        case 5:
+                            movie.getMovieDetails().setMovieCensorship(MovieCensorship.M18);
+                            break;
+                        case 6:
+                            movie.getMovieDetails().setMovieCensorship(MovieCensorship.R21);
+                            break;
+                    }
+                    
+                    break;
+                case 5:
+                    System.out.println("Input new synopsis: ");
+                    movie.setSynopsis(sc.nextLine());
+                    break;
+                case 6:
+                    movieView.displayUpdateMovieStatusOptions();
+                    int statusChoice = sc.nextInt();
+                    sc.nextLine();
+                    switch(statusChoice){
+                        case 1:
+                            movie.getMovieDetails().setMovieStatus(MovieStatus.COMINGSOON);
+                            break;
+                        case 2:
+                            movie.getMovieDetails().setMovieStatus(MovieStatus.PREVIEW);
+                            break;
+                        case 3:
+                            movie.getMovieDetails().setMovieStatus(MovieStatus.NOWSHOWING);
+                            break;
+                        case 4:
+                            movie.getMovieDetails().setMovieStatus(MovieStatus.ENDED);
+                            break;
+
+                    }
+                    break;
+                
+            }
+
+            System.out.println("Continue Changes?");
+            System.out.println("1) Yes");
+            System.out.println("2) No");
+            if(sc.nextInt() != 1){
+                loop = false;
+            }
+        }
+        updateMovieDetails(movie);
+        
+    }
 
     public void updateMovieDetails(Movie movie) {
+        
+        
         movies.remove(movie);
         movies.add(movie);
         DatabaseController.updateMovieDB(movies);
     }
 
+
     public Movie getMovieByTitle(String movieTitle) {
         return movies.stream().filter(movie -> movie.getTitle().equalsIgnoreCase(movieTitle)).findFirst().orElse(null);
     }
+
+
 
     public void findMovieByTitle(String movieTitle) {
         Movie movie = getMovieByTitle(movieTitle);
