@@ -189,14 +189,14 @@ public class MovieController {
         movies.remove(movie);
         DatabaseController.updateMovieDB(movies);
     }
-    
+
     public void removeMovieByStatus(){
         Scanner sc = new Scanner(System.in);
         displayAllMovie();
         System.out.println("What movie is to be removed?");
         int remove = sc.nextInt();
         sc.nextLine();
-        
+
         movies.get(remove).getMovieDetails().setMovieStatus(MovieStatus.ENDED);
         DatabaseController.updateMovieDB(movies);
     }
@@ -208,8 +208,8 @@ public class MovieController {
         int update = sc.nextInt();
 
         Movie movie = movies.get(update-1);
-        
-        
+
+
         boolean loop = true;
         int choice;
         while(loop){
@@ -247,7 +247,7 @@ public class MovieController {
                                 sc.nextLine();
                                 break;
                             case 3:
-                                
+
                                 System.out.println("Select which cast member to update: ");
                                 for(int i = 0; i < castList.size(); i++){
                                     System.out.println(i+1 + ") " + castList.get(i));
@@ -287,7 +287,7 @@ public class MovieController {
                             movie.getMovieDetails().setMovieCensorship(MovieCensorship.R21);
                             break;
                     }
-                    
+
                     break;
                 case 5:
                     System.out.println("Input new synopsis: ");
@@ -313,7 +313,7 @@ public class MovieController {
 
                     }
                     break;
-                
+
             }
 
             System.out.println("Continue Changes?");
@@ -324,12 +324,10 @@ public class MovieController {
             }
         }
         updateMovieDetails(movie);
-        
+
     }
 
     public void updateMovieDetails(Movie movie) {
-        
-        
         movies.remove(movie);
         movies.add(movie);
         DatabaseController.updateMovieDB(movies);

@@ -6,6 +6,7 @@ import Model.Seat.SeatLayout;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Showtime implements Serializable {
 
@@ -66,4 +67,5 @@ public class Showtime implements Serializable {
     public void setSeatLayout(SeatLayout seatLayout) {
         this.seatLayout = seatLayout;
     }
+
 }

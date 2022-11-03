@@ -1,17 +1,34 @@
 import Controller.AdminController;
+import Controller.CinemaController;
 import Controller.MovieController;
+import Controller.PriceController;
+import Model.Booking.Booking;
+import Model.Cinema.CinemaClass;
+import Model.Cinema.Showtime;
 import Model.Movie.Movie;
+import Model.Movie.MovieType;
 import Model.Seat.SeatLayout;
+import Model.Seat.Seats;
+import Model.Ticket.AdultTicket;
+import Model.Ticket.ChildrenTicket;
+import Model.Ticket.SeniorTicket;
+import Model.Ticket.Ticket;
 import Model.User.Admin;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class MOBLIMA {
 
     private static MovieController movieController = new MovieController();
     private static AdminController adminController = new AdminController();
+
+    private static CinemaController cinemaController = new CinemaController();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -69,7 +86,7 @@ public class MOBLIMA {
         }
 
         //Movie movie = new Movie();
-        
+
         while (loop) {
             printAdminMenu();
             int choice = Integer.parseInt(br.readLine());
@@ -78,7 +95,7 @@ public class MOBLIMA {
                     movieController.createMovie(br);
                     break;
                 case 2: // update movie
-                    
+
                     movieController.updateMovieDetails();
                     break;
                 case 3: //remove movie
@@ -112,7 +129,7 @@ public class MOBLIMA {
     private static boolean customerMenu(BufferedReader br) throws IOException {
         boolean loop = true;
         int choice;
-    do {
+        do {
             printCustomerMenu();
             choice = Integer.parseInt(br.readLine());
             switch(choice) {
@@ -134,14 +151,6 @@ public class MOBLIMA {
             }
         } while (loop);
         return true;
-    }
-
-    private static void printCinemaList() {
-        System.out.println("---------------- Cinema List -----------------");
-        System.out.println("----------------------------------------------");
-        System.out.println("1. Shaw");
-        System.out.println("2. Apple");
-        System.out.println("3. Potato");
     }
 
     private static boolean movieMenu(BufferedReader br) throws IOException {
@@ -226,7 +235,7 @@ public class MOBLIMA {
                     movieController.showDetailsPreviewShowing(movieChoice);
                 break;
             case 2:
-                loop = showtimeMenu(br);
+                loop = showtimeMenu(br, movieChoice, movieStatus);
                 break;
             case 3:
                 System.out.println("Please enter your name:");
@@ -247,26 +256,56 @@ public class MOBLIMA {
         return true;
     }
 
-    private static boolean showtimeMenu(BufferedReader br) throws IOException {
-        int index;
+    private static boolean showtimeMenu(BufferedReader br, int movieChoice, String movieStatus) throws IOException {
+        boolean loop = true;
         System.out.println();
         System.out.println("Please choose one of the following options");
         System.out.println();
         showtimeMenu();
+        Movie mov;
+        Showtime showtimeSelected;
         int choice = Integer.parseInt(br.readLine());
 
         switch (choice) {
             case 1:
+                cinemaController.displayAllCineplex();
+                System.out.println("Choose a cineplex:");
+                choice = Integer.parseInt(br.readLine());
+                mov = movieController.getMovieByStatusAndIndex(movieStatus,movieChoice);
+                cinemaController.displayShowtimeByCineplex(choice, mov.getTitle());
+//                System.out.println("Choose one of the showtime available:");
+//                int showtimeChoice = Integer.parseInt(br.readLine());
+//                showtimeSelected = cinemaController.getShowtimeByCineplex(showtimeChoice, choice, mov.getTitle());
+//                displayShowtime(showtimeSelected);
                 break;
-
             case 2:
-                System.out.println("Input the date in this format (day/month/year) -> eg: 1/12/2019");
+                System.out.println("Input the date in this format (day/month/year) -> eg: 24/10/2022");
                 String date = br.readLine();
+                cinemaController.displayShowtimeByDate(date);
+//                System.out.println("Choose one of the showtime available:");
+//                choice = Integer.parseInt(br.readLine());
+//                showtimeSelected = cinemaController.getShowtimeByDate(choice, date);
+//                displayShowtime(showtimeSelected);
                 break;
             case 3:
                 //display all showtime
-                System.out.println("Please select one of the options.");
+                mov = movieController.getMovieByStatusAndIndex(movieStatus,movieChoice);
+                cinemaController.displayAllCineplexShowtimes(mov.getTitle());
+                System.out.println("Choose one of the showtime available:");
                 choice = Integer.parseInt(br.readLine());
+                showtimeSelected = cinemaController.getCineplexAllShowtimes(choice, mov.getTitle());
+                showtimeSelected.getSeatLayout().printSeatLayout();
+                printUserBookingsMenu();
+                choice = Integer.parseInt(br.readLine());
+                if(choice == 2)
+                    break;
+                System.out.println("Select number of seats to book:");
+                int seatNumBookings = Integer.parseInt(br.readLine());
+                ArrayList<Seats> seats = new ArrayList<>();
+                for(int i=0; i<seatNumBookings; i++){
+                    seats.add(handleSeatBookings(showtimeSelected));
+                }
+                purchaseTicket(seatNumBookings, seats, showtimeSelected);
                 break;
             case 4:
                 System.out.println("Sure, returning back to main menu.");
@@ -274,6 +313,145 @@ public class MOBLIMA {
 
         }
         return true;
+    }
+
+    private static Seats handleSeatBookings(Showtime showtime){
+
+        int row;
+        int col;
+        Scanner sc = new Scanner(System.in);
+        Seats chosenSeats;
+
+        while(true){
+            try{
+                System.out.println("Please enter a seat number: Eg (B4) to book row 2 and column 4");
+                String seatNumber = sc.nextLine();
+                row = Character.toLowerCase(seatNumber.substring(0,1).toCharArray()[0])  - 'a';
+                col = Integer.parseInt(seatNumber.substring(1,seatNumber.length() >= 3 ? 3 : 2)) - 1;
+            }catch(Exception e){
+                System.out.println("Wrong format, try again\n");
+                continue;
+            }
+
+            if ((col>=showtime.getSeatLayout().getCols())||(row >= showtime.getSeatLayout().getRows())||(col<0)||(row<0)){
+                System.out.println("Seat does not exist, please try again!");
+                continue;
+            }
+
+            if ((showtime.getSeatLayout().getSeats(row,col) != null)) {
+
+                if (showtime.getSeatLayout().getSeats(row,col).isBooked()){
+                    System.out.println("The seat is already book, input another seat");
+                    continue;
+                }else{
+                    showtime.getSeatLayout().getSeats(row,col).bookSeat();
+                    chosenSeats = new Seats(row,col);
+                }
+            }else{
+                System.out.println("The seat is not among the choices");
+                continue;
+            }
+
+            showtime.getSeatLayout().printSeatLayout();
+            return chosenSeats;
+        }
+
+    }
+
+    private static void purchaseTicket(int size, ArrayList<Seats> seats, Showtime showtime){
+        Scanner sc = new Scanner(System.in);
+        while(true){
+            int count = 0;
+            double totalPrice = 0;
+            ArrayList<Ticket> tickets = new ArrayList<>(size);
+            System.out.println("----------------Purchase Ticket -----------------");
+            System.out.println("-------------------------------------------------");
+            System.out.println("How many adults?");
+            int adultCount = sc.nextInt();
+            System.out.println("How many children?");
+            int childrenCount = sc.nextInt();
+            System.out.println("How many senior citizen?");
+            int seniorCitizenCount = sc.nextInt();
+            sc.nextLine();
+            int totalCount = adultCount + childrenCount + seniorCitizenCount;
+            if(totalCount != size) {
+                System.out.println("Number does not tally with total tickets! Please try again.");
+                continue;
+            }
+
+            if(totalCount == size) {
+                for(int i = 0; i < adultCount; i++){
+                    Ticket ticket = new AdultTicket(seats.get(count), showtime);
+                    totalPrice += ticket.getPrice();
+                    tickets.add(ticket);
+                    count++;
+                }
+
+                for(int i = 0; i< childrenCount; i++){
+                    Ticket ticket = new ChildrenTicket(seats.get(count), showtime);
+                    totalPrice += ticket.getPrice();
+                    tickets.add(ticket);
+                    count++;
+                }
+
+                for(int i = 0; i< seniorCitizenCount; i++){
+                    Ticket ticket = new SeniorTicket(seats.get(count), showtime);
+                    totalPrice += ticket.getPrice();
+                    tickets.add(ticket);
+                    count++;
+                }
+                System.out.println("Please enter your name:");
+                String userName = sc.nextLine();
+                System.out.println("Please enter your email:");
+                String userEmail = sc.nextLine();
+                Booking booking = new Booking(tickets, userName, userEmail); //add this to database
+                totalPrice = Math.round(totalPrice * 100.00)/100.00;
+                printOrder(tickets, totalPrice);
+                break;
+            }
+        }
+
+    }
+
+    private static void printOrder(ArrayList<Ticket> tickets, double totalPrice){
+        System.out.println("----------------ORDERS -----------------");
+        System.out.println("----------------------------------------");
+        for(int i=0; i<tickets.size(); i++){
+            System.out.println("Seat ID: " + tickets.get(i).getSeats().toString());
+            System.out.println("Price: " + tickets.get(i).getPrice());
+            System.out.println("Showtime: ");
+            cinemaController.displayShowtimeInfo(tickets.get(i).getShowtime());
+        }
+
+        System.out.println("Total price before GST: " + totalPrice);
+        double totalPriceWithGst = Math.round(PriceController.GSTCalculation(totalPrice) * 100.00)/100.00;
+        System.out.println("GST: " + Math.round((totalPriceWithGst - totalPrice) * 100.0)/100.00);
+        System.out.println("Total Price: " + totalPriceWithGst);
+        System.out.println("----------------------------------------");
+
+    }
+
+    private static void unbookedSeat(){
+
+    }
+
+//    private static boolean userBookingsMenu(BufferedReader br, int movieChoice, String movieStatus) throws IOException {
+//        System.out.println();
+//        System.out.println("Please choose one of the following options");
+//        System.out.println();
+//        printUserBookingsMenu();
+//        int choice = Integer.parseInt(br.readLine());
+//
+//        switch (choice) {
+//        }
+//        return true;
+//    }
+//
+    private static void printUserBookingsMenu(){
+        System.out.println("----------------Booking Menu -----------------");
+        System.out.println("----------------------------------------------");
+        System.out.println("1. Book Seat");
+        System.out.println("2. Go back to Main Menu");
     }
 
     private static void showtimeMenu(){

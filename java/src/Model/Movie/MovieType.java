@@ -7,6 +7,7 @@ import java.io.Serializable;
 public enum MovieType implements Serializable {
     NORMAL,
     THREED,
+
     IMAX,
     BLOCKBUSTER;
 
@@ -16,6 +17,8 @@ public enum MovieType implements Serializable {
                 return 0;
             case THREED:
                 return PriceConfig.getInstance().getThreeDMovieIncrease();
+            case IMAX:
+                return PriceConfig.getInstance().getIMAXIncrease();
             case BLOCKBUSTER:
                 return PriceConfig.getInstance().getBlockbusterIncrease();
             default:

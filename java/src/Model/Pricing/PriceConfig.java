@@ -20,6 +20,8 @@ public class PriceConfig {
 
     private double blockbusterIncrease = 4;
 
+    private double IMAXIncrease = 6;
+
     private double childDiscount = 0.5;
 
     private double studentDiscount = 0.9;
@@ -70,6 +72,15 @@ public class PriceConfig {
 
     public double getTicketPlatinumBasePrice() {
         return ticketPlatinumBasePrice;
+    }
+
+    public double getIMAXIncrease() {
+        return IMAXIncrease;
+    }
+
+    public void setIMAXIncrease(double IMAXIncrease) {
+        this.IMAXIncrease = IMAXIncrease;
+        DatabaseController.savePriceConfig(this);
     }
 
     public void setTicketPlatinumBasePrice(double ticketPlatinumBasePrice) {
