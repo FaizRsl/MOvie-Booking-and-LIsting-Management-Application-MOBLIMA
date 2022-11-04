@@ -70,16 +70,32 @@ public class Showtime implements Serializable {
 
     @Override
     public String toString() {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(String.format("Date: %s \n",dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("E, dd MMMM yyyy"))));
+//        sb.append(String.format("Time: %s \n",dateTime.toLocalTime().format(DateTimeFormatter.ISO_LOCAL_TIME)));
+//        sb.append("Movie: \n");
+//        sb.append("=============================================== \n");
+//        sb.append(this.movie.toString());
+//        sb.append("Cinema: \n");
+//        sb.append("=============================================== \n");
+//        sb.append(this.cinema.toString());
+//        sb.append(String.format("Type of Movie: %s \n",this.movieType.name()));
+//        return sb.toString();
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("Date: %s \n",dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("E, dd MMMM yyyy"))));
         sb.append(String.format("Time: %s \n",dateTime.toLocalTime().format(DateTimeFormatter.ISO_LOCAL_TIME)));
-        sb.append("Movie: \n");
-        sb.append("=============================================== \n");
-        sb.append(this.movie.toString());
-        sb.append("Cinema: \n");
-        sb.append("=============================================== \n");
-        sb.append(this.cinema.toString());
+        sb.append("\n");
+        sb.append("Movie Details: \n");
+        sb.append("Movie: " + this.movie.getTitle());
+        sb.append("\n");
+        sb.append("Cinema: " + this.cinema.getCineplex());
+        sb.append("\n");
+        sb.append("Cinema Room: " + this.cinema.getCinemaRoom());
+        sb.append("\n");
+        sb.append("Cinema Class: " + this.cinema.getCinemaClass());
+        sb.append("\n");
         sb.append(String.format("Type of Movie: %s \n",this.movieType.name()));
         return sb.toString();
     }
+
 }

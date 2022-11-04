@@ -6,10 +6,7 @@ import view.MovieView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MovieController {
@@ -399,10 +396,29 @@ public class MovieController {
         }
         return (total/count);
     }
-    public void getMovieRating(){
+
+    public void getTopFiveMovieRating(){
+        class MovieComparator implements Comparator<Movie>{
+
+            public int compare(Movie s1, Movie s2) {
+                if (s1.getRating() < s2.getRating())
+                    return 1;
+                else if (s1.getRating() > s2.getRating())
+                    return -1;
+                return 0;
+            }
+        }
+
+        PriorityQueue<Movie> movieList = new PriorityQueue<Movie>(movies.size(), new MovieComparator());
+
         for(int i=0; i<movies.size(); i++){
-            System.out.print(movies.get(i).getTitle() + " , ");
-            System.out.println(movies.get(i).getRating());
+            movieList.add(movies.get(i));
+        }
+
+        for(int i=0; i<5; i++){
+            Movie movie = movieList.poll();
+            System.out.print(movie.getTitle() + ": ");
+            System.out.println(movie.getRating());
         }
     }
 
@@ -417,7 +433,7 @@ public class MovieController {
             }
         }
         else if(movieStatus.toLowerCase().equals("preview")){
-            ArrayList<Movie> showMovies = getCurrentShowing();
+            ArrayList<Movie> showMovies = getPreviewShowing();
             for(int i=0; i<showMovies.size(); i++){
                 if((i+1) == movieIndex){
                     movie = showMovies.get(i);

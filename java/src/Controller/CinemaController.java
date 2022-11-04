@@ -31,8 +31,8 @@ public class CinemaController {
         cinemaView.displayAllCineplexShowtimes(cineplexes, movieName);
     }
 
-    public void displayShowtimeByDate(String date){
-        cinemaView.displayShowtimeByDate(cineplexes, date);
+    public void displayShowtimeByDate(String date, String movieTitle){
+        cinemaView.displayShowtimeByDate(cineplexes, date, movieTitle);
     }
 
     public void displayShowtimeByCineplex(int choice, String movieName){
@@ -47,11 +47,11 @@ public class CinemaController {
         System.out.println(cinemaView.displayShowtime(showtime));
     }
 
-//    public Showtime getShowtimeByCineplex(int choice, String movieName){
-//        return cinemaView.getShowtimeByCinema(cineplexes.get(choice-1), movieName);
-//    }
-//    public Showtime getShowtimeByDate(String date){
-//        return cinemaView.getShowtimeByDate(cineplexes, date);
-//    }
+    public Showtime getShowtimeByCineplex(int cineplexChoice, int showtimeChoice, String movieName){
+        return cinemaView.getShowtimeByCineplex(cineplexes.get(cineplexChoice-1), showtimeChoice, movieName);
+    }
+    public Showtime getShowtimeByDate(int choice, String date, String movieTitle){
+        return cinemaView.getShowtimeByDate(cineplexes, choice,  date, movieTitle);
+    }
 
 }

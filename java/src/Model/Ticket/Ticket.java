@@ -89,9 +89,8 @@ public abstract class Ticket implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("Seat ID: %s\n",this.seats.toString()));
         sb.append(String.format("Price: $%.2f \n",this.price));
-        sb.append("Showtime: \n");
-        sb.append("=============================================== \n");
         sb.append(this.showtime.toString());
+        sb.append("\n");
         return sb.toString();
     }
 

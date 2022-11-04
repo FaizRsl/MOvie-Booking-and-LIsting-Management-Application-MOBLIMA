@@ -1,7 +1,4 @@
-import Controller.AdminController;
-import Controller.CinemaController;
-import Controller.MovieController;
-import Controller.PriceController;
+import Controller.*;
 import Model.Booking.Booking;
 import Model.Cinema.CinemaClass;
 import Model.Cinema.Showtime;
@@ -29,6 +26,8 @@ public class MOBLIMA {
     private static AdminController adminController = new AdminController();
 
     private static CinemaController cinemaController = new CinemaController();
+
+    private static BookingController bookingController = new BookingController();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -135,7 +134,26 @@ public class MOBLIMA {
             switch(choice) {
                 case 1:
                     loop = movieMenu(br);
+                    break;
                 case 2:
+                    System.out.println("Please enter your username:");
+                    String username = br.readLine();
+                    List<Booking> bookingList = bookingController.getBookingByUsername(username);
+                    if(bookingList.size() == 0)
+                        System.out.println("There is no booking for this user.");
+                    else
+                        while(true){
+                            System.out.println("You have " + bookingList.size() + " bookings.");
+                            System.out.println("Please select which bookings you wish to view (1-" +bookingList.size()+ "):");
+                            choice = Integer.parseInt(br.readLine());
+                            if((choice-1) < 0 || choice > bookingList.size()){
+                                System.out.println("Invalid input. Please try again");
+                            }
+                            else{
+                                System.out.println(bookingList.get(choice-1).toString());
+                                break;
+                            }
+                        }
                     break;
                 case 3:
                     System.out.println("Sure, returning back to main menu.");
@@ -194,14 +212,12 @@ public class MOBLIMA {
                 break;
             case 6:
                 movieController.displayAllMovie();
-//                System.out.println("Please enter the index of movie that you want to know more:");
-//                index = Integer.parseInt(br.readLine());
-//                movieController.showDetails(index);
                 break;
             case 7:
-                movieController.getMovieRating();
+                movieController.getTopFiveMovieRating();
                 break;
             case 8:
+                bookingController.getTopFiveMovieByTicketSales();
                 break;
             case 9:
                 System.out.println("Sure, returning back to main menu.");
@@ -273,19 +289,48 @@ public class MOBLIMA {
                 choice = Integer.parseInt(br.readLine());
                 mov = movieController.getMovieByStatusAndIndex(movieStatus,movieChoice);
                 cinemaController.displayShowtimeByCineplex(choice, mov.getTitle());
-//                System.out.println("Choose one of the showtime available:");
-//                int showtimeChoice = Integer.parseInt(br.readLine());
-//                showtimeSelected = cinemaController.getShowtimeByCineplex(showtimeChoice, choice, mov.getTitle());
-//                displayShowtime(showtimeSelected);
+                System.out.println("Choose one of the showtime available:");
+                int showtimeChoice = Integer.parseInt(br.readLine());
+                showtimeSelected = cinemaController.getShowtimeByCineplex(choice, showtimeChoice, mov.getTitle());
+                if(showtimeSelected != null)
+                {
+                    showtimeSelected.getSeatLayout().printSeatLayout();
+                    printUserBookingsMenu();
+                    choice = Integer.parseInt(br.readLine());
+                    if(choice == 2)
+                        break;
+                    System.out.println("Select number of seats to book:");
+                    int seatNumBookings = Integer.parseInt(br.readLine());
+                    ArrayList<Seats> seats = new ArrayList<>();
+                    for(int i=0; i<seatNumBookings; i++){
+                        seats.add(handleSeatBookings(showtimeSelected));
+                    }
+                    purchaseTicket(seatNumBookings, seats, showtimeSelected);
+                }
                 break;
             case 2:
                 System.out.println("Input the date in this format (day/month/year) -> eg: 24/10/2022");
                 String date = br.readLine();
-                cinemaController.displayShowtimeByDate(date);
-//                System.out.println("Choose one of the showtime available:");
-//                choice = Integer.parseInt(br.readLine());
-//                showtimeSelected = cinemaController.getShowtimeByDate(choice, date);
-//                displayShowtime(showtimeSelected);
+                mov = movieController.getMovieByStatusAndIndex(movieStatus,movieChoice);
+                cinemaController.displayShowtimeByDate(date, mov.getTitle());
+                System.out.println("Choose one of the showtime available:");
+                choice = Integer.parseInt(br.readLine());
+                showtimeSelected = cinemaController.getShowtimeByDate(choice, date, mov.getTitle());
+                if(showtimeSelected != null)
+                {
+                    showtimeSelected.getSeatLayout().printSeatLayout();
+                    printUserBookingsMenu();
+                    choice = Integer.parseInt(br.readLine());
+                    if(choice == 2)
+                        break;
+                    System.out.println("Select number of seats to book:");
+                    int seatNumBookings = Integer.parseInt(br.readLine());
+                    ArrayList<Seats> seats = new ArrayList<>();
+                    for(int i=0; i<seatNumBookings; i++){
+                        seats.add(handleSeatBookings(showtimeSelected));
+                    }
+                    purchaseTicket(seatNumBookings, seats, showtimeSelected);
+                }
                 break;
             case 3:
                 //display all showtime
@@ -405,6 +450,7 @@ public class MOBLIMA {
                 System.out.println("Please enter your email:");
                 String userEmail = sc.nextLine();
                 Booking booking = new Booking(tickets, userName, userEmail); //add this to database
+                bookingController.addBooking(booking);
                 totalPrice = Math.round(totalPrice * 100.00)/100.00;
                 printOrder(tickets, totalPrice);
                 break;

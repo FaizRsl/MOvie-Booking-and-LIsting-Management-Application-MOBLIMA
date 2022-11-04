@@ -31,6 +31,44 @@ public class CinemaView {
 //        }
 //    }
 
+    public Showtime getShowtimeByCineplex(Cineplex cineplex, int showtimeChoice, String movieName){
+        int count = 0;
+        for(int i=0; i<cineplex.getCinemas().size(); i++){
+            for(int j=0; j<cineplex.getCinemas().get(i).getShowtimes().size(); j++){
+                if(cineplex.getCinemas().get(i).getShowtimes().get(j).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())) {
+                    count++;
+                    if(count == showtimeChoice)
+                        return cineplex.getCinemas().get(i).getShowtimes().get(j);
+                }
+            }
+        }
+        if(count == 0){
+            System.out.println("Sorry, there is no showtime on this date!");
+        }
+        return null;
+    }
+
+    public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice, String date, String movieName){
+        int count = 0;
+        for(int i=0; i<cineplexes.size(); i++){
+            for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
+                for(int k=0; k<cineplexes.get(i).getCinemas().get(j).getShowtimes().size(); k++){
+                    String showtimeDate = cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    if(showtimeDate.equals(date)){
+                        if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())) {
+                            count++;
+                            if (count == showtimeChoice)
+                                return cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k);
+                        }
+                    }
+                }
+            }
+        }
+        if(count == 0){
+            System.out.println("Sorry, there is no showtime on this date!");
+        }
+        return null;
+    }
     public Showtime getAllCineplexShowtimes(List<Cineplex> cineplexes, String movieName, int showtimeChoice){
         int count = 0;
         for(int i=0; i<cineplexes.size(); i++){
@@ -94,16 +132,18 @@ public class CinemaView {
         }
     }
 
-    public void displayShowtimeByDate(List<Cineplex> cineplexes, String date){
+    public void displayShowtimeByDate(List<Cineplex> cineplexes, String date, String movieName){
         int count = 0;
         for(int i=0; i<cineplexes.size(); i++){
             for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
                 for(int k=0; k<cineplexes.get(i).getCinemas().get(j).getShowtimes().size(); k++){
                     String showtimeDate = cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                     if(showtimeDate.equals(date)){
-                        count++;
-                        System.out.print(count + ") ");
-                        System.out.println(displayShowtime(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k)));
+                        if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())){
+                            count++;
+                            System.out.print(count + ") ");
+                            System.out.println(displayShowtime(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k)));
+                        }
                     }
                 }
             }

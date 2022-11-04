@@ -65,6 +65,7 @@ public class Booking implements Serializable {
         sb.append(String.format("Transaction ID: %s \n",this.id));
         sb.append(String.format("Buyer Name: %s \n",this.buyerName));
         sb.append(String.format("Email Address: %s \n",this.buyerEmail));
+        sb.append("\n");
         sb.append("Tickets:");
         sb.append("=============================================== \n");
         tickets.forEach(ticket ->
