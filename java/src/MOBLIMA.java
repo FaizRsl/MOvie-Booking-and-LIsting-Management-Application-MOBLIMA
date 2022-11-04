@@ -1,4 +1,8 @@
 import Controller.*;
+import Controller.AdminController;
+import Controller.CinemaController;
+import Controller.MovieController;
+import Controller.PriceController;
 import Model.Booking.Booking;
 import Model.Cinema.CinemaClass;
 import Model.Cinema.Showtime;
@@ -13,6 +17,7 @@ import Model.Ticket.Ticket;
 import Model.User.Admin;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.format.DateTimeFormatter;
@@ -24,11 +29,9 @@ public class MOBLIMA {
 
     private static MovieController movieController = new MovieController();
     private static AdminController adminController = new AdminController();
-
-    private static CinemaController cinemaController = new CinemaController();
-
     private static BookingController bookingController = new BookingController();
-
+    private static CinemaController cinemaController = new CinemaController();
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         boolean loop = true;
@@ -68,6 +71,7 @@ public class MOBLIMA {
     private static boolean adminMenu(BufferedReader br) throws IOException {
         boolean loop = true;
         boolean loggedin = false;
+        System.out.println(new File("").getAbsolutePath());
         while(!loggedin){
             System.out.println("Please enter your username and password");
             System.out.println("---------------------------------------");
@@ -102,10 +106,13 @@ public class MOBLIMA {
                     break;
                 // Cinema Showtimes
                 case 4: // create showtime
+                    cinemaController.addNewShowtime();
                     break;
                 case 5: // update showtime
+                    cinemaController.updateShowtime();
                     break;
                 case 6: // remove showtime
+                    cinemaController.removeShowtime();
                     break;
                 case 7: //Configure System Settings
                     break;
@@ -212,6 +219,9 @@ public class MOBLIMA {
                 break;
             case 6:
                 movieController.displayAllMovie();
+//                System.out.println("Please enter the index of movie that you want to know more:");
+//                index = Integer.parseInt(br.readLine());
+//                movieController.showDetails(index);
                 break;
             case 7:
                 movieController.getTopFiveMovieRating();
