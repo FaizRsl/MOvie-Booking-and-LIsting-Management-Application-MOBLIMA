@@ -2,9 +2,10 @@ package Model.Pricing;
 
 import Controller.DatabaseController;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PriceConfig {
+public class PriceConfig implements Serializable {
 
     private double ticketBasePrice = 10;
 
@@ -35,7 +36,6 @@ public class PriceConfig {
     private static PriceConfig instance = null;
 
     public PriceConfig(){
-
     }
 
     public static PriceConfig getInstance(){

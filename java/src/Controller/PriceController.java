@@ -34,7 +34,7 @@ public class PriceController {
         PublicHoliday ph;
         for(int i=0; i< PriceConfig.getInstance().getPublicHolidays().size(); i++){
             ph = PriceConfig.getInstance().getPublicHolidays().get(i);
-            if(ph.getDate().isEqual(date)){
+            if(ph.getDate().equals(date)){
                 return price + PriceConfig.getInstance().getPublicHolidayIncrease();
             }
         }

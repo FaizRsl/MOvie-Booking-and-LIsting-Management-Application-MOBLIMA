@@ -86,11 +86,13 @@ public abstract class Ticket implements Serializable {
 
     @Override
     public String toString(){
-        String returnString = "";
-        returnString += "Seat ID: "+this.getSeats().toString() + "\n";
-        returnString += "Price: $" + String.format("%.2f",this.getPrice()) + "\n";
-        returnString += "Showtime: \n       " + this.getShowtime().toString();
-        return  returnString;
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Seat ID: %s\n",this.seats.toString()));
+        sb.append(String.format("Price: $%.2f \n",this.price));
+        sb.append("Showtime: \n");
+        sb.append("=============================================== \n");
+        sb.append(this.showtime.toString());
+        return sb.toString();
     }
 
 }

@@ -58,27 +58,21 @@ public class Booking implements Serializable {
 
     @Override
     public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("---------------------------------------------\n");
+        sb.append("                      Order                  \n");
+        sb.append("---------------------------------------------\n");
+        sb.append(String.format("Transaction ID: %s \n",this.id));
+        sb.append(String.format("Buyer Name: %s \n",this.buyerName));
+        sb.append(String.format("Email Address: %s \n",this.buyerEmail));
+        sb.append("Tickets:");
+        sb.append("=============================================== \n");
+        tickets.forEach(ticket ->
+                sb.append(ticket.toString()).append("\n"));
 
-        String returnString = "";
+        sb.append(String.format("Total Price: %.2f (inclusive of GST) \n",this.price));
+        sb.append("---------------------------------------------\n");
 
-        returnString += "---------------------------------------------\n";
-        returnString += "                      Order                  \n";
-        returnString += "---------------------------------------------\n";
-
-        returnString += "Transaction ID: " + this.id + "\n";
-        returnString += "Buyer Name: " + this.buyerName + "\n";
-        returnString += "Email Address: " + this.buyerEmail + "\n\n";
-
-        returnString += "Tickets: \n\n";
-
-        for (Ticket ticket : this.tickets){
-            returnString += ticket.toString() + "\n";
-        }
-
-        returnString += String.format("Total Price: $%.2f",this.getPrice()) + " (inclusive of GST)";
-
-        returnString += "\n---------------------------------------------\n";
-
-        return returnString;
+        return sb.toString();
     }
 }

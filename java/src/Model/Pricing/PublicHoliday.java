@@ -1,8 +1,9 @@
 package Model.Pricing;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class PublicHoliday {
+public class PublicHoliday implements Serializable {
 
     private String name;
 

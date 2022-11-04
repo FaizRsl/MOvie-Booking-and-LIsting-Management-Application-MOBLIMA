@@ -41,4 +41,13 @@ public class Cinema implements Serializable {
     public SeatLayout getSeatLayout() {
         return seatLayout;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Cineplex Name: %s \n", this.cineplexName));
+        sb.append(String.format("Cinema Class: %s \n", this.cinemaClass.toString()));
+        sb.append(String.format("Cineplex Room: %d \n", this.cinemaRoom));
+        return sb.toString();
+    }
 }
