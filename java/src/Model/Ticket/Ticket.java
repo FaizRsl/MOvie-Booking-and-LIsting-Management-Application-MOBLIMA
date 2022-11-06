@@ -22,7 +22,7 @@ public abstract class Ticket implements Serializable {
         this.id = UUID.randomUUID();
         this.seats = seats;
         this.showtime = showtime;
-        this.price = this.calculateTicketPrice();
+        this.price = 0;
 
     }
     public abstract double getDiscount();

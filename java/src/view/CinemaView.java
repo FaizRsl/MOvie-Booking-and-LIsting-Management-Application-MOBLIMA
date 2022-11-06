@@ -6,11 +6,13 @@ import Model.Cinema.Cineplex;
 import Model.Cinema.Showtime;
 import Model.Movie.MovieType;
 
-import java.time.LocalDate;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CinemaView {
@@ -21,162 +23,105 @@ public class CinemaView {
         }
     }
 
-//    public void displayCineplexDetails(Cineplex cineplex){
-//        for(int i=0;i<cineplex.getCinemas().size(); i++){
-//            System.out.print(cineplex.getCinemas().get(i).getCinemaRoom() + ") ");
-//            System.out.println(cineplex.getCinemas().get(i).getCinemaClass());
-//            //cineplex.getCinemas().get(i).getSeatLayout().printSeatLayout();
-//            for(int j=0; j<cineplex.getCinemas().get(i).getShowtimes().size(); j++){
-//                System.out.println(displayShowtime(cineplex.getCinemas().get(i).getShowtimes().get(j)));
-//            }
-//
-//        }
-//    }
-public Showtime getShowtimeByCineplex(Cineplex cineplex, int showtimeChoice, String movieName){
-    int count = 0;
-    for(int i=0; i<cineplex.getCinemas().size(); i++){
-        for(int j=0; j<cineplex.getCinemas().get(i).getShowtimes().size(); j++){
-            if(cineplex.getCinemas().get(i).getShowtimes().get(j).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())) {
-                count++;
-                if(count == showtimeChoice)
-                    return cineplex.getCinemas().get(i).getShowtimes().get(j);
-            }
-        }
-    }
-    if(count == 0){
-        System.out.println("Sorry, there is no showtime on this date!");
-    }
-    return null;
-}
-
-public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice, String date, String movieName){
-    int count = 0;
-    for(int i=0; i<cineplexes.size(); i++){
-        for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
-            for(int k=0; k<cineplexes.get(i).getCinemas().get(j).getShowtimes().size(); k++){
-                String showtimeDate = cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                if(showtimeDate.equals(date)){
-                    if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())) {
+    public Showtime getShowtime(List<Cineplex> cineplexes, int showtimeChoice, String movieName) {
+        int count = 0;
+        for (Cineplex cineplex : cineplexes) {
+            for (Cinema cinema : cineplex.getCinemas()) {
+                for (Showtime cinemaShowtime : cinema.getShowtimes()) {
+                    if (cinemaShowtime.getDateTime().isAfter(LocalDateTime.now()) && cinemaShowtime.getMovie().getTitle().equalsIgnoreCase(movieName)) {
                         count++;
                         if (count == showtimeChoice)
-                            return cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k);
+                            return cinemaShowtime;
                     }
                 }
             }
         }
-    }
-    if(count == 0){
-        System.out.println("Sorry, there is no showtime on this date!");
-    }
-    return null;
-}
-
-    public Showtime getAllCineplexShowtimes(List<Cineplex> cineplexes, String movieName, int showtimeChoice){
-        int count = 0;
-        for(int i=0; i<cineplexes.size(); i++){
-            for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
-                for(int k=0; k<cineplexes.get(i).getCinemas().get(j).getShowtimes().size(); k++){
-                    LocalDateTime currentDate = LocalDateTime.now();
-                    if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getDateTime().isAfter(currentDate)){
-                        if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())){
-                            count++;
-                            if(count == showtimeChoice){
-                                return cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if(count == 0){
+        if (count == 0)
             System.out.println("Sorry, there is no showtime on this date!");
-        }
         return null;
     }
-    public void displayAllCineplexShowtimes(List<Cineplex> cineplexes, String movieName){
+    public Showtime getShowtime(List<Cineplex> cineplexes, int showtimeChoice, String movieName, String date) {
         int count = 0;
-        for(int i=0; i<cineplexes.size(); i++){
-            for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
-                for(int k=0; k<cineplexes.get(i).getCinemas().get(j).getShowtimes().size(); k++){
-                    LocalDateTime currentDate = LocalDateTime.now();
-                    if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getDateTime().isAfter(currentDate)){
-                        if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())){
-                            count++;
-                            System.out.print(count + ") ");
-                            System.out.println(displayShowtime(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k)));
-                        }
+        for (Cineplex cineplex : cineplexes) {
+            for (Cinema cinema : cineplex.getCinemas()) {
+                for (Showtime cinemaShowtime : cinema.getShowtimes()) {
+                    String cinemaDate = cinemaShowtime.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    if (cinemaDate.equalsIgnoreCase(date) && cinemaShowtime.getMovie().getTitle().equalsIgnoreCase(movieName)) {
+                        count++;
+                        if (count == showtimeChoice)
+                            return cinemaShowtime;
                     }
                 }
             }
         }
-        if(count == 0){
+        if (count == 0)
             System.out.println("Sorry, there is no showtime on this date!");
+        return null;
+    }
+
+    public Showtime getShowtimeByCineplex(Cineplex cineplex, int showtimeChoice, String movieName){
+        return getShowtime(Collections.singletonList(cineplex),showtimeChoice,movieName);
+    }
+
+    public void displayShowtimes(List<Cineplex> cineplexes, String movieName) {
+        int count = 0;
+        for (Cineplex cineplex : cineplexes) {
+            for (Cinema cinema : cineplex.getCinemas()) {
+                for (Showtime cinemaShowtime : cinema.getShowtimes()) {
+                    if (cinemaShowtime.getDateTime().isAfter(LocalDateTime.now()) && cinemaShowtime.getMovie().getTitle().equalsIgnoreCase(movieName)) {
+                        count++;
+                        System.out.printf("%d ) \n", count);
+                        displayShowtime(cinemaShowtime);
+                    }
+                }
+            }
         }
+        if (count == 0)
+            System.out.println("Sorry, there is no showtime on this date");
+    }
+    public void displayShowtimes(List<Cineplex> cineplexes, String movieName, String date) {
+        int count = 0;
+        for (Cineplex cineplex : cineplexes) {
+            for (Cinema cinema : cineplex.getCinemas()) {
+                for (Showtime cinemaShowtime : cinema.getShowtimes()) {
+                    String cinemaDate = cinemaShowtime.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    if (cinemaDate.equalsIgnoreCase(date) && cinemaShowtime.getMovie().getTitle().equalsIgnoreCase(movieName)) {
+                        count++;
+                        System.out.printf("%d ) \n", count);
+                        displayShowtime(cinemaShowtime);
+                    }
+                }
+            }
+        }
+        if (count == 0)
+            System.out.println("Sorry, there is no showtime on this date");
     }
 
     public void displayShowtimeByCinema(Cineplex cineplex, String movieName){
-        int count = 0;
-        for(int j=0; j<cineplex.getCinemas().size(); j++){
-            for(int k=0; k<cineplex.getCinemas().get(j).getShowtimes().size(); k++){
-                LocalDateTime currentDate = LocalDateTime.now();
-                if(cineplex.getCinemas().get(j).getShowtimes().get(k).getDateTime().isAfter(currentDate)){
-                    if(cineplex.getCinemas().get(j).getShowtimes().get(k).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())){
-                        count++;
-                        System.out.print(count + ") ");
-                        System.out.println(displayShowtime(cineplex.getCinemas().get(j).getShowtimes().get(k)));
-                    }
-
-                }
-            }
-        }
-        if(count == 0){
-            System.out.println("Sorry, there is no showtime on this date!");
-        }
+        displayShowtimes(Collections.singletonList(cineplex),movieName);
     }
 
-    public void displayShowtimeByDate(List<Cineplex> cineplexes, String date, String movieName){
-        int count = 0;
-        for(int i=0; i<cineplexes.size(); i++){
-            for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
-                for(int k=0; k<cineplexes.get(i).getCinemas().get(j).getShowtimes().size(); k++){
-                    String showtimeDate = cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    if(showtimeDate.equals(date)){
-                        if(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k).getMovie().getTitle().toLowerCase().equals(movieName.toLowerCase())){
-                            count++;
-                            System.out.print(count + ") ");
-                            System.out.println(displayShowtime(cineplexes.get(i).getCinemas().get(j).getShowtimes().get(k)));
-                        }
-                    }
-                }
-            }
-        }
-        if(count == 0){
-            System.out.println("Sorry, there is no showtime on this date!");
-        }
-    }
-
-    public String displayShowtime(Showtime showtime){
-        String returnString = "";
-        returnString += showtime.getCinema().getCineplex() + " Cineplex";
-
+    public void displayShowtime(Showtime showtime){
+        StringBuilder sb = new StringBuilder();
+        sb.append(showtime.getCinema().getCineplex()).append("Cineplex");
         if (showtime.getCinema().getCinemaClass() != CinemaClass.NORMAL){
-            returnString += " [ " + showtime.getCinema().getCinemaClass().name() + " ]";
+            sb.append(String.format(" [ %s ] \n",showtime.getCinema().getCinemaClass().name()));
         }
 
-        returnString += "\n       ";
-        returnString += "Cinema Code: " + showtime.getCinema().getCinemaRoom();
-        returnString += "\n       ";
-        returnString += "Movie Name: " + showtime.getMovie().getTitle();
-        returnString += "\n       ";
+        sb.append("\n       ");
+        sb.append(String.format("Cinema Code: %d",showtime.getCinema().getCinemaRoom()));
+        sb.append("\n       ");
+        sb.append(String.format("Movie Name: %s",showtime.getMovie().getTitle()));
+        sb.append("\n       ");
 
         if (showtime.getMovieType() != MovieType.NORMAL){
-            returnString += "Movie Type: " + showtime.getMovieType()  + " ";
-            returnString += "\n       ";
+            sb.append(String.format("Movie Type: %s ",showtime.getMovieType()));
+            sb.append("\n       ");
         }
 
 
-        returnString += showtime.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm - EEEE ")) + "\n  ";
-        return returnString;
+        sb.append(String.format("%s \n",showtime.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm - EEEE "))));
+        System.out.println(sb);
     }
 
     public void displayCinemaShowtime(ArrayList<Showtime> showtimeList){
@@ -184,12 +129,12 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
         Showtime showtime;
         for(int j = 0; j < showtimeList.size(); j++){
             showtime = showtimeList.get(j);
-            System.out.println((j+1) + ") Showtime Details: ");
+            System.out.printf("%d ) Showtime Details: \n",j+1);
             System.out.println("---------------------");
-            System.out.println("Movie Title: " + showtime.getMovie().getTitle() + " (" + showtime.getMovieType() + ")");
-            System.out.println("Date: " + showtime.getDateTime().getDayOfMonth() + " " + showtime.getDateTime().getMonth());
+            System.out.printf("Movie Title: %s ( %s ) \n",showtime.getMovie().getTitle(),showtime.getMovieType());
+            System.out.printf("Date: %d %s",showtime.getDateTime().getDayOfMonth(),showtime.getDateTime().getMonth());
             int hour = showtime.getDateTime().getHour();
-            if(hour > 12 && hour < 24){
+            if(hour > 12 && hour < 23){
                 System.out.println("Time: " + (hour - 12) + ":" + showtime.getDateTime().getMinute() + " PM");
             } else if (hour == 12){
                 System.out.println("Time: " + hour + ":" + showtime.getDateTime().getMinute() + " PM");
@@ -205,13 +150,13 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
     public void displayCinemas(Cineplex cineplex){
         ArrayList<Cinema> cinemaList = cineplex.getCinemas();
         for(int i = 0; i < cinemaList.size(); i++){
-            System.out.println( (i+1) + ") Cinema Hall " + cinemaList.get(i).getCinemaRoom());
+            System.out.printf("%d ) Cinema Hall %d \n",i+1,cinemaList.get(i).getCinemaRoom());
         }
     }
 
     public void displayTimeHours(){
         for(int i = 1; i <= 12; i++){
-            System.out.println(i + ") " + i);
+            System.out.printf("%d ) %s \n",i,LocalTime.of(i,0));
         }
     }
 

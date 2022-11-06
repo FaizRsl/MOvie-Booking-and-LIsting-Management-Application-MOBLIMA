@@ -2,6 +2,7 @@ package Model.Pricing;
 
 import Controller.DatabaseController;
 
+import javax.xml.crypto.Data;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -39,12 +40,13 @@ public class PriceConfig implements Serializable {
     }
 
     public static PriceConfig getInstance(){
+        DatabaseController databaseController = DatabaseController.getInstance();
         if(instance == null){
-            if(DatabaseController.retrievePriceConfig() == null){
+            if(databaseController.retrievePriceConfig() == null){
                 instance = new PriceConfig();
             }
             else{
-                instance = DatabaseController.retrievePriceConfig();
+                instance = databaseController.retrievePriceConfig();
             }
 
         }
@@ -57,8 +59,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setPublicHolidays(ArrayList<PublicHoliday> publicHolidays){
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.publicHolidays = publicHolidays;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getTicketBasePrice() {
@@ -66,8 +69,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setTicketBasePrice(double ticketBasePrice) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.ticketBasePrice = ticketBasePrice;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getTicketPlatinumBasePrice() {
@@ -79,13 +83,15 @@ public class PriceConfig implements Serializable {
     }
 
     public void setIMAXIncrease(double IMAXIncrease) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.IMAXIncrease = IMAXIncrease;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public void setTicketPlatinumBasePrice(double ticketPlatinumBasePrice) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.ticketPlatinumBasePrice = ticketPlatinumBasePrice;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getTicketGoldBasePrice() {
@@ -93,8 +99,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setTicketGoldBasePrice(double ticketGoldBasePrice) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.ticketGoldBasePrice = ticketGoldBasePrice;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getWeekendIncrease() {
@@ -102,8 +109,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setWeekendIncrease(double weekendIncrease) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.weekendIncrease = weekendIncrease;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getPublicHolidayIncrease() {
@@ -111,8 +119,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setPublicHolidayIncrease(double publicHolidayIncrease) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.publicHolidayIncrease = publicHolidayIncrease;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getThreeDMovieIncrease() {
@@ -120,8 +129,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setThreeDMovieIncrease(double threeDMovieIncrease) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.threeDMovieIncrease = threeDMovieIncrease;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getBlockbusterIncrease() {
@@ -129,8 +139,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setBlockbusterIncrease(double blockbusterIncrease) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.blockbusterIncrease = blockbusterIncrease;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getChildDiscount() {
@@ -138,8 +149,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setChildDiscount(double childDiscount) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.childDiscount = childDiscount;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getStudentDiscount() {
@@ -147,8 +159,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setStudentDiscount(double studentDiscount) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.studentDiscount = studentDiscount;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getSeniorDiscount() {
@@ -156,8 +169,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setSeniorDiscount(double seniorDiscount) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.seniorDiscount = seniorDiscount;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
     public double getGstPercentageIncrease() {
@@ -165,8 +179,9 @@ public class PriceConfig implements Serializable {
     }
 
     public void setGstPercentageIncrease(double gstPercentageIncrease) {
+        DatabaseController databaseController = DatabaseController.getInstance();
         this.gstPercentageIncrease = gstPercentageIncrease;
-        DatabaseController.savePriceConfig(this);
+        databaseController.savePriceConfig(this);
     }
 
 }

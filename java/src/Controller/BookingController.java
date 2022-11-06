@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Booking.Booking;
 import Model.Movie.Movie;
+import Model.Ticket.Ticket;
 import view.BookingView;
 
 import java.util.*;
@@ -9,94 +10,59 @@ import java.util.stream.Collectors;
 
 public class BookingController {
 
+    private DatabaseController databaseController = DatabaseController.getInstance();
+
     private List<Booking> bookings;
 
     private BookingView bookingView;
 
     public BookingController() {
         bookingView = new BookingView();
-        bookings = DatabaseController.getBookingFromDB();
+        bookings = databaseController.getBookingFromDB();
     }
 
 
     public void addBooking(Booking booking) {
         bookings.add(booking);
-        DatabaseController.updateBookingDB(bookings);
+        databaseController.updateBookingDB(bookings);
     }
 
     public List<Booking> getBookingByUsername(String username){
-        return bookingView.findBookingByUsername(bookings, username);
+        return findBookingByUsername(username);
     }
 
     public void getTopFiveMovieByTicketSales(){
         MovieController movieController = new MovieController();
         List<Movie> movieList = movieController.getMovies();
-        Map<Movie, Double> moviePriceHM = new HashMap<>(movieList.size());
-
+        Map<String, Double> moviePriceHM = new HashMap<>(movieList.size());
         double totalSales = 0.0;
-
-        for(int i=0; i<movieList.size(); i++){
-            moviePriceHM.put(movieList.get(i), 0.0);
+        for (Movie movie : movieList) {
+            moviePriceHM.put(movie.getTitle(),totalSales);
         }
-        for(int i=0; i<movieList.size(); i++){
-            Movie movie = movieList.get(i);
-            for(int j=0; j<bookings.size(); j++){
-                if(bookings.get(j).getTickets().get(0).getShowtime().getMovie().getTitle().toLowerCase().equals(movie.getTitle().toLowerCase()))
-                    totalSales += bookings.get(j).getPrice();
+        for (Booking booking : bookings) {
+            for (Ticket ticket : booking.getTickets()) {
+                totalSales += ticket.getPrice();
+                moviePriceHM.put(ticket.getShowtime().getMovie().getTitle(),moviePriceHM.get(ticket.getShowtime().getMovie().getTitle()) + totalSales);
             }
-            totalSales = Math.round(totalSales*100.00)/100.00;
-            moviePriceHM.put(movie,moviePriceHM.get(movie) + totalSales);
-            totalSales = 0.0;
+            totalSales = 0;
         }
-
-        class MoviePrice{
-            String movieName;
-            double totalPrice;
-            MoviePrice(String movieName, double totalPrice){
-                this.movieName = movieName;
-                this.totalPrice = totalPrice;
-            }
-            public double getTotalPrice() {
-                return totalPrice;
-            }
-            public void setTotalPrice(double totalPrice) {
-                this.totalPrice = totalPrice;
-            }
-        }
-        class priceComparator implements Comparator<MoviePrice>{
-            public int compare(MoviePrice s1, MoviePrice s2) {
-                if (s1.getTotalPrice() < s2.getTotalPrice())
-                    return 1;
-                else if (s1.getTotalPrice() > s2.getTotalPrice())
-                    return -1;
-                return 0;
-            }
-        }
-
-        Queue<MoviePrice> pq = new PriorityQueue<>(movieList.size(), new priceComparator());
-
-        for(int i = 0; i< moviePriceHM.size(); i++){
-            MoviePrice moviePrice = new MoviePrice(movieList.get(i).getTitle(), moviePriceHM.get(movieList.get(i)));
-            pq.add(moviePrice);
-        }
-
-        for(int i=0; i< 5; i++){
-            MoviePrice mp = pq.poll();
-            System.out.print(mp.movieName + ": ");
-            System.out.println(mp.totalPrice);
-        }
-
-
+        SortedMap<String, Double> moviePrice = moviePriceHM.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1, TreeMap::new));
+        List<String> movies = new ArrayList<>(moviePrice.keySet()).subList(0,4);
+        List<Double> salesPriceList = new ArrayList<>(moviePrice.values()).subList(0,4);
+        bookingView.displayTopFiveMovies(movies,salesPriceList);
     }
 
-    public void removeBooking(Booking booking) {
-        bookings.remove(booking);
-        DatabaseController.updateBookingDB(bookings);
-    }
-
-    public void updateBooking(Booking booking) {
-        bookings = bookings.stream().filter(bookingItem -> !bookingItem.getId().equals(booking.getId())).collect(Collectors.toList());
-        bookings.add(booking);
-        DatabaseController.updateBookingDB(bookings);
+    private List<Booking> findBookingByUsername(String username) {
+        List<Booking> bookingList = new ArrayList<>();
+        for(int i=(bookings.size()-1); i>=0; i--){
+            if(bookings.get(i).getBuyerName().equalsIgnoreCase(username))
+                bookingList.add(bookings.get(i));
+        }
+        return bookingList;
     }
 }

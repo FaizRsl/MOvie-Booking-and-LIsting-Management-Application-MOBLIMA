@@ -12,32 +12,39 @@ import java.util.List;
 
 public class DatabaseController {
 
-    public static List<Booking> getBookingFromDB() { return (List)deserializeDataFromDAT("resources/BookingDB.dat"); }
+    private static DatabaseController instance = null;
 
-    public static void updateBookingDB(List<Booking> bookings) { serializingDataFromObject(bookings,"resources/BookingDB.dat"); }
+    public static DatabaseController getInstance(){
+        if(instance == null)
+                instance = new DatabaseController();
+        return instance;
+    }
+    public List<Booking> getBookingFromDB() { return (List)deserializeDataFromDAT("resources/BookingDB.dat"); }
 
-    public static List<Cineplex> getCineplexFromDB() {return (List)deserializeDataFromDAT("resources/CineplexDB.dat"); }
-    public static void updateCineplexDB(List<Cineplex> cineplexes) { serializingDataFromObject(cineplexes,"resources/CineplexDB.dat");}
-    public static List<Movie> getMovieFromDB() {
+    public void updateBookingDB(List<Booking> bookings) { serializingDataFromObject(bookings,"resources/BookingDB.dat"); }
+
+    public List<Cineplex> getCineplexFromDB() {return (List)deserializeDataFromDAT("resources/CineplexDB.dat"); }
+    public void updateCineplexDB(List<Cineplex> cineplexes) { serializingDataFromObject(cineplexes,"resources/CineplexDB.dat");}
+    public  List<Movie> getMovieFromDB() {
         return (List<Movie>)deserializeDataFromDAT("resources/MovieDB.dat");
     }
-    public static void updateMovieDB(List<Movie> movies) {
+    public void updateMovieDB(List<Movie> movies) {
         serializingDataFromObject(movies,"resources/MovieDB.dat");
     }
 
-    public static List<Admin> getAdminFromDB() {
+    public List<Admin> getAdminFromDB() {
         return (List<Admin>) deserializeDataFromDAT("resources/AdminDB.dat");
     }
 
-    public static void updateAdminFromDB(List<Admin> users) { serializingDataFromObject(users,"resources/AdminDB.dat"); }
+    public void updateAdminFromDB(List<Admin> users) { serializingDataFromObject(users,"resources/AdminDB.dat"); }
 
-    public static void savePriceConfig(PriceConfig priceConfig) { serializingDataFromObject(priceConfig,"resources/PriceConfig.dat");}
+    public void savePriceConfig(PriceConfig priceConfig) { serializingDataFromObject(priceConfig,"resources/PriceConfig.dat");}
 
-    public static PriceConfig retrievePriceConfig() {
+    public PriceConfig retrievePriceConfig() {
         return (PriceConfig) deserializeDataFromDAT("resources/PriceConfig.dat");
     }
 
-    private static void serializingDataFromObject(Object obj, String filepath) {
+    private void serializingDataFromObject(Object obj, String filepath) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(filepath);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -53,7 +60,7 @@ public class DatabaseController {
         }
     }
 
-    private static Object deserializeDataFromDAT(String filepath) {
+    private Object deserializeDataFromDAT(String filepath) {
         Object obj = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(filepath);

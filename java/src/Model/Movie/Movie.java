@@ -81,6 +81,7 @@ public class Movie implements Serializable{
         sb.append("=============================================== \n");
         sb.append(String.format("Director: %s \n",this.director));
         sb.append(String.format("Cast: %s \n",this.casts.toString().substring(1,this.casts.toString().length()-1)));
+        sb.append(String.format("Rating: %.1f \n",this.rating));
         sb.append(String.format("Age Rating: %s \n",this.movieDetails.getMovieCensorship()));
         sb.append(String.format("Genre: %s \n",this.movieDetails.getGenre()));
         sb.append(String.format("Synopsis: %s \n",this.synopsis));

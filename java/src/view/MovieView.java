@@ -1,43 +1,36 @@
 package view;
 
-import Model.Movie.Movie;
+import Model.Movie.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class MovieView {
-    public void findMovieByTitle(Movie movie) {
-        String text = movie == null ? "Movie does not exist, try again!" : "Movie exists, book your ticket now!";
-        System.out.println(text);
-    }
 
     public void displayMovies(List<Movie> movieList) {
         System.out.println("Movie Title(s)");
         System.out.println("========================");
         for (int i = 0;i < movieList.size();i++) {
-            System.out.println((i+1) + ")" + movieList.get(i).getTitle() + " (" + movieList.get(i).getMovieDetails().getMovieStatus() + ")");
+            System.out.printf("%d) %s ( %s ) \n",i+1,movieList.get(i).getTitle(),movieList.get(i).getMovieDetails().getMovieStatus().getMovieStatusName());
         }
     }
 
     public void displayMovieDetails(int index,Movie movie) {
-        System.out.printf("%d Movie Title: %s \n",index,movie.getTitle());
-        System.out.println("===============================================");
-        System.out.printf("Director: %s \n",movie.getDirector());
-        System.out.print("Cast:");
-        movie.getCasts().forEach(cast -> System.out.printf("%s,",cast));
-        System.out.println();
-        System.out.printf("Age Rating: %s \n",movie.getMovieDetails().getMovieCensorship());
-        System.out.printf("Synopsis: %s \n",movie.getSynopsis());
-        System.out.printf("Movie Status %s \n",movie.getMovieDetails().getMovieStatus());
+        System.out.printf("%d) \n %s",index,movie.toString());
     }
 
-    public void displayReviewsByMovies(int index, Movie movie){
+    public void displayReviewsByMovies(Movie movie){
         System.out.printf("Movie Title: %s \n",movie.getTitle());
         if(movie.getReviews().size() == 0){
             System.out.println("No reviews for this current movie.");
             return;
         }
-        for(int i=0; i<movie.getReviews().size(); i++){
+        for(int i=0; i< movie.getReviews().size(); i++){
             System.out.println("Review " + (i+1) + ":");
             System.out.println("Reviewer Name: " + movie.getReviews().get(i).getReviewerName());
             System.out.println("Rating: " + movie.getReviews().get(i).getRating());
@@ -84,5 +77,248 @@ public class MovieView {
         System.out.println("2) Preview");
         System.out.println("3) Now Showing");
         System.out.println("4) Ending");
+    }
+
+    public void displayMovieWithReviews(List<Movie> movies) {
+        movies.forEach(movie -> {
+            System.out.printf("%s: %.1f",movie.getTitle(),movie.getRating());
+        });
+    }
+
+    public Movie displayUpdateMovie(BufferedReader br, List<Movie> movies) throws IOException {
+        System.out.println("Which movie to update?");
+        displayMovies(movies);
+        int update = Integer.parseInt(br.readLine());
+
+        Movie movie = movies.get(update-1);
+        boolean loop = true;
+        int choice;
+        while(loop){
+            displayMovieDetails(update, movie );
+            displayUpdateOptions();
+            choice = Integer.parseInt(br.readLine());
+            switch(choice){
+                case 1:
+                    System.out.println("Input new movie title: ");
+                    movie.setTitle(br.readLine());
+                    break;
+                case 2:
+                    System.out.println("Input new director(s): ");
+                    movie.setDirector(br.readLine());
+                    break;
+                case 3:
+                    boolean castLoop = true;
+                    while(castLoop){
+                        displayUpdateCastOptions();
+                        int castChoice = Integer.parseInt(br.readLine());
+                        ArrayList<String> castList = movie.getCasts();
+                        switch(castChoice){
+                            case 1:
+                                System.out.println("Cast Name: ");
+                                castList.add(br.readLine());
+                                break;
+                            case 2:
+                                System.out.println("Select which cast member to remove: ");
+                                for(int i = 0; i < castList.size(); i++){
+                                    System.out.println(i+1 + ") " + castList.get(i));
+                                }
+                                castList.remove(Integer.parseInt(br.readLine())-1);
+                                break;
+                            case 3:
+                                System.out.println("Select which cast member to update: ");
+                                for(int i = 0; i < castList.size(); i++){
+                                    System.out.println(i+1 + ") " + castList.get(i));
+                                }
+                                int castIndex = Integer.parseInt(br.readLine())-1;
+                                System.out.println("New Cast Name: ");
+                                castList.set(castIndex, br.readLine());
+                                break;
+                            case 4:
+                                castLoop = false;
+                                break;
+                        }
+                    }
+                    break;
+                case 4:
+                    displayUpdateAgeRatingOptions();
+                    int censorChoice = Integer.parseInt(br.readLine());
+                    movie.getMovieDetails().setMovieCensorship(setCensorship(censorChoice));
+                    break;
+                case 5:
+                    System.out.println("Input new synopsis: ");
+                    movie.setSynopsis(br.readLine());
+                    break;
+                case 6:
+                    displayUpdateMovieStatusOptions();
+                    int statusChoice = Integer.parseInt(br.readLine());
+                    movie.getMovieDetails().setMovieStatus(setMovieStatus(statusChoice));
+                    break;
+
+            }
+            System.out.println("Continue Changes?");
+            System.out.println("1) Yes");
+            System.out.println("2) No");
+            if(Integer.parseInt(br.readLine()) != 1){
+                loop = false;
+            }
+        }
+        return movie;
+    }
+
+    public Movie displayCreateMovie(BufferedReader br) throws IOException{
+
+        ArrayList<Review> reviews = new ArrayList<Review>();
+        ArrayList<String> casts = new ArrayList<String>();
+        MovieDetails movieDetails;
+        MovieStatus movieStatus = null;
+        MovieCensorship movieCensorship = null;
+        Genre genre = null;
+
+        System.out.println("Movie Title: ");
+        String title = br.readLine();
+        System.out.println("Director: ");
+        String director = br.readLine();
+        System.out.println("Synopsis: ");
+        String synopsis = br.readLine();
+
+        System.out.println("Cast Members: (eg: robert, alex, sam) -> use , to add more cast members");
+        String cast = br.readLine();
+        List<String> tempList = Arrays.asList(cast.split(","));
+        for (int i = 0; i < tempList.size(); i++){
+            casts.add(i,tempList.get(i).trim());
+        }
+        System.out.println("Rating: ");
+        double rating = Double.parseDouble(br.readLine());
+
+        System.out.println("Movie Status: ");
+        System.out.println("1) Coming Soon");
+        System.out.println("2) Preview");
+        System.out.println("3) Now Showing");
+        System.out.println("4) Ended");
+        int choice;
+        movieStatus = (MovieStatus) infiniteLoop(4,br);
+
+        System.out.println("Movie Censorship: ");
+        System.out.println("1) G");
+        System.out.println("2) PG");
+        System.out.println("3) PG13");
+        System.out.println("4) NC16");
+        System.out.println("5) M18");
+        System.out.println("6) R21");
+
+        movieCensorship = (MovieCensorship) infiniteLoop(6,br);
+        System.out.println("Genre: ");
+        System.out.println("1) Action");
+        System.out.println("2) Romance");
+        System.out.println("3) Horror");
+        System.out.println("4) Adventure");
+        System.out.println("5) Mystery");
+        genre = (Genre) infiniteLoop(5,br);
+
+        movieDetails = new MovieDetails(movieStatus,movieCensorship,genre);
+
+        Movie mov = new Movie(title, movieDetails);
+        mov.setRating(rating);
+        mov.setDirector(director);
+        mov.setSynopsis(synopsis);
+        mov.setReviews(reviews);
+        mov.setCasts(casts);
+        return mov;
+    }
+
+    private Object infiniteLoop(int index, BufferedReader br) throws IOException {
+        boolean loop = true;
+        int choice = 0;
+        Object obj = null;
+        while (loop) {
+                choice = Integer.parseInt(br.readLine());
+                if (choice < index) {
+                    System.out.println("Please enter a valid number!");
+                    continue;
+                }
+            switch (index) {
+                case 4:
+                    obj = setMovieStatus(choice);
+                    break;
+                case 5:
+                    obj = setGenre(choice);
+                    break;
+                case 6:
+                    obj = setCensorship(choice);
+                    break;
+                default:
+                    break;
+            }
+            loop = false;
+        }
+        return obj;
+    }
+    private MovieStatus setMovieStatus(int choice) {
+        MovieStatus movieStatus = null;
+        switch(choice){
+            case 1:
+                movieStatus = MovieStatus.COMINGSOON;
+                break;
+            case 2:
+                movieStatus = MovieStatus.PREVIEW;
+                break;
+            case 3:
+                movieStatus = MovieStatus.NOWSHOWING;
+                break;
+            case 4:
+                movieStatus = MovieStatus.ENDED;
+                break;
+            default:
+                break;
+        }
+        return movieStatus;
+    }
+    private Genre setGenre(int choice) {
+        Genre genre = null;
+        switch(choice){
+            case 1:
+                genre = Genre.ACTION;
+                break;
+            case 2:
+                genre = Genre.ROMANCE;
+                break;
+            case 3:
+                genre = Genre.HORROR;
+                break;
+            case 4:
+                genre = Genre.ADVENTURE;
+                break;
+            case 5:
+                genre = Genre.MYSTERY;
+                break;
+            default:
+                break;
+        }
+        return genre;
+    }
+    private MovieCensorship setCensorship(int choice) {
+        MovieCensorship movieCensorship = null;
+        switch(choice){
+            case 1:
+                movieCensorship = MovieCensorship.G;
+                break;
+            case 2:
+                movieCensorship = MovieCensorship.PG;
+                break;
+            case 3:
+                movieCensorship = MovieCensorship.PG13;
+                break;
+            case 4:
+                movieCensorship = MovieCensorship.NC16;
+                break;
+            case 5:
+                movieCensorship = MovieCensorship.M18;
+                break;
+            case 6:
+                movieCensorship = MovieCensorship.R21;
+                break;
+            default:
+        }
+        return movieCensorship;
     }
 }

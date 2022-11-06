@@ -1,23 +1,12 @@
 package view;
 
-import Model.Booking.Booking;
-import Model.Movie.Movie;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookingView {
 
-    public List<Booking> findBookingByUsername(List<Booking> bookings, String username) {
-        List<Booking> bookingList = new ArrayList<>();
-        for(int i=(bookings.size()-1); i>=0; i--){
-            if(bookings.get(i).getBuyerName().toLowerCase().equals(username))
-                bookingList.add(bookings.get(i));
+    public void displayTopFiveMovies(List<String> movieTitles, List<Double> salesPriceList) {
+        for (int i = 0; i < movieTitles.size();i++) {
+            System.out.printf("%s: %.1f \n",movieTitles.get(i),Math.round(salesPriceList.get(i) * 100.00) /100.00);
         }
-        return bookingList;
     }
-
-
-
-
 }

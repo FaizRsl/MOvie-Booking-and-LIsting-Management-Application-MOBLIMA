@@ -7,27 +7,24 @@ import java.util.List;
 
 public class AdminController {
 
+    private final DatabaseController databaseController = DatabaseController.getInstance();
+
     public AdminController(){
     }
 
-    public static void addAdmin(Admin admin) {
-        List<Admin> adminList = DatabaseController.getAdminFromDB();
+    public void addAdmin(Admin admin) {
+        List<Admin> adminList = databaseController.getAdminFromDB();
         adminList.add(admin);
-        DatabaseController.updateAdminFromDB(adminList);
+        databaseController.updateAdminFromDB(adminList);
     }
 
-    public static boolean authorizeAdmin(String username, String password){
-        List<Admin> adminList = DatabaseController.getAdminFromDB();
-        System.out.println(new File("").getAbsolutePath());
-        try {
-            for(int i = 0; i < adminList.size(); i++) {
-                Admin user = adminList.get(i);
-                if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                    return true;
-                }
+    public boolean authorizeAdmin(String username, String password){
+        List<Admin> adminList = databaseController.getAdminFromDB();
+        for(int i = 0; i < adminList.size(); i++) {
+            Admin user = adminList.get(i);
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return true;
             }
-        } catch (Exception e) {
-            System.out.println( "Exception >> " + e.getMessage());
         }
         return false;
     }

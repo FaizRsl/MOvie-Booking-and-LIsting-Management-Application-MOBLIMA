@@ -7,6 +7,7 @@ import Model.Booking.Booking;
 import Model.Cinema.CinemaClass;
 import Model.Cinema.Showtime;
 import Model.Movie.Movie;
+import Model.Movie.MovieStatus;
 import Model.Movie.MovieType;
 import Model.Seat.SeatLayout;
 import Model.Seat.Seats;
@@ -71,7 +72,6 @@ public class MOBLIMA {
     private static boolean adminMenu(BufferedReader br) throws IOException {
         boolean loop = true;
         boolean loggedin = false;
-        System.out.println(new File("").getAbsolutePath());
         while(!loggedin){
             System.out.println("Please enter your username and password");
             System.out.println("---------------------------------------");
@@ -88,8 +88,6 @@ public class MOBLIMA {
             }
         }
 
-        //Movie movie = new Movie();
-
         while (loop) {
             printAdminMenu();
             int choice = Integer.parseInt(br.readLine());
@@ -98,21 +96,20 @@ public class MOBLIMA {
                     movieController.createMovie(br);
                     break;
                 case 2: // update movie
-
-                    movieController.updateMovieDetails();
+                    movieController.updateMovieDetailsFromInput(br);
                     break;
                 case 3: //remove movie
-                    movieController.removeMovieByStatus();
+                    movieController.removeMovieByStatus(br);
                     break;
                 // Cinema Showtimes
                 case 4: // create showtime
-                    cinemaController.addNewShowtime();
+                    cinemaController.addNewShowtime(br);
                     break;
                 case 5: // update showtime
-                    cinemaController.updateShowtime();
+                    cinemaController.updateShowtime(br);
                     break;
                 case 6: // remove showtime
-                    cinemaController.removeShowtime();
+                    cinemaController.removeShowtime(br);
                     break;
                 case 7: //Configure System Settings
                     break;
@@ -187,7 +184,6 @@ public class MOBLIMA {
             case 1:
                 System.out.println("Please enter the name of the Movie:");
                 String movieTitle = br.readLine();
-                //movieController.findMovieByTitle(movieTitle);
                 Movie mov = movieController.getMovieByTitle(movieTitle);
                 if(mov == null){
                     System.out.println("Movies doesn't exist in our database");
@@ -197,31 +193,28 @@ public class MOBLIMA {
                 }
                 break;
             case 2:
-                movieController.displayCurrentShowingMovie();
+                movieController.displayAccordingtoMovieStatus(MovieStatus.NOWSHOWING);
                 System.out.println("Please select one of the movies:");
                 choice = Integer.parseInt(br.readLine());
-                loop = movieBookingsMenu(br, choice, "nowshowing");
+                loop = movieBookingsMenu(br, choice, MovieStatus.NOWSHOWING);
                 break;
             case 3:
-                movieController.displayPreviewMovie();
+                movieController.displayAccordingtoMovieStatus(MovieStatus.PREVIEW);
                 System.out.println("Please select one of the movies:");
                 choice = Integer.parseInt(br.readLine());
-                loop = movieBookingsMenu(br, choice, "preview");
+                loop = movieBookingsMenu(br, choice, MovieStatus.PREVIEW);
                 break;
             case 4:
-                movieController.displayComingSoonMovie();
+                movieController.displayAccordingtoMovieStatus(MovieStatus.COMINGSOON);
                 break;
             case 5:
-                movieController.displayEndedMovies();
+                movieController.displayAccordingtoMovieStatus(MovieStatus.ENDED);
                 System.out.println("Please select one of the movies:");
                 choice = Integer.parseInt(br.readLine());
-                loop = endedMovieBookingsMenu(br, choice, "ended");
+                loop = endedMovieBookingsMenu(br, choice, MovieStatus.ENDED);
                 break;
             case 6:
                 movieController.displayAllMovie();
-//                System.out.println("Please enter the index of movie that you want to know more:");
-//                index = Integer.parseInt(br.readLine());
-//                movieController.showDetails(index);
                 break;
             case 7:
                 movieController.getTopFiveMovieRating();
@@ -243,22 +236,18 @@ public class MOBLIMA {
         return true;
     }
 
-    private static boolean movieBookingsMenu(BufferedReader br, int movieChoice, String movieStatus) throws IOException {
+    private static boolean movieBookingsMenu(BufferedReader br, int movieChoice, MovieStatus movieStatus) throws IOException {
         boolean loop = true;
         int index;
         System.out.println();
         System.out.println("Please choose one of the following options");
         System.out.println();
         printListMovieOptionsMenu();
-        String status;
         int choice = Integer.parseInt(br.readLine());
 
         switch (choice){
             case 1:
-                if(movieStatus.toLowerCase().equals("nowshowing"))
-                    movieController.showDetailsCurrentShowing(movieChoice);
-                else if(movieStatus.toLowerCase().equals("preview"))
-                    movieController.showDetailsPreviewShowing(movieChoice);
+                movieController.showDetails(choice,movieStatus);
                 break;
             case 2:
                 loop = showtimeMenu(br, movieChoice, movieStatus);
@@ -282,7 +271,7 @@ public class MOBLIMA {
         return true;
     }
 
-    private static boolean showtimeMenu(BufferedReader br, int movieChoice, String movieStatus) throws IOException {
+    private static boolean showtimeMenu(BufferedReader br, int movieChoice, MovieStatus movieStatus) throws IOException {
         boolean loop = true;
         System.out.println();
         System.out.println("Please choose one of the following options");
@@ -434,37 +423,35 @@ public class MOBLIMA {
                 continue;
             }
 
-            if(totalCount == size) {
-                for(int i = 0; i < adultCount; i++){
-                    Ticket ticket = new AdultTicket(seats.get(count), showtime);
-                    totalPrice += ticket.getPrice();
-                    tickets.add(ticket);
-                    count++;
-                }
-
-                for(int i = 0; i< childrenCount; i++){
-                    Ticket ticket = new ChildrenTicket(seats.get(count), showtime);
-                    totalPrice += ticket.getPrice();
-                    tickets.add(ticket);
-                    count++;
-                }
-
-                for(int i = 0; i< seniorCitizenCount; i++){
-                    Ticket ticket = new SeniorTicket(seats.get(count), showtime);
-                    totalPrice += ticket.getPrice();
-                    tickets.add(ticket);
-                    count++;
-                }
-                System.out.println("Please enter your name:");
-                String userName = sc.nextLine();
-                System.out.println("Please enter your email:");
-                String userEmail = sc.nextLine();
-                Booking booking = new Booking(tickets, userName, userEmail); //add this to database
-                bookingController.addBooking(booking);
-                totalPrice = Math.round(totalPrice * 100.00)/100.00;
-                printOrder(tickets, totalPrice);
-                break;
+            for(int i = 0; i < adultCount; i++){
+                Ticket ticket = new AdultTicket(seats.get(count), showtime);
+                totalPrice += ticket.getPrice();
+                tickets.add(ticket);
+                count++;
             }
+
+            for(int i = 0; i< childrenCount; i++){
+                Ticket ticket = new ChildrenTicket(seats.get(count), showtime);
+                totalPrice += ticket.getPrice();
+                tickets.add(ticket);
+                count++;
+            }
+
+            for(int i = 0; i< seniorCitizenCount; i++){
+                Ticket ticket = new SeniorTicket(seats.get(count), showtime);
+                totalPrice += ticket.getPrice();
+                tickets.add(ticket);
+                count++;
+            }
+            System.out.println("Please enter your name:");
+            String userName = sc.nextLine();
+            System.out.println("Please enter your email:");
+            String userEmail = sc.nextLine();
+            Booking booking = new Booking(tickets, userName, userEmail); //add this to database
+            bookingController.addBooking(booking);
+            totalPrice = Math.round(totalPrice * 100.00)/100.00;
+            printOrder(tickets, totalPrice);
+            break;
         }
 
     }
@@ -487,22 +474,6 @@ public class MOBLIMA {
 
     }
 
-    private static void unbookedSeat(){
-
-    }
-
-//    private static boolean userBookingsMenu(BufferedReader br, int movieChoice, String movieStatus) throws IOException {
-//        System.out.println();
-//        System.out.println("Please choose one of the following options");
-//        System.out.println();
-//        printUserBookingsMenu();
-//        int choice = Integer.parseInt(br.readLine());
-//
-//        switch (choice) {
-//        }
-//        return true;
-//    }
-//
     private static void printUserBookingsMenu(){
         System.out.println("----------------Booking Menu -----------------");
         System.out.println("----------------------------------------------");
@@ -563,7 +534,7 @@ public class MOBLIMA {
     }
 
 
-    private static boolean endedMovieBookingsMenu(BufferedReader br, int movieChoice, String movieStatus) throws IOException {
+    private static boolean endedMovieBookingsMenu(BufferedReader br, int movieChoice, MovieStatus movieStatus) throws IOException {
         boolean loop = true;
         int index;
         System.out.println();
@@ -575,7 +546,7 @@ public class MOBLIMA {
 
         switch (choice){
             case 1:
-                    movieController.showDetailsEndedShowing(movieChoice);
+                    movieController.showDetails(movieChoice);
                 break;
             case 2:
                 System.out.println("Please enter your name:");
@@ -594,11 +565,6 @@ public class MOBLIMA {
                 break;
         }
         return true;
-    }
-
-    private static void printListComingSoonMovieOptionMenu(){
-        System.out.println("1. View Movie Detail");
-        System.out.println("4. Go back to Main Menu");
     }
     private static void printListEndedMovieOptionsMenu(){
         System.out.println("1. View Movie Detail");
