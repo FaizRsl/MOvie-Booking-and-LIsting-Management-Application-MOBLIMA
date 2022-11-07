@@ -15,24 +15,13 @@ import java.util.List;
 
 public class CinemaView {
 
-    public void displayCineplex(List<Cineplex> cineplexes){
+    public int displayCineplex(List<Cineplex> cineplexes){
         for(int i=0; i<cineplexes.size(); i++){
             System.out.println((i+1) + ") " + cineplexes.get(i).getCineplexName() + " Cineplex");
         }
+        return cineplexes.size();
     }
-
-//    public void displayCineplexDetails(Cineplex cineplex){
-//        for(int i=0;i<cineplex.getCinemas().size(); i++){
-//            System.out.print(cineplex.getCinemas().get(i).getCinemaRoom() + ") ");
-//            System.out.println(cineplex.getCinemas().get(i).getCinemaClass());
-//            //cineplex.getCinemas().get(i).getSeatLayout().printSeatLayout();
-//            for(int j=0; j<cineplex.getCinemas().get(i).getShowtimes().size(); j++){
-//                System.out.println(displayShowtime(cineplex.getCinemas().get(i).getShowtimes().get(j)));
-//            }
-//
-//        }
-//    }
-public Showtime getShowtimeByCineplex(Cineplex cineplex, int showtimeChoice, String movieName){
+    public Showtime getShowtimeByCineplex(Cineplex cineplex, int showtimeChoice, String movieName){
     int count = 0;
     for(int i=0; i<cineplex.getCinemas().size(); i++){
         for(int j=0; j<cineplex.getCinemas().get(i).getShowtimes().size(); j++){
@@ -48,8 +37,7 @@ public Showtime getShowtimeByCineplex(Cineplex cineplex, int showtimeChoice, Str
     }
     return null;
 }
-
-public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice, String date, String movieName){
+    public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice, String date, String movieName){
     int count = 0;
     for(int i=0; i<cineplexes.size(); i++){
         for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
@@ -70,7 +58,6 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
     }
     return null;
 }
-
     public Showtime getAllCineplexShowtimes(List<Cineplex> cineplexes, String movieName, int showtimeChoice){
         int count = 0;
         for(int i=0; i<cineplexes.size(); i++){
@@ -93,7 +80,7 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
         }
         return null;
     }
-    public void displayAllCineplexShowtimes(List<Cineplex> cineplexes, String movieName){
+    public int displayAllCineplexShowtimes(List<Cineplex> cineplexes, String movieName){
         int count = 0;
         for(int i=0; i<cineplexes.size(); i++){
             for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
@@ -112,9 +99,9 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
         if(count == 0){
             System.out.println("Sorry, there is no showtime on this date!");
         }
+        return count;
     }
-
-    public void displayShowtimeByCinema(Cineplex cineplex, String movieName){
+    public int displayShowtimeByCinema(Cineplex cineplex, String movieName){
         int count = 0;
         for(int j=0; j<cineplex.getCinemas().size(); j++){
             for(int k=0; k<cineplex.getCinemas().get(j).getShowtimes().size(); k++){
@@ -132,9 +119,10 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
         if(count == 0){
             System.out.println("Sorry, there is no showtime on this date!");
         }
-    }
 
-    public void displayShowtimeByDate(List<Cineplex> cineplexes, String date, String movieName){
+        return count;
+    }
+    public int displayShowtimeByDate(List<Cineplex> cineplexes, String date, String movieName){
         int count = 0;
         for(int i=0; i<cineplexes.size(); i++){
             for(int j=0; j<cineplexes.get(i).getCinemas().size(); j++){
@@ -153,8 +141,8 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
         if(count == 0){
             System.out.println("Sorry, there is no showtime on this date!");
         }
+        return count;
     }
-
     public String displayShowtime(Showtime showtime){
         String returnString = "";
         returnString += showtime.getCinema().getCineplex() + " Cineplex";
@@ -178,7 +166,6 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
         returnString += showtime.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm - EEEE ")) + "\n  ";
         return returnString;
     }
-
     public void displayCinemaShowtime(ArrayList<Showtime> showtimeList){
 
         Showtime showtime;
@@ -199,22 +186,19 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
             System.out.println("---------------------");
         }
         System.out.println();
-        
-    }
 
+    }
     public void displayCinemas(Cineplex cineplex){
         ArrayList<Cinema> cinemaList = cineplex.getCinemas();
         for(int i = 0; i < cinemaList.size(); i++){
             System.out.println( (i+1) + ") Cinema Hall " + cinemaList.get(i).getCinemaRoom());
         }
     }
-
     public void displayTimeHours(){
         for(int i = 1; i <= 12; i++){
             System.out.println(i + ") " + i);
         }
     }
-
     public void displayTimeMinutes(){
         int index = 1;
         for(int i = 0; i < 60; i+=15){
@@ -222,14 +206,12 @@ public Showtime getShowtimeByDate(List<Cineplex> cineplexes, int showtimeChoice,
             index++;
         }
     }
-
     public void displayMovieTypes(){
         System.out.println("1) Normal");
         System.out.println("2) 3D");
         System.out.println("3) IMAX");
         System.out.println("4) Blockbuster");
     }
-
     public void displayUpdateShowtimeOptions(){
         System.out.println("What would you like to update?");
         System.out.println("1) Movie");

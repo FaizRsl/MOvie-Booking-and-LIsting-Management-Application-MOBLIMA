@@ -2,8 +2,9 @@ package Controller;
 
 import Model.Booking.Booking;
 import Model.Movie.Movie;
-import view.BookingView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,13 +12,30 @@ public class BookingController {
 
     private List<Booking> bookings;
 
-    private BookingView bookingView;
-
     public BookingController() {
-        bookingView = new BookingView();
         bookings = DatabaseController.getBookingFromDB();
     }
 
+    public void bookingHistory(BufferedReader br) throws IOException {
+        System.out.println("Please enter your username:");
+        String username = br.readLine();
+        List<Booking> bookingList = getBookingByUsername(username);
+        if(bookingList.size() == 0)
+            System.out.println("There is no booking for this user.");
+        else
+            while(true){
+                System.out.println("You have " + bookingList.size() + " bookings.");
+                System.out.println("Please select which bookings you wish to view (1-" +bookingList.size()+ "):");
+                int choice = Integer.parseInt(br.readLine());
+                if((choice-1) < 0 || choice > bookingList.size()){
+                    System.out.println("Invalid input. Please try again");
+                }
+                else{
+                    System.out.println(bookingList.get(choice-1).toString());
+                    break;
+                }
+            }
+    }
 
     public void addBooking(Booking booking) {
         bookings.add(booking);
@@ -25,7 +43,12 @@ public class BookingController {
     }
 
     public List<Booking> getBookingByUsername(String username){
-        return bookingView.findBookingByUsername(bookings, username);
+        List<Booking> bookingList = new ArrayList<>();
+        for(int i=(bookings.size()-1); i>=0; i--){
+            if(bookings.get(i).getBuyerName().toLowerCase().equals(username))
+                bookingList.add(bookings.get(i));
+        }
+        return bookingList;
     }
 
     public void getTopFiveMovieByTicketSales(){

@@ -1,16 +1,32 @@
 package view;
 
+import Controller.BookingController;
+import Controller.CinemaController;
+import Controller.MovieController;
+import Controller.PriceController;
+import Model.Booking.Booking;
+import Model.Cinema.Showtime;
 import Model.Movie.Movie;
+import Model.Movie.MovieCensorship;
+import Model.Seat.Seats;
+import Model.Ticket.AdultTicket;
+import Model.Ticket.ChildrenTicket;
+import Model.Ticket.SeniorTicket;
+import Model.Ticket.Ticket;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class MovieView {
+
+    //movie function
     public void findMovieByTitle(Movie movie) {
         String text = movie == null ? "Movie does not exist, try again!" : "Movie exists, book your ticket now!";
         System.out.println(text);
     }
-
     public void displayMovies(List<Movie> movieList) {
         System.out.println("Movie Title(s)");
         System.out.println("========================");
@@ -18,7 +34,6 @@ public class MovieView {
             System.out.println((i+1) + ")" + movieList.get(i).getTitle() + " (" + movieList.get(i).getMovieDetails().getMovieStatus() + ")");
         }
     }
-
     public void displayMovieDetails(int index,Movie movie) {
         System.out.printf("%d Movie Title: %s \n",index,movie.getTitle());
         System.out.println("===============================================");
@@ -30,7 +45,6 @@ public class MovieView {
         System.out.printf("Synopsis: %s \n",movie.getSynopsis());
         System.out.printf("Movie Status %s \n",movie.getMovieDetails().getMovieStatus());
     }
-
     public void displayReviewsByMovies(int index, Movie movie){
         System.out.printf("Movie Title: %s \n",movie.getTitle());
         if(movie.getReviews().size() == 0){
@@ -47,8 +61,6 @@ public class MovieView {
             System.out.println();
         }
     }
-
-
     public void displayUpdateOptions(){
         System.out.println("What would you like to update?");
         System.out.println("1) Movie Title");
@@ -59,14 +71,12 @@ public class MovieView {
         System.out.println("6) Movie Status");
 
     }
-    
     public void displayUpdateCastOptions(){
         System.out.println("1) Add Cast Member");
         System.out.println("2) Remove Cast Member");
         System.out.println("3) Change Cast Member's Name");
         System.out.println("4) Quit");
     }
-
     public void displayUpdateAgeRatingOptions(){
         System.out.println("New Age Rating: ");
         System.out.println("1) G");
@@ -77,7 +87,6 @@ public class MovieView {
         System.out.println("6) R21");
 
     }
-
     public void displayUpdateMovieStatusOptions(){
         System.out.println("New Movie Status: ");
         System.out.println("1) Coming Soon");
@@ -85,4 +94,6 @@ public class MovieView {
         System.out.println("3) Now Showing");
         System.out.println("4) Ending");
     }
+
+
 }

@@ -335,25 +335,23 @@ public class MovieController {
         return movies.stream().filter(movie -> movie.getTitle().equalsIgnoreCase(movieTitle)).findFirst().orElse(null);
     }
 
-
-
     public void findMovieByTitle(String movieTitle) {
         Movie movie = getMovieByTitle(movieTitle);
         movieView.findMovieByTitle(movie);
     }
-    public void displayCurrentShowingMovie() {
-        displayAccordingtoMovieStatus(MovieStatus.NOWSHOWING);
+    public int displayCurrentShowingMovie() {
+        return displayAccordingtoMovieStatus(MovieStatus.NOWSHOWING);
     }
-    public void displayPreviewMovie() {
-        displayAccordingtoMovieStatus(MovieStatus.PREVIEW);
-    }
-
-    public void displayComingSoonMovie() {
-        displayAccordingtoMovieStatus(MovieStatus.COMINGSOON);
+    public int displayPreviewMovie() {
+        return displayAccordingtoMovieStatus(MovieStatus.PREVIEW);
     }
 
-    public void displayEndedMovies() {
-        displayAccordingtoMovieStatus(MovieStatus.ENDED);
+    public int displayComingSoonMovie() {
+        return displayAccordingtoMovieStatus(MovieStatus.COMINGSOON);
+    }
+
+    public int displayEndedMovies() {
+        return displayAccordingtoMovieStatus(MovieStatus.ENDED);
     }
 
     public void displayAllMovie() {
@@ -443,6 +441,12 @@ public class MovieController {
         return movie;
     }
 
+    public void showDetailsComingSoon(int choice) {
+        ArrayList<Movie> showMovies = getComingSoon();
+        if (choice <= showMovies.size()) {
+            movieView.displayMovieDetails(choice,showMovies.get(choice-1));
+        }
+    }
     public void showDetailsCurrentShowing(int choice) {
         ArrayList<Movie> showMovies = getCurrentShowing();
         if (choice <= showMovies.size()) {
@@ -457,6 +461,18 @@ public class MovieController {
         }
     }
 
+    public void searchMovie(BufferedReader br) throws IOException{
+        System.out.println("Please enter the name of the Movie:");
+        String movieTitle = br.readLine();
+        Movie mov = getMovieByTitle(movieTitle);
+        if(mov == null){
+            System.out.println("Movies doesn't exist in our database");
+        }
+        else{
+            System.out.println(mov.getTitle() + " (" + mov.getMovieDetails().getMovieStatus() + ")");
+        }
+    }
+
     public void showDetailsEndedShowing(int choice) {
         ArrayList<Movie> showMovies = getEndedShowing();
         if (choice <= showMovies.size()) {
@@ -464,13 +480,18 @@ public class MovieController {
         }
     }
 
-    private void displayAccordingtoMovieStatus(MovieStatus movieStatus) {
+    private int displayAccordingtoMovieStatus(MovieStatus movieStatus) {
         ArrayList<Movie> currentShowing = movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == movieStatus).collect(Collectors.toCollection(ArrayList::new));
         movieView.displayMovies(currentShowing);
+        return currentShowing.size();
     }
 
     private ArrayList<Movie> getNonEndedMovies() {
         return movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() != MovieStatus.ENDED).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private ArrayList<Movie> getComingSoon() {
+        return movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == MovieStatus.COMINGSOON).collect(Collectors.toCollection(ArrayList::new));
     }
 
     private ArrayList<Movie> getCurrentShowing() {

@@ -31,20 +31,20 @@ public class CinemaController {
         return cineplexes;
     }
 
-    public void displayAllCineplex(){
-        cinemaView.displayCineplex(cineplexes);
+    public int displayAllCineplex(){
+        return cinemaView.displayCineplex(cineplexes);
     }
 
-    public void displayAllCineplexShowtimes(String movieName){
-        cinemaView.displayAllCineplexShowtimes(cineplexes, movieName);
+    public int displayAllCineplexShowtimes(String movieName){
+        return cinemaView.displayAllCineplexShowtimes(cineplexes, movieName);
     }
 
-    public void displayShowtimeByDate(String date, String movieTitle){
-        cinemaView.displayShowtimeByDate(cineplexes, date, movieTitle);
+    public int displayShowtimeByDate(String date, String movieTitle){
+        return cinemaView.displayShowtimeByDate(cineplexes, date, movieTitle);
     }
 
-    public void displayShowtimeByCineplex(int choice, String movieName){
-        cinemaView.displayShowtimeByCinema(cineplexes.get(choice-1), movieName);
+    public int displayShowtimeByCineplex(int choice, String movieName){
+        return cinemaView.displayShowtimeByCinema(cineplexes.get(choice-1), movieName);
     }
 
     public Showtime getCineplexAllShowtimes(int showtimeChoice, String movieName){
@@ -75,7 +75,7 @@ public class CinemaController {
         return cineplexes.get(cineplexChoice).getCinemas().get(choice);
     }
     public void addNewShowtime(){
-        
+
         addShowtimeToCineplex(getCinemaFromCineplex());
         DatabaseController.updateCineplexDB(cineplexes);
     }
@@ -99,7 +99,7 @@ public class CinemaController {
         int movieType = sc.nextInt();
         MovieType type = null;
         switch(movieType){
-            case 1: 
+            case 1:
                 type = MovieType.NORMAL;
                 break;
             case 2:
@@ -112,11 +112,11 @@ public class CinemaController {
                 type = MovieType.BLOCKBUSTER;
                 break;
         }
-        
+
         LocalDateTime showDate = createLocalDateTime();
         Showtime showtime = new Showtime(showDate, mov, cinema, type);
         cinema.addShowTime(showtime);
-        
+
         //cinemaView.displayCinemaShowtime(showtimeList);
     }
 
@@ -127,7 +127,7 @@ public class CinemaController {
                 availableMovies.add(movieList.get(i));
             }
         }
-        
+
         return availableMovies;
     }
 
@@ -153,7 +153,7 @@ public class CinemaController {
                 hour = 0;
             }
         }
-        
+
         int year, month = 0;
         year = LocalDateTime.now().getYear();
 
@@ -167,14 +167,14 @@ public class CinemaController {
             } else {
                 System.out.println("Invalid month");
             }
-            
+
         }
-        
+
         if(month < LocalDateTime.now().getMonthValue()){
             year++;
         }
-        
-        
+
+
         YearMonth yearMonth = YearMonth.of(year, month);
         int lengthOfMonth = yearMonth.lengthOfMonth();
         int day = 0;
@@ -186,7 +186,7 @@ public class CinemaController {
                 loop = false;
             }
         }
-        
+
         return LocalDateTime.of(year, month, day, hour, minute);
     }
 
@@ -226,7 +226,7 @@ public class CinemaController {
                 int movieType = sc.nextInt();
                 MovieType type = null;
                 switch(movieType){
-                    case 1: 
+                    case 1:
                         type = MovieType.NORMAL;
                         break;
                     case 2:
@@ -259,8 +259,8 @@ public class CinemaController {
                 newCinemaChoice--;
                 sc.nextLine();
                 Showtime showtime = cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index);
-                cineplexes.get(newCineplexChoice).getCinemas().get(newCinemaChoice).getShowtimes().add(showtime);  
-                
+                cineplexes.get(newCineplexChoice).getCinemas().get(newCinemaChoice).getShowtimes().add(showtime);
+
                 cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().remove(showtime);
 
                 break;
@@ -287,8 +287,8 @@ public class CinemaController {
         int index = sc.nextInt();
         cineplexes.get(cineplexChoice).getCinemas().get(choice).getShowtimes().remove(index-1);
         DatabaseController.updateCineplexDB(cineplexes);
-        
+
     }
 
-    
+
 }
