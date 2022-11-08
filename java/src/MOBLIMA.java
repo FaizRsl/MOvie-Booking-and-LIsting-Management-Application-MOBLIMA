@@ -13,11 +13,12 @@ public class MOBLIMA {
     private static MovieController movieController = new MovieController();
     private static BookingController bookingController = new BookingController();
     private static CinemaController cinemaController = new CinemaController();
+    private static PriceController priceController = new PriceController();
     private static MainMenuView mainMenuView = new MainMenuView();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        mainMenuView.mainMenu(br, adminController, movieController, cinemaController, bookingController);
+        mainMenuView.mainMenu(br, adminController, movieController, cinemaController, bookingController, priceController);
     }
 }
 

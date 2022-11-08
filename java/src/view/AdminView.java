@@ -3,13 +3,14 @@ package view;
 import Controller.AdminController;
 import Controller.CinemaController;
 import Controller.MovieController;
+import Controller.PriceController;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 
 public class AdminView {
-    public static boolean adminMenu(BufferedReader br, AdminController adminController, MovieController movieController, CinemaController cinemaController) throws IOException {
+    public static boolean adminMenu(BufferedReader br, AdminController adminController, MovieController movieController, CinemaController cinemaController, PriceController priceController) throws IOException {
         boolean loop = true;
         boolean loggedin = false;
         int choice;
@@ -61,6 +62,7 @@ public class AdminView {
                     cinemaController.removeShowtime();
                     break;
                 case 7: //Configure System Settings -> price config settings
+                    priceController.setPrices();
                     break;
                 case 8:
                     System.out.println("Sure, returning back to main menu.");
@@ -93,4 +95,7 @@ public class AdminView {
         System.out.println("Please enter your choice:");
 
     }
+
+    
+    
 }
