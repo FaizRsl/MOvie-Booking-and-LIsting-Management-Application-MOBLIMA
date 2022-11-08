@@ -1,13 +1,17 @@
 package Controller;
 
 import Model.User.Admin;
+import view.AdminView;
 
 import java.io.File;
 import java.util.List;
+import java.util.Scanner;
 
 public class AdminController {
 
     private final DatabaseController databaseController = DatabaseController.getInstance();
+
+    private final AdminView adminView = new AdminView();
 
     public AdminController(){
     }
@@ -29,4 +33,7 @@ public class AdminController {
         return false;
     }
 
+    public boolean printAdminMenu(Scanner sc, AdminController adminController, MovieController movieController, CinemaController cinemaController, PriceController priceController) {
+        return adminView.adminMenu(sc, adminController, movieController, cinemaController, priceController);
+    }
 }

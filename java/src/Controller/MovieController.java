@@ -25,15 +25,10 @@ public class MovieController {
         return movies;
     }
 
-    public void createMovie(BufferedReader br) {
-        try {
-            Movie movie = movieView.displayCreateMovie(br);
-            addMovie(movie);
-            databaseController.updateMovieDB(movies);
-        } catch (IOException e) {
-            System.out.println("Unable to read the user input!");
-            System.out.println("Error Message:" + e.getMessage());
-        }
+    public void createMovie(Scanner sc) {
+        Movie movie = movieView.displayCreateMovie(sc);
+        addMovie(movie);
+        databaseController.updateMovieDB(movies);
     }
 
     public void removeMovie(Movie movie) {
@@ -41,23 +36,18 @@ public class MovieController {
         databaseController.updateMovieDB(movies);
     }
 
-    public void removeMovieByStatus(BufferedReader br) throws IOException {
+    public void removeMovieByStatus(Scanner sc) {
         displayAllMovie();
         System.out.println("What movie is to be removed?");
-        int remove = Integer.parseInt(br.readLine());
+        int remove = sc.nextInt();
 
         movies.get(remove-1).getMovieDetails().setMovieStatus(MovieStatus.ENDED);
         databaseController.updateMovieDB(movies);
     }
 
-    public void updateMovieDetailsFromInput(BufferedReader br) {
-        try {
-            Movie movie = movieView.displayUpdateMovie(br, movies);
-            updateMovieDetails(movie);
-        } catch (IOException e) {
-            System.out.println("Unable to read the user input");
-            System.out.println("Error Message:" + e.getMessage());
-        }
+    public void updateMovieDetailsFromInput(Scanner sc) {
+        Movie movie = movieView.displayUpdateMovie(sc, movies);
+        updateMovieDetails(movie);
 
     }
     public void updateMovieDetails(Movie movie) {
@@ -68,6 +58,20 @@ public class MovieController {
 
     public Movie getMovieByTitle(String movieTitle) {
         return movies.stream().filter(movie -> movie.getTitle().equalsIgnoreCase(movieTitle)).findFirst().orElse(null);
+    }
+    public int displayCurrentShowingMovie() {
+        return displayAccordingtoMovieStatus(MovieStatus.NOWSHOWING);
+    }
+    public int displayPreviewMovie() {
+        return displayAccordingtoMovieStatus(MovieStatus.PREVIEW);
+    }
+
+    public int displayComingSoonMovie() {
+        return displayAccordingtoMovieStatus(MovieStatus.COMINGSOON);
+    }
+
+    public int displayEndedMovies() {
+        return displayAccordingtoMovieStatus(MovieStatus.ENDED);
     }
 
     public void displayAllMovie() {
@@ -134,13 +138,31 @@ public class MovieController {
         }
     }
 
-    public void displayAccordingtoMovieStatus(MovieStatus movieStatus) {
-        ArrayList<Movie> currentShowing = getMovieAccordingToStatus(movieStatus);
+    public void searchMovie(Scanner sc){
+        System.out.println("Please enter the name of the Movie:");
+        String movieTitle = sc.nextLine();
+        Movie mov = getMovieByTitle(movieTitle);
+        if(mov == null){
+            System.out.println("Movies doesn't exist in our database");
+        }
+        else{
+            System.out.println(mov.getTitle() + " (" + mov.getMovieDetails().getMovieStatus() + ")");
+        }
+    }
+
+    private int displayAccordingtoMovieStatus(MovieStatus movieStatus) {
+        ArrayList<Movie> currentShowing = movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == movieStatus).collect(Collectors.toCollection(ArrayList::new));
         movieView.displayMovies(currentShowing);
+        return currentShowing.size();
     }
 
     private ArrayList<Movie> getMovieAccordingToStatus(MovieStatus movieStatus) {
         return movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == movieStatus).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private List<Movie> getMoviesFromDB() {
+        movies = databaseController.getMovieFromDB();
+        return movies;
     }
 
     private void addMovie(Movie movie) {

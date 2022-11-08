@@ -4,7 +4,8 @@ import Model.Movie.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.ParseException;
+import Model.Movie.Movie;
+import Model.Movie.MovieCensorship;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,16 +13,17 @@ import java.util.Scanner;
 
 public class MovieView {
 
+    //movie function
     public void displayMovies(List<Movie> movieList) {
         System.out.println("Movie Title(s)");
         System.out.println("========================");
         for (int i = 0;i < movieList.size();i++) {
             System.out.printf("%d) %s ( %s ) \n",i+1,movieList.get(i).getTitle(),movieList.get(i).getMovieDetails().getMovieStatus().getMovieStatusName());
         }
+        System.out.println("========================");
     }
-
     public void displayMovieDetails(int index,Movie movie) {
-        System.out.printf("%d) \n %s",index,movie.toString());
+        System.out.printf("%d)\n%s",index,movie.toString());
     }
 
     public void displayReviewsByMovies(Movie movie){
@@ -40,8 +42,6 @@ public class MovieView {
             System.out.println();
         }
     }
-
-
     public void displayUpdateOptions(){
         System.out.println("What would you like to update?");
         System.out.println("1) Movie Title");
@@ -52,14 +52,12 @@ public class MovieView {
         System.out.println("6) Movie Status");
 
     }
-    
     public void displayUpdateCastOptions(){
         System.out.println("1) Add Cast Member");
         System.out.println("2) Remove Cast Member");
         System.out.println("3) Change Cast Member's Name");
         System.out.println("4) Quit");
     }
-
     public void displayUpdateAgeRatingOptions(){
         System.out.println("New Age Rating: ");
         System.out.println("1) G");
@@ -70,7 +68,6 @@ public class MovieView {
         System.out.println("6) R21");
 
     }
-
     public void displayUpdateMovieStatusOptions(){
         System.out.println("New Movie Status: ");
         System.out.println("1) Coming Soon");
@@ -80,15 +77,16 @@ public class MovieView {
     }
 
     public void displayMovieWithReviews(List<Movie> movies) {
+        System.out.println("Movie Title: Rating");
         movies.forEach(movie -> {
             System.out.printf("%s: %.1f",movie.getTitle(),movie.getRating());
         });
     }
 
-    public Movie displayUpdateMovie(BufferedReader br, List<Movie> movies) throws IOException {
+    public Movie displayUpdateMovie(Scanner sc, List<Movie> movies) {
         System.out.println("Which movie to update?");
         displayMovies(movies);
-        int update = Integer.parseInt(br.readLine());
+        int update = sc.nextInt();
 
         Movie movie = movies.get(update-1);
         boolean loop = true;
@@ -96,42 +94,42 @@ public class MovieView {
         while(loop){
             displayMovieDetails(update, movie );
             displayUpdateOptions();
-            choice = Integer.parseInt(br.readLine());
+            choice = sc.nextInt();
             switch(choice){
                 case 1:
                     System.out.println("Input new movie title: ");
-                    movie.setTitle(br.readLine());
+                    movie.setTitle(sc.nextLine());
                     break;
                 case 2:
                     System.out.println("Input new director(s): ");
-                    movie.setDirector(br.readLine());
+                    movie.setDirector(sc.nextLine());
                     break;
                 case 3:
                     boolean castLoop = true;
                     while(castLoop){
                         displayUpdateCastOptions();
-                        int castChoice = Integer.parseInt(br.readLine());
+                        int castChoice = sc.nextInt();
                         ArrayList<String> castList = movie.getCasts();
                         switch(castChoice){
                             case 1:
                                 System.out.println("Cast Name: ");
-                                castList.add(br.readLine());
+                                castList.add(sc.nextLine());
                                 break;
                             case 2:
                                 System.out.println("Select which cast member to remove: ");
                                 for(int i = 0; i < castList.size(); i++){
                                     System.out.println(i+1 + ") " + castList.get(i));
                                 }
-                                castList.remove(Integer.parseInt(br.readLine())-1);
+                                castList.remove(sc.nextInt()-1);
                                 break;
                             case 3:
                                 System.out.println("Select which cast member to update: ");
                                 for(int i = 0; i < castList.size(); i++){
                                     System.out.println(i+1 + ") " + castList.get(i));
                                 }
-                                int castIndex = Integer.parseInt(br.readLine())-1;
+                                int castIndex = sc.nextInt()-1;
                                 System.out.println("New Cast Name: ");
-                                castList.set(castIndex, br.readLine());
+                                castList.set(castIndex, sc.nextLine());
                                 break;
                             case 4:
                                 castLoop = false;
@@ -141,16 +139,16 @@ public class MovieView {
                     break;
                 case 4:
                     displayUpdateAgeRatingOptions();
-                    int censorChoice = Integer.parseInt(br.readLine());
+                    int censorChoice = sc.nextInt();
                     movie.getMovieDetails().setMovieCensorship(setCensorship(censorChoice));
                     break;
                 case 5:
                     System.out.println("Input new synopsis: ");
-                    movie.setSynopsis(br.readLine());
+                    movie.setSynopsis(sc.nextLine());
                     break;
                 case 6:
                     displayUpdateMovieStatusOptions();
-                    int statusChoice = Integer.parseInt(br.readLine());
+                    int statusChoice = sc.nextInt();
                     movie.getMovieDetails().setMovieStatus(setMovieStatus(statusChoice));
                     break;
 
@@ -158,14 +156,13 @@ public class MovieView {
             System.out.println("Continue Changes?");
             System.out.println("1) Yes");
             System.out.println("2) No");
-            if(Integer.parseInt(br.readLine()) != 1){
+            if(sc.nextInt()!= 1)
                 loop = false;
-            }
         }
         return movie;
     }
 
-    public Movie displayCreateMovie(BufferedReader br) throws IOException{
+    public Movie displayCreateMovie(Scanner sc) {
 
         ArrayList<Review> reviews = new ArrayList<Review>();
         ArrayList<String> casts = new ArrayList<String>();
@@ -175,20 +172,20 @@ public class MovieView {
         Genre genre = null;
 
         System.out.println("Movie Title: ");
-        String title = br.readLine();
+        String title = sc.nextLine();
         System.out.println("Director: ");
-        String director = br.readLine();
+        String director = sc.nextLine();
         System.out.println("Synopsis: ");
-        String synopsis = br.readLine();
+        String synopsis = sc.nextLine();
 
         System.out.println("Cast Members: (eg: robert, alex, sam) -> use , to add more cast members");
-        String cast = br.readLine();
+        String cast = sc.nextLine();
         List<String> tempList = Arrays.asList(cast.split(","));
         for (int i = 0; i < tempList.size(); i++){
             casts.add(i,tempList.get(i).trim());
         }
         System.out.println("Rating: ");
-        double rating = Double.parseDouble(br.readLine());
+        double rating = sc.nextDouble();
 
         System.out.println("Movie Status: ");
         System.out.println("1) Coming Soon");
@@ -196,7 +193,7 @@ public class MovieView {
         System.out.println("3) Now Showing");
         System.out.println("4) Ended");
         int choice;
-        movieStatus = (MovieStatus) infiniteLoop(4,br);
+        movieStatus = (MovieStatus) infiniteLoop(4,sc);
 
         System.out.println("Movie Censorship: ");
         System.out.println("1) G");
@@ -206,14 +203,14 @@ public class MovieView {
         System.out.println("5) M18");
         System.out.println("6) R21");
 
-        movieCensorship = (MovieCensorship) infiniteLoop(6,br);
+        movieCensorship = (MovieCensorship) infiniteLoop(6,sc);
         System.out.println("Genre: ");
         System.out.println("1) Action");
         System.out.println("2) Romance");
         System.out.println("3) Horror");
         System.out.println("4) Adventure");
         System.out.println("5) Mystery");
-        genre = (Genre) infiniteLoop(5,br);
+        genre = (Genre) infiniteLoop(5,sc);
 
         movieDetails = new MovieDetails(movieStatus,movieCensorship,genre);
 
@@ -226,12 +223,12 @@ public class MovieView {
         return mov;
     }
 
-    private Object infiniteLoop(int index, BufferedReader br) throws IOException {
+    private Object infiniteLoop(int index, Scanner sc) {
         boolean loop = true;
         int choice = 0;
         Object obj = null;
         while (loop) {
-                choice = Integer.parseInt(br.readLine());
+                choice = sc.nextInt();
                 if (choice < index) {
                     System.out.println("Please enter a valid number!");
                     continue;

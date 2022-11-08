@@ -9,8 +9,6 @@ import Model.Movie.MovieType;
 import view.CinemaView;
 import view.MovieView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -36,20 +34,19 @@ public class CinemaController {
         return cineplexes;
     }
 
-    public void displayAllCineplex(){
-        cinemaView.displayCineplex(cineplexes);
+    public int displayAllCineplex(){
+        return cinemaView.displayCineplex(cineplexes);
     }
 
-    public void displayAllCineplexShowtimes(String movieName){
-        cinemaView.displayShowtimes(cineplexes, movieName);
+    public int displayShowtimeByDate(String date, String movieTitle) {
+        return cinemaView.displayShowtimes(cineplexes, movieTitle, date);
+    }
+    public int displayAllCineplexShowtimes(String movieName){
+        return cinemaView.displayShowtimes(cineplexes, movieName);
     }
 
-    public void displayShowtimeByDate(String date, String movieTitle){
-        cinemaView.displayShowtimes(cineplexes,movieTitle,date);
-    }
-
-    public void displayShowtimeByCineplex(int choice, String movieName){
-        cinemaView.displayShowtimeByCinema(cineplexes.get(choice-1), movieName);
+    public int displayShowtimeByCineplex(int choice, String movieName){
+        return cinemaView.displayShowtimeByCinema(cineplexes.get(choice-1), movieName);
     }
 
     public Showtime getCineplexAllShowtimes(int showtimeChoice, String movieName){
@@ -79,12 +76,13 @@ public class CinemaController {
         sc.nextLine();
         return cineplexes.get(cineplexChoice).getCinemas().get(choice);
     }
-    public void addNewShowtime(BufferedReader br) throws IOException {
-        addShowtimeToCineplex(getCinemaFromCineplex(),br);
+
+    public void addNewShowtime(Scanner sc) {
+        addShowtimeToCineplex(getCinemaFromCineplex(), sc);
         databaseController.updateCineplexDB(cineplexes);
     }
 
-    public void addShowtimeToCineplex(Cinema cinema,BufferedReader br) throws IOException {
+    public void addShowtimeToCineplex(Cinema cinema,Scanner sc) {
         ArrayList<Showtime> showtimeList = cinema.getShowtimes();
         List<Movie> movieList = databaseController.getMovieFromDB();
         List<Movie> availableMovieList;
@@ -94,15 +92,24 @@ public class CinemaController {
         System.out.println("==================");
         movieView.displayMovies(availableMovieList);
         System.out.println("Select Movie: ");
-        int movieChoice = Integer.parseInt(br.readLine());
+        int movieChoice = sc.nextInt();
         Movie mov = availableMovieList.get(movieChoice-1);
 
         System.out.println("Type of Movie: ");
         cinemaView.displayMovieTypes();
-        int movieType = Integer.parseInt(br.readLine());
+        int movieType = sc.nextInt();
         MovieType type = null;
+        type = getMovieType(movieType, type);
+        LocalDateTime showDate = createLocalDateTime(sc);
+        Showtime showtime = new Showtime(showDate, mov, cinema, type);
+        cinema.addShowTime(showtime);
+        
+        cinemaView.displayCinemaShowtime(showtimeList);
+    }
+
+    private MovieType getMovieType(int movieType, MovieType type) {
         switch(movieType){
-            case 1: 
+            case 1:
                 type = MovieType.NORMAL;
                 break;
             case 2:
@@ -115,12 +122,7 @@ public class CinemaController {
                 type = MovieType.BLOCKBUSTER;
                 break;
         }
-        
-        LocalDateTime showDate = createLocalDateTime(br);
-        Showtime showtime = new Showtime(showDate, mov, cinema, type);
-        cinema.addShowTime(showtime);
-        
-        cinemaView.displayCinemaShowtime(showtimeList);
+        return type;
     }
 
     public List<Movie> getAvailableMovies(List<Movie> movieList){
@@ -130,32 +132,26 @@ public class CinemaController {
                 availableMovies.add(movieList.get(i));
             }
         }
-        
+
         return availableMovies;
     }
 
-    public LocalDateTime createLocalDateTime(BufferedReader br) throws IOException{
-        System.out.println("What time (hour): ");
-        cinemaView.displayTimeHours();
-        int hour = Integer.parseInt(br.readLine());
-
+    public LocalDateTime createLocalDateTime(Scanner sc) {
+        int hour = 0;
+        while (true) {
+            System.out.println("What time (hour) [in 24 hour format]: ");
+            cinemaView.displayTimeHours();
+            hour = sc.nextInt();
+            if (hour > 1 && hour < 8) {
+                System.out.println("Unable to put showtime during these hours!");
+                continue;
+            }
+            break;
+        }
         System.out.println("What time (minutes):" );
         cinemaView.displayTimeMinutes();
-        int minute = (Integer.parseInt(br.readLine())-1) * 15;
+        int minute = (sc.nextInt()-1) * 15;
 
-        System.out.println("AM/PM: ");
-        System.out.println("1) AM");
-        System.out.println("2) PM");
-        if(Integer.parseInt(br.readLine()) == 2){ //pm
-            if(hour < 12){
-                hour += 12;
-            }
-        } else { //am
-            if(hour == 12){
-                hour = 0;
-            }
-        }
-        
         int year, month = 0;
         year = LocalDateTime.now().getYear();
 
@@ -163,84 +159,70 @@ public class CinemaController {
 
         while(loop){
             System.out.println("Input month (as a number): ");
-            month = Integer.parseInt(br.readLine());;
+            month = sc.nextInt();
             if(month <= 12){
                 loop = false;
             } else {
                 System.out.println("Invalid month");
             }
-            
+
         }
-        
+
         if(month < LocalDateTime.now().getMonthValue()){
             year++;
         }
-        
-        
+
+
         YearMonth yearMonth = YearMonth.of(year, month);
         int lengthOfMonth = yearMonth.lengthOfMonth();
         int day = 0;
         loop = true;
         while(loop){
             System.out.println("Input day: ");
-            day = Integer.parseInt(br.readLine());;
+            day = sc.nextInt();
             if(day >= 1 || day <= lengthOfMonth){
                 loop = false;
             }
         }
-        
         return LocalDateTime.of(year, month, day, hour, minute);
     }
 
-    public void updateShowtime(BufferedReader br) throws IOException{
+    public void updateShowtime(Scanner sc) {
         displayAllCineplex();
         System.out.println("Select Cineplex: ");
-        int cineplexChoice = Integer.parseInt(br.readLine());
+        int cineplexChoice = sc.nextInt();
         cineplexChoice--;
         System.out.println("Select cinema: ");
         cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
-        int cinemaChoice = Integer.parseInt(br.readLine());
+        int cinemaChoice = sc.nextInt();
         cinemaChoice--;
 
         List<Movie> availableMovieList = getAvailableMovies(databaseController.getMovieFromDB());
         cinemaView.displayUpdateShowtimeOptions();
-        int choice = Integer.parseInt(br.readLine());
+        int choice = sc.nextInt();
 
         cinemaView.displayCinemaShowtime(cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes());
         System.out.println("Input showtime index to update");
-        int index = Integer.parseInt(br.readLine());
+        int index = sc.nextInt();
         index--;
         switch(choice){
             case 1:
                 movieView.displayMovies(availableMovieList);
                 System.out.println("Select Movie: ");
-                int movieChoice = Integer.parseInt(br.readLine());
+                int movieChoice = sc.nextInt();
                 Movie mov = availableMovieList.get(movieChoice-1);
                 cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index).setMovie(mov);
                 break;
             case 2:
                 System.out.println("Type of Movie: ");
                 cinemaView.displayMovieTypes();
-                int movieType = Integer.parseInt(br.readLine());
+                int movieType = sc.nextInt();
                 MovieType type = null;
-                switch(movieType){
-                    case 1: 
-                        type = MovieType.NORMAL;
-                        break;
-                    case 2:
-                        type = MovieType.THREED;
-                        break;
-                    case 3:
-                        type = MovieType.IMAX;
-                        break;
-                    case 4:
-                        type = MovieType.BLOCKBUSTER;
-                        break;
-                }
+                type = getMovieType(movieType, type);
                 cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index).setMovieType(type);
                 break;
             case 3:
-                LocalDateTime date = createLocalDateTime(br);
+                LocalDateTime date = createLocalDateTime(sc);
                 cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index).setDateTime(date);
                 break;
             case 4:
@@ -248,15 +230,15 @@ public class CinemaController {
                 System.out.println("New Cinema Location");
                 System.out.println("====================");
                 System.out.println("Select New Cineplex: ");
-                int newCineplexChoice = Integer.parseInt(br.readLine());
+                int newCineplexChoice = sc.nextInt();
                 newCineplexChoice--;
                 System.out.println("Select New Cinema: ");
                 cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
-                int newCinemaChoice = Integer.parseInt(br.readLine());
+                int newCinemaChoice = sc.nextInt();
                 newCinemaChoice--;
                 Showtime showtime = cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index);
-                cineplexes.get(newCineplexChoice).getCinemas().get(newCinemaChoice).getShowtimes().add(showtime);  
-                
+                cineplexes.get(newCineplexChoice).getCinemas().get(newCinemaChoice).getShowtimes().add(showtime);
+
                 cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().remove(showtime);
 
                 break;
@@ -264,22 +246,20 @@ public class CinemaController {
 
         databaseController.updateCineplexDB(cineplexes);    }
 
-    public void removeShowtime(BufferedReader br) throws IOException {
+    public void removeShowtime(Scanner sc)  {
         displayAllCineplex();
         System.out.println("Select Cineplex: ");
-        int cineplexChoice = Integer.parseInt(br.readLine());
+        int cineplexChoice = sc.nextInt();
         cineplexChoice--;
         System.out.println("Select cinema: ");
         cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
-        int choice = Integer.parseInt(br.readLine());
+        int choice = sc.nextInt();
         choice--;
 
         cinemaView.displayCinemaShowtime(cineplexes.get(cineplexChoice).getCinemas().get(choice).getShowtimes());
         System.out.println("Input showtime index to remove");
-        int index = Integer.parseInt(br.readLine());
+        int index = sc.nextInt();
         cineplexes.get(cineplexChoice).getCinemas().get(choice).getShowtimes().remove(index-1);
         databaseController.updateCineplexDB(cineplexes);
-        
     }
-
 }
