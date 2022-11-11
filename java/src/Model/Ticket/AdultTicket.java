@@ -8,7 +8,7 @@ public class AdultTicket extends Ticket {
     public AdultTicket(Seats seats, Showtime showtime){super(seats, showtime);}
 
     @Override
-    public double getDiscount() {
+    public int getTicketType() {
         return 1;
     }
 

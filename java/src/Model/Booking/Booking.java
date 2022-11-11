@@ -24,16 +24,6 @@ public class Booking implements Serializable {
         this.tickets = tickets;
         this.buyerName = buyerName;
         this.buyerEmail = buyerEmail;
-        this.price = calculatePrice();
-    }
-
-    public double calculatePrice(){
-        double total = 0;
-        for(int i=0; i<tickets.size(); i++){
-            total += tickets.get(i).getPrice();
-        }
-        total = PriceController.GSTCalculation(total);
-        return total;
     }
 
     public ArrayList<Ticket> getTickets() {
@@ -42,6 +32,10 @@ public class Booking implements Serializable {
 
     public double getPrice() {
         return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public String getBuyerName() {

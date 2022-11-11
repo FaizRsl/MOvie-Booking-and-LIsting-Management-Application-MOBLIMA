@@ -4,6 +4,8 @@ import Model.Cinema.CinemaClass;
 import Model.Movie.MovieType;
 import Model.Pricing.PriceConfig;
 import Model.Pricing.PublicHoliday;
+import Model.Ticket.AdultTicket;
+import Model.Ticket.SeniorTicket;
 import Model.Ticket.Ticket;
 import view.PriceConfigView;
 
@@ -11,89 +13,53 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class PriceController {
     //factors to consider: age(student/senior), cinema class(gold/platinum), day of the week(ph/weekends/weekdays), type of movie(3D/blockbuster)
-    private static PriceConfigView priceConfigMenu = new PriceConfigView();
+    private DatabaseController databaseController = DatabaseController.getInstance();
 
-    public static double calculateTicketPrice(Ticket ticket){
-        double price = 0;
+    private PriceConfigView priceConfigMenu;
 
-        price = cinemaClassCalculation(ticket.getShowtime().getCinema().getCinemaClass());
+    private PriceConfig priceConfig;
 
-        price = dayOfWeekPHCalculation(price, ticket.getShowtime().getDateTime().toLocalDate());
-
-        price = movieTypeCalculation(price, ticket.getShowtime().getMovieType());
-
-        price = ageCalculation(price, ticket);
-
-        return price;
+    public PriceController() {
+        priceConfig = databaseController.retrievePriceConfig();
+        priceConfigMenu = new PriceConfigView();
     }
 
-    private static double cinemaClassCalculation(CinemaClass cinemaClass){
-        return cinemaClass.getPrice();
+    public double GSTCalculation(double price){
+        return (price + price * priceConfig.getGstPercentageIncrease());
     }
 
-    private static double dayOfWeekPHCalculation(double price, LocalDate date){
-        PublicHoliday ph;
-        for(int i=0; i< PriceConfig.getInstance().getPublicHolidays().size(); i++){
-            ph = PriceConfig.getInstance().getPublicHolidays().get(i);
-            if(ph.getDate().equals(date)){
-                return price + PriceConfig.getInstance().getPublicHolidayIncrease();
-            }
-        }
-
-        if((date.getDayOfWeek() == DayOfWeek.SATURDAY) || (date.getDayOfWeek() == DayOfWeek.SUNDAY)){
-            return price + PriceConfig.getInstance().getWeekendIncrease();
-        }
-
-        return price; //weekdays
-    }
-
-    private static double movieTypeCalculation(double price, MovieType movieType){
-        return price + movieType.getPriceIncrease();
-    }
-
-    private static double ageCalculation(double price, Ticket ticket){
-        return price * ticket.getDiscount();
-    }
-
-
-    public static double GSTCalculation(double price){
-        return (price + price * PriceConfig.getInstance().getGstPercentageIncrease());
-    }
-
-    public static void setPrices(){
+    public void setPrices(Scanner sc){
         priceConfigMenu.printPriceConfigMenu();
 
-        PriceConfig priceConfig = PriceConfig.getInstance();
-        Scanner sc = new Scanner(System.in);
         int choice = sc.nextInt();
         sc.nextLine();
         switch(choice){
             case 1: //Cinema Type Prices
-                configCinemaTypePrice(priceConfig);
+                configCinemaTypePrice(priceConfig,sc);
                 break;
             case 2: //Movie Type Prices
-                configMovieTypePrice(priceConfig);
+                configMovieTypePrice(priceConfig,sc);
                 break;
             case 3: //Discounts
-                configDiscounts(priceConfig);
+                configDiscounts(priceConfig,sc);
                 break;
             case 4: // GST
-                configGST(priceConfig);
+                configGST(priceConfig,sc);
                 break;
             case 5: // Holidays
-                configHolidays(priceConfig);
+                configHolidays(priceConfig,sc);
                 break;
         }
     }
 
-    public static void configCinemaTypePrice(PriceConfig priceConfig){
-        priceConfigMenu.printCinemaPriceConfig();
-        Scanner sc = new Scanner(System.in);
+    public void configCinemaTypePrice(PriceConfig priceConfig,Scanner sc) throws InputMismatchException {
+        priceConfigMenu.printCinemaPriceConfig(priceConfig);
         int choice = sc.nextInt();
         double price = 0;
         sc.nextLine();
@@ -112,9 +78,8 @@ public class PriceController {
         }
     }
 
-    public static void configMovieTypePrice(PriceConfig priceConfig){
-        priceConfigMenu.printMoviePriceConfig();
-        Scanner sc = new Scanner(System.in);
+    public void configMovieTypePrice(PriceConfig priceConfig, Scanner sc) throws InputMismatchException{
+        priceConfigMenu.printMoviePriceConfig(priceConfig);
         int choice = sc.nextInt();
         sc.nextLine();
         double price = 0;
@@ -134,10 +99,8 @@ public class PriceController {
         }
     }
 
-    public static void configDiscounts(PriceConfig priceConfig){
-        priceConfigMenu.printDiscountConfig();
-        Scanner sc = new Scanner(System.in);
-
+    public void configDiscounts(PriceConfig priceConfig, Scanner sc) throws InputMismatchException{
+        priceConfigMenu.printDiscountConfig(priceConfig);
         int choice = sc.nextInt();
 
         double discount = 0;
@@ -158,29 +121,26 @@ public class PriceController {
         }
     }
 
-    public static void configGST(PriceConfig priceConfig){
-        priceConfigMenu.printGSTconfig();
-        Scanner sc = new Scanner(System.in);
+    public void configGST(PriceConfig priceConfig, Scanner sc) throws InputMismatchException{
+        priceConfigMenu.printGSTconfig(priceConfig);
         double gst = sc.nextDouble();
         priceConfig.setGstPercentageIncrease(gst);
-        
+
     }
 
-    public static void configHolidays(PriceConfig priceConfig){
+    public void configHolidays(PriceConfig priceConfig,Scanner sc) throws InputMismatchException{
         priceConfigMenu.printHolidaysConfig();
-        Scanner sc = new Scanner(System.in);
-
         int choice = sc.nextInt();
 
         ArrayList<PublicHoliday> publicHolidays = priceConfig.getPublicHolidays();
 
- 
+
         switch(choice){
             case 1:
-                publicHolidays.add(addHoliday());
+                publicHolidays.add(addHoliday(sc));
                 break;
             case 2:
-                priceConfigMenu.printHolidays();
+                priceConfigMenu.printHolidays(publicHolidays);
                 System.out.println("Input holiday index to remove: ");
                 publicHolidays.remove(sc.nextInt()-1);
                 sc.nextLine();
@@ -196,10 +156,9 @@ public class PriceController {
         priceConfig.setPublicHolidays(publicHolidays);
     }
 
-    public static PublicHoliday addHoliday(){
+    public PublicHoliday addHoliday(Scanner sc){
         PublicHoliday ph = null;
-        
-        Scanner sc = new Scanner(System.in);
+
         System.out.println("Holiday Name:");
         String holidayName = sc.nextLine();
         int year, month = 0;
@@ -241,8 +200,89 @@ public class PriceController {
         LocalDate date = LocalDate.of(year, month, day);
 
         ph = new PublicHoliday(holidayName, date);
-        
+
         return ph;
-        
+
+    }
+
+    public double calculateTicketPrice(Ticket ticket){
+        double price = 0;
+
+        price = cinemaClassCalculation(ticket.getShowtime().getCinema().getCinemaClass());
+
+        price = dayOfWeekPHCalculation(price, ticket.getShowtime().getDateTime().toLocalDate());
+
+        price = movieTypeCalculation(price, ticket.getShowtime().getMovieType());
+
+        price = ageCalculation(price, ticket);
+
+        return price;
+    }
+
+    private double cinemaClassCalculation(CinemaClass cinemaClass){
+        return getPriceIncrease(cinemaClass);
+    }
+
+    private double dayOfWeekPHCalculation(double price, LocalDate date){
+        PublicHoliday ph;
+        for(int i=0; i< priceConfig.getPublicHolidays().size(); i++){
+            ph = priceConfig.getPublicHolidays().get(i);
+            if(ph.getDate().equals(date)){
+                return price + priceConfig.getPublicHolidayIncrease();
+            }
+        }
+
+        if((date.getDayOfWeek() == DayOfWeek.SATURDAY) || (date.getDayOfWeek() == DayOfWeek.SUNDAY)){
+            return price + priceConfig.getWeekendIncrease();
+        }
+
+        return price; //weekdays
+    }
+
+    private double movieTypeCalculation(double price, MovieType movieType){
+        return price + getPriceIncrease(movieType);
+    }
+
+    private double ageCalculation(double price, Ticket ticket){
+        int ticketType = ticket.getTicketType();
+        double discount = 1;
+        switch (ticketType) {
+            case 2:
+                discount = priceConfig.getStudentDiscount();
+                break;
+            case 3:
+                discount = priceConfig.getChildDiscount();
+                break;
+            case 4:
+                discount = priceConfig.getSeniorDiscount();
+                break;
+            default:
+                break;
+        }
+        return price * discount;
+    }
+
+    private double getPriceIncrease(MovieType type){
+        switch(type){
+            case THREED:
+                return priceConfig.getThreeDMovieIncrease();
+            case IMAX:
+                return priceConfig.getIMAXIncrease();
+            case BLOCKBUSTER:
+                return priceConfig.getBlockbusterIncrease();
+            default:
+                return 0;
+        }
+    }
+
+    private double getPriceIncrease(CinemaClass cinemaClass) {
+        switch(cinemaClass){
+            case GOLD:
+                return priceConfig.getTicketGoldBasePrice();
+            case PLATINUM:
+                return priceConfig.getTicketPlatinumBasePrice();
+            default:
+                return priceConfig.getTicketBasePrice();
+        }
     }
 }

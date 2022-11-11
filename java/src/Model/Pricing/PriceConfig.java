@@ -8,60 +8,42 @@ import java.util.ArrayList;
 
 public class PriceConfig implements Serializable {
 
-    private double ticketBasePrice = 10;
+    private static double ticketBasePrice = 10;
 
-    private double ticketPlatinumBasePrice = 20;
+    private static double ticketPlatinumBasePrice = 20;
 
-    private double ticketGoldBasePrice = 30;
+    private static double ticketGoldBasePrice = 30;
 
-    private double weekendIncrease = 5;
+    private static double weekendIncrease = 5;
 
-    private double publicHolidayIncrease = 7;
+    private static double publicHolidayIncrease = 7;
 
-    private double threeDMovieIncrease = 5;
+    private static double threeDMovieIncrease = 5;
 
-    private double blockbusterIncrease = 4;
+    private static double blockbusterIncrease = 4;
 
-    private double IMAXIncrease = 6;
+    private static double IMAXIncrease = 6;
 
-    private double childDiscount = 0.5;
+    private static double childDiscount = 0.5;
 
-    private double studentDiscount = 0.9;
+    private static double studentDiscount = 0.9;
 
-    private double seniorDiscount = 0.7;
+    private static double seniorDiscount = 0.7;
 
-    private double gstPercentageIncrease = 0.07;
+    private static double gstPercentageIncrease = 0.07;
 
     private ArrayList<PublicHoliday> publicHolidays = new ArrayList<>();
 
-    private static PriceConfig instance = null;
 
     public PriceConfig(){
     }
-
-    public static PriceConfig getInstance(){
-        DatabaseController databaseController = DatabaseController.getInstance();
-        if(instance == null){
-            if(databaseController.retrievePriceConfig() == null){
-                instance = new PriceConfig();
-            }
-            else{
-                instance = databaseController.retrievePriceConfig();
-            }
-
-        }
-        return instance;
-    }
-
 
     public ArrayList<PublicHoliday> getPublicHolidays() {
         return publicHolidays;
     }
 
-    public void setPublicHolidays(ArrayList<PublicHoliday> publicHolidays){
-        DatabaseController databaseController = DatabaseController.getInstance();
+    public void setPublicHolidays(ArrayList<PublicHoliday> publicHolidays) {
         this.publicHolidays = publicHolidays;
-        databaseController.savePriceConfig(this);
     }
 
     public double getTicketBasePrice() {
@@ -69,9 +51,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setTicketBasePrice(double ticketBasePrice) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.ticketBasePrice = ticketBasePrice;
-        databaseController.savePriceConfig(this);
+        PriceConfig.ticketBasePrice = ticketBasePrice;
     }
 
     public double getTicketPlatinumBasePrice() {
@@ -83,15 +63,11 @@ public class PriceConfig implements Serializable {
     }
 
     public void setIMAXIncrease(double IMAXIncrease) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.IMAXIncrease = IMAXIncrease;
-        databaseController.savePriceConfig(this);
+        PriceConfig.IMAXIncrease = IMAXIncrease;
     }
 
     public void setTicketPlatinumBasePrice(double ticketPlatinumBasePrice) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.ticketPlatinumBasePrice = ticketPlatinumBasePrice;
-        databaseController.savePriceConfig(this);
+        PriceConfig.ticketPlatinumBasePrice = ticketPlatinumBasePrice;
     }
 
     public double getTicketGoldBasePrice() {
@@ -99,9 +75,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setTicketGoldBasePrice(double ticketGoldBasePrice) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.ticketGoldBasePrice = ticketGoldBasePrice;
-        databaseController.savePriceConfig(this);
+        PriceConfig.ticketGoldBasePrice = ticketGoldBasePrice;
     }
 
     public double getWeekendIncrease() {
@@ -109,9 +83,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setWeekendIncrease(double weekendIncrease) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.weekendIncrease = weekendIncrease;
-        databaseController.savePriceConfig(this);
+        PriceConfig.weekendIncrease = weekendIncrease;
     }
 
     public double getPublicHolidayIncrease() {
@@ -119,9 +91,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setPublicHolidayIncrease(double publicHolidayIncrease) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.publicHolidayIncrease = publicHolidayIncrease;
-        databaseController.savePriceConfig(this);
+        PriceConfig.publicHolidayIncrease = publicHolidayIncrease;
     }
 
     public double getThreeDMovieIncrease() {
@@ -129,9 +99,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setThreeDMovieIncrease(double threeDMovieIncrease) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.threeDMovieIncrease = threeDMovieIncrease;
-        databaseController.savePriceConfig(this);
+        PriceConfig.threeDMovieIncrease = threeDMovieIncrease;
     }
 
     public double getBlockbusterIncrease() {
@@ -139,9 +107,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setBlockbusterIncrease(double blockbusterIncrease) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.blockbusterIncrease = blockbusterIncrease;
-        databaseController.savePriceConfig(this);
+        PriceConfig.blockbusterIncrease = blockbusterIncrease;
     }
 
     public double getChildDiscount() {
@@ -149,9 +115,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setChildDiscount(double childDiscount) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.childDiscount = childDiscount;
-        databaseController.savePriceConfig(this);
+        PriceConfig.childDiscount = childDiscount;
     }
 
     public double getStudentDiscount() {
@@ -159,9 +123,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setStudentDiscount(double studentDiscount) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.studentDiscount = studentDiscount;
-        databaseController.savePriceConfig(this);
+        PriceConfig.studentDiscount = studentDiscount;
     }
 
     public double getSeniorDiscount() {
@@ -169,9 +131,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setSeniorDiscount(double seniorDiscount) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.seniorDiscount = seniorDiscount;
-        databaseController.savePriceConfig(this);
+        PriceConfig.seniorDiscount = seniorDiscount;
     }
 
     public double getGstPercentageIncrease() {
@@ -179,9 +139,7 @@ public class PriceConfig implements Serializable {
     }
 
     public void setGstPercentageIncrease(double gstPercentageIncrease) {
-        DatabaseController databaseController = DatabaseController.getInstance();
-        this.gstPercentageIncrease = gstPercentageIncrease;
-        databaseController.savePriceConfig(this);
+        PriceConfig.gstPercentageIncrease = gstPercentageIncrease;
     }
 
 }

@@ -9,8 +9,8 @@ public class StudentTicket extends Ticket {
     public StudentTicket(Seats seats, Showtime showtime){super(seats, showtime);}
 
     @Override
-    public double getDiscount() {
-        return PriceConfig.getInstance().getStudentDiscount();
+    public int getTicketType() {
+        return 2;
     }
 
     @Override

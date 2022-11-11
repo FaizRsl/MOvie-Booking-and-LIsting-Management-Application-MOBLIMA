@@ -9,8 +9,8 @@ public class SeniorTicket extends Ticket {
     public SeniorTicket(Seats seats, Showtime showtime){super(seats, showtime);}
 
     @Override
-    public double getDiscount() {
-        return PriceConfig.getInstance().getSeniorDiscount();
+    public int getTicketType() {
+        return 4;
     }
 
     @Override
