@@ -26,7 +26,6 @@ public class BookingController {
         String username = sc.nextLine();
         List<Booking> bookingList = getBookingByUsername(username);
         bookingView.displayBookingHistory(sc,bookingList);
-
     }
 
     public void addBooking(Booking booking) {
@@ -54,7 +53,7 @@ public class BookingController {
             totalSales = 0;
         }
         SortedMap<String, Double> moviePrice = moviePriceHM.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,

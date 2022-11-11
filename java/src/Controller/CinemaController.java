@@ -45,7 +45,7 @@ public class CinemaController {
     }
 
     public int displayShowtimeByCineplex(int choice, String movieName){
-        return cinemaView.displayShowtimeByCinema(cineplexes.get(choice-1), movieName);
+        return cinemaView.displayShowtimeByCinema(cineplexes.get(choice), movieName);
     }
 
     public Showtime getCineplexAllShowtimes(int showtimeChoice, String movieName){
@@ -57,23 +57,21 @@ public class CinemaController {
     }
 
     public Showtime getShowtimeByCineplex(int cineplexChoice, int showtimeChoice, String movieName){
-        return cinemaView.getShowtimeByCineplex(cineplexes.get(cineplexChoice-1), showtimeChoice, movieName);
+        return cinemaView.getShowtimeByCineplex(cineplexes.get(cineplexChoice), showtimeChoice, movieName);
     }
     public Showtime getShowtimeByDate(int choice, String date, String movieTitle){
         return cinemaView.getShowtime(cineplexes, choice,  movieTitle, date);
     }
 
     public void addNewShowtime(Scanner sc,MovieController movieController) throws InputMismatchException {
-        displayAllCineplex();
-        System.out.println("Select Cineplex: ");
-        int cineplexChoice = selectCineplex(sc);
-        System.out.println("Select Cinema: ");
-        int cinemaChoice = selectCinema(sc, cineplexChoice);
-        addShowtimeToCineplex(getCinemaFromCineplex(cineplexChoice, cinemaChoice), sc, movieController);
+        Cinema cinema = getCinemaFromCineplex(sc);
+        if (cinema == null)
+            return;
+        addShowtimeToCineplex(cinema, sc, movieController);
         databaseController.updateCineplexDB(cineplexes);
     }
 
-    public void addShowtimeToCineplex(Cinema cinema,Scanner sc, MovieController movieController) throws InputMismatchException {
+    private void addShowtimeToCineplex(Cinema cinema,Scanner sc, MovieController movieController) throws InputMismatchException {
         ArrayList<Showtime> showtimeList = cinema.getShowtimes();
         List<Movie> availableMovieList = movieController.getCurrentlyAvailableMovies();
 
@@ -82,6 +80,10 @@ public class CinemaController {
         movieController.displayMovieFromMovieList(availableMovieList);
         System.out.println("Select Movie: ");
         int movieChoice = sc.nextInt();
+        if (movieChoice > availableMovieList.size()) {
+            System.out.println("Input is out of range. Please enter within the range!");
+            return;
+        }
         Movie mov = availableMovieList.get(movieChoice-1);
 
         System.out.println("Type of Movie: ");
@@ -94,6 +96,7 @@ public class CinemaController {
         cinema.addShowTime(showtime);
         
         cinemaView.displayCinemaShowtime(showtimeList);
+
     }
 
     public LocalDateTime createLocalDateTime(Scanner sc) {
@@ -149,11 +152,7 @@ public class CinemaController {
 
     public void updateShowtime(Scanner sc,MovieController movieController) throws InputMismatchException {
         displayAllCineplex();
-        System.out.println("Select Cineplex: ");
-        int cineplexChoice = selectCineplex(sc);
-        System.out.println("Select Cinema: ");
-        int cinemaChoice = selectCinema(sc,cineplexChoice);
-        Cinema cinema = getCinemaFromCineplex(cineplexChoice,cinemaChoice);
+        Cinema cinema = getCinemaFromCineplex(sc);
         List<Movie> availableMovieList = movieController.getCurrentlyAvailableMovies();
         cinemaView.displayUpdateShowtimeOptions();
         int choice = sc.nextInt();
@@ -187,14 +186,12 @@ public class CinemaController {
                 System.out.println("New Cinema Location");
                 System.out.println("====================");
                 System.out.println("Select New Cineplex: ");
-                int newCineplexChoice = selectCineplex(sc);
-                System.out.println("Select New Cinema: ");
-                int newCinemaChoice = selectCinema(sc,newCineplexChoice);
                 Showtime showtime = cinema.getShowtimes().get(index);
-                getCinemaFromCineplex(newCineplexChoice,newCinemaChoice).getShowtimes().add(showtime);
-
+                Cinema tmp = getCinemaFromCineplex(sc);
+                if (tmp == null)
+                    break;
+                tmp.getShowtimes().add(showtime);
                 cinema.getShowtimes().remove(showtime);
-
                 break;
         }
 
@@ -202,10 +199,9 @@ public class CinemaController {
         }
 
     public void removeShowtime(Scanner sc) throws InputMismatchException{
-        displayAllCineplex();
-        int cineplexChoice = selectCineplex(sc);
-        int cinemaChoice = selectCinema(sc,cineplexChoice);
-        Cinema cinema = getCinemaFromCineplex(cineplexChoice,cinemaChoice);
+        Cinema cinema = getCinemaFromCineplex(sc);
+        if (cinema == null)
+            return;
         cinemaView.displayCinemaShowtime(cinema.getShowtimes());
         System.out.println("Input showtime index to remove");
         int index = sc.nextInt();
@@ -213,7 +209,20 @@ public class CinemaController {
         databaseController.updateCineplexDB(cineplexes);
     }
 
-    private Cinema getCinemaFromCineplex(int cineplexChoice, int cinemaChoice){
+    private Cinema getCinemaFromCineplex(Scanner sc){
+        displayAllCineplex();
+        System.out.println("Select Cineplex: ");
+        int cineplexChoice = selectCineplex(sc);
+        if (cineplexChoice >= cineplexes.size()) {
+            System.out.println("Input is out of range. Please enter within the range!");
+            return null;
+        }
+        System.out.println("Select Cinema: ");
+        int cinemaChoice = selectCinema(sc, cineplexChoice);
+        if (cinemaChoice >= cineplexes.get(cineplexChoice).getCinemas().size()) {
+            System.out.println("Input is out of range. Please enter within the range!");
+            return null;
+        }
         return cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice);
     }
     private int selectCineplex(Scanner sc) throws InputMismatchException {

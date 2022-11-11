@@ -76,6 +76,7 @@ public class PriceController {
                 priceConfig.setTicketPlatinumBasePrice(price);
                 break;
         }
+        databaseController.savePriceConfig(priceConfig);
     }
 
     public void configMovieTypePrice(PriceConfig priceConfig, Scanner sc) throws InputMismatchException{
@@ -97,6 +98,7 @@ public class PriceController {
                 priceConfig.setIMAXIncrease(price);
                 break;
         }
+        databaseController.savePriceConfig(priceConfig);
     }
 
     public void configDiscounts(PriceConfig priceConfig, Scanner sc) throws InputMismatchException{
@@ -119,13 +121,14 @@ public class PriceController {
                 priceConfig.setSeniorDiscount(discount);
                 break;
         }
+        databaseController.savePriceConfig(priceConfig);
     }
 
     public void configGST(PriceConfig priceConfig, Scanner sc) throws InputMismatchException{
         priceConfigMenu.printGSTconfig(priceConfig);
         double gst = sc.nextDouble();
         priceConfig.setGstPercentageIncrease(gst);
-
+        databaseController.savePriceConfig(priceConfig);
     }
 
     public void configHolidays(PriceConfig priceConfig,Scanner sc) throws InputMismatchException{
@@ -154,9 +157,10 @@ public class PriceController {
         }
 
         priceConfig.setPublicHolidays(publicHolidays);
+        databaseController.savePriceConfig(priceConfig);
     }
 
-    public PublicHoliday addHoliday(Scanner sc){
+    private PublicHoliday addHoliday(Scanner sc){
         PublicHoliday ph = null;
 
         System.out.println("Holiday Name:");

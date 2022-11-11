@@ -74,26 +74,24 @@ public class MovieView {
 
     public void displayMovieWithReviews(List<Movie> movies) {
         System.out.println("Movie Title: Rating");
+        System.out.println("--------------------------------------------");
         movies.forEach(movie -> {
-            System.out.printf("%s: %.1f",movie.getTitle(),movie.getRating());
+            System.out.printf("%s: %.1f\n",movie.getTitle(),movie.getRating());
         });
     }
 
-    public Movie displayUpdateMovie(Scanner sc, List<Movie> movies) {
+    public Movie displayUpdateMovie(Scanner sc, int update, List<Movie> movies) {
         int count = 0;
-        Movie movie = null;
-        System.out.println("Which movie to update?");
-        displayMovies(movies);
-        try {
-            int update = sc.nextInt();
-
-            movie = movies.get(update-1);
-            boolean loop = true;
-            int choice;
-            while(loop) {
+        Movie movie;
+        movie = movies.get(update-1);
+        boolean loop = true;
+        int choice;
+        while(loop) {
+            try {
                 displayMovieDetails(update, movie);
                 displayUpdateOptions();
                 choice = sc.nextInt();
+                sc.nextLine();
                 switch (choice) {
                     case 1:
                         System.out.println("Input new movie title: ");
@@ -109,6 +107,7 @@ public class MovieView {
                             displayUpdateCastOptions();
                             int castChoice = sc.nextInt();
                             ArrayList<String> castList = movie.getCasts();
+                            sc.nextLine();
                             switch (castChoice) {
                                 case 1:
                                     System.out.println("Cast Name: ");
@@ -127,6 +126,7 @@ public class MovieView {
                                         System.out.println(i + 1 + ") " + castList.get(i));
                                     }
                                     int castIndex = sc.nextInt() - 1;
+                                    sc.nextLine();
                                     System.out.println("New Cast Name: ");
                                     castList.set(castIndex, sc.nextLine());
                                     break;
@@ -150,28 +150,29 @@ public class MovieView {
                         int statusChoice = sc.nextInt();
                         movie.getMovieDetails().setMovieStatus(setMovieStatus(statusChoice));
                         break;
-
+                    default:
+                        System.out.println("Index out of range!");
+                        break;
                 }
-                System.out.println("Continue Changes?");
-                System.out.println("1) Yes");
-                System.out.println("2) No");
-                if (sc.nextInt() != 1)
-                    loop = false;
+            } catch (InputMismatchException e) {
+                System.out.println("Unable to recognize your input. Please try again!");
+                System.out.println("Expected Input: Integer");
+                System.out.println("Input:" + e.getMessage());
+                count++;
+                if (count > 3)
+                    throw e;
+                sc.nextLine();
             }
-        } catch (InputMismatchException e) {
-            if (count > 3)
-                throw e;
-            System.out.println("Unable to recognize your input. Please try again!");
-            System.out.println("Expected Input: Integer");
-            System.out.println("Input:" + e.getMessage());
-            count++;
-            sc.nextLine();
-        }
+            System.out.println("Continue Changes?");
+            System.out.println("1) Yes");
+            System.out.println("2) No");
+            if (sc.nextInt() != 1)
+                loop = false;
+            }
         return movie;
     }
 
     public Movie displayCreateMovie(Scanner sc) {
-
         ArrayList<Review> reviews = new ArrayList<Review>();
         ArrayList<String> casts = new ArrayList<String>();
         MovieDetails movieDetails;
@@ -192,7 +193,7 @@ public class MovieView {
         for (int i = 0; i < tempList.size(); i++){
             casts.add(i,tempList.get(i).trim());
         }
-        System.out.println("Rating: ");
+        System.out.println("Rating: [1 - 5] ");
         double rating = sc.nextDouble();
 
         System.out.println("Movie Status: ");
@@ -200,7 +201,6 @@ public class MovieView {
         System.out.println("2) Preview");
         System.out.println("3) Now Showing");
         System.out.println("4) Ended");
-        int choice;
         movieStatus = (MovieStatus) infiniteLoop(4,sc);
 
         System.out.println("Movie Censorship: ");
@@ -235,21 +235,28 @@ public class MovieView {
         boolean loop = true;
         int choice = 0;
         Object obj = null;
+        sc.nextLine();
         while (loop) {
                 choice = sc.nextInt();
-                if (choice < index) {
+                if (choice > index) {
                     System.out.println("Please enter a valid number!");
                     continue;
                 }
             switch (index) {
                 case 4:
-                    obj = setMovieStatus(choice);
+                    do {
+                        obj = setMovieStatus(choice);
+                    } while (obj == null);
                     break;
                 case 5:
-                    obj = setGenre(choice);
+                    do {
+                        obj = setGenre(choice);
+                    } while (obj == null);
                     break;
                 case 6:
-                    obj = setCensorship(choice);
+                    do {
+                        obj = setCensorship(choice);
+                    } while (obj == null);
                     break;
                 default:
                     break;
@@ -274,6 +281,7 @@ public class MovieView {
                 movieStatus = MovieStatus.ENDED;
                 break;
             default:
+                System.out.println("Please enter a valid input");
                 break;
         }
         return movieStatus;
@@ -297,6 +305,7 @@ public class MovieView {
                 genre = Genre.MYSTERY;
                 break;
             default:
+                System.out.println("Please enter a valid input");
                 break;
         }
         return genre;
@@ -323,6 +332,8 @@ public class MovieView {
                 movieCensorship = MovieCensorship.R21;
                 break;
             default:
+                System.out.println("Please enter a valid input");
+                break;
         }
         return movieCensorship;
     }

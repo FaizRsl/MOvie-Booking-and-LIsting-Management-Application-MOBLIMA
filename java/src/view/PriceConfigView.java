@@ -8,7 +8,6 @@ import Model.Pricing.PriceConfig;
 import Model.Pricing.PublicHoliday;
 
 public class PriceConfigView {
-    private PriceConfig priceConfig = PriceConfig.getInstance();
     public void printPriceConfigMenu(){
         System.out.println("----------------Price Config----------------");
         System.out.println("--------------------------------------------");
@@ -21,7 +20,7 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
-    public void printCinemaPriceConfig(){
+    public void printCinemaPriceConfig(PriceConfig priceConfig){
         System.out.println("-----------Cinema Type Prices---------------");
         System.out.println("Base Ticket Price: " + priceConfig.getTicketBasePrice());
         System.out.println("Gold Ticket Price: " + priceConfig.getTicketGoldBasePrice());
@@ -34,7 +33,7 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
     
-    public void printMoviePriceConfig(){
+    public void printMoviePriceConfig(PriceConfig priceConfig){
         System.out.println("-------------Movie Type Prices-------------");
         System.out.println("3D Ticket Price Increase: " + priceConfig.getThreeDMovieIncrease());
         System.out.println("BlockBuster Ticket Price increase: " + priceConfig.getBlockbusterIncrease());
@@ -47,7 +46,7 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
-    public void printDiscountConfig(){
+    public void printDiscountConfig(PriceConfig priceConfig){
         System.out.println("--------------Set Discounts-----------------");
         System.out.println("Child Discount: " + priceConfig.getChildDiscount() + "%");
         System.out.println("Student Discount: " + priceConfig.getStudentDiscount() + "%");
@@ -60,7 +59,7 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
-    public void printGSTconfig(){
+    public void printGSTconfig(PriceConfig priceConfig){
         System.out.println("-----------------Set GST--------------------");
         System.out.println("Current GST: " + priceConfig.getGstPercentageIncrease() + "%");
         System.out.println("--------------------------------------------");
@@ -77,9 +76,7 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
-    public void printHolidays(){
-        ArrayList<PublicHoliday> publicHolidays = PriceConfig.getInstance().getPublicHolidays();
-
+    public void printHolidays(ArrayList<PublicHoliday> publicHolidays){
         for(int i = 0; i < publicHolidays.size(); i++){
             System.out.println((i+1) + ". " + publicHolidays.get(i).getName() + "(" + publicHolidays.get(i).getDate() + ")");
         }

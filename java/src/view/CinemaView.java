@@ -6,6 +6,7 @@ import Model.Cinema.Cineplex;
 import Model.Cinema.Showtime;
 import Model.Movie.MovieType;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -131,15 +132,9 @@ public class CinemaView {
             System.out.printf("%d ) Showtime Details: \n",j+1);
             System.out.println("---------------------");
             System.out.printf("Movie Title: %s ( %s ) \n",showtime.getMovie().getTitle(),showtime.getMovieType());
-            System.out.printf("Date: %d %s",showtime.getDateTime().getDayOfMonth(),showtime.getDateTime().getMonth());
+            System.out.printf("Date: %d %s\n",showtime.getDateTime().getDayOfMonth(),showtime.getDateTime().getMonth());
             int hour = showtime.getDateTime().getHour();
-            if(hour > 12 && hour < 23){
-                System.out.println("Time: " + (hour - 12) + ":" + showtime.getDateTime().getMinute() + " PM");
-            } else if (hour == 12){
-                System.out.println("Time: " + hour + ":" + showtime.getDateTime().getMinute() + " PM");
-            } else {
-                System.out.println("Time: " + hour + ":" + showtime.getDateTime().getMinute() + " AM");
-            }
+            System.out.printf("Time: %s\n",showtime.getDateTime().toLocalTime().format(DateTimeFormatter.ofPattern("hh.mm a")));
             System.out.println("---------------------");
         }
         System.out.println();

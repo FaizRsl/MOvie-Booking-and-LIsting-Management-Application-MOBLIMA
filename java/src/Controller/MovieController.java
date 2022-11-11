@@ -23,6 +23,7 @@ public class MovieController {
     }
 
     public List<Movie> getMovies() {
+        movies = databaseController.getMovieFromDB();
         return movies;
     }
 
@@ -38,19 +39,32 @@ public class MovieController {
         databaseController.updateMovieDB(movies);
     }
 
-    public void removeMovieByStatus(Scanner sc) {
+    public void removeMovieByStatus(Scanner sc) throws InputMismatchException {
         displayAllMovie();
         System.out.println("What movie is to be removed?");
         int remove = sc.nextInt();
-
+        if (remove > movies.size())
+            System.out.println("Input is out of range! Please enter a valid range");
         movies.get(remove-1).getMovieDetails().setMovieStatus(MovieStatus.ENDED);
         databaseController.updateMovieDB(movies);
     }
 
     public void updateMovieDetailsFromInput(Scanner sc) {
-        Movie movie = movieView.displayUpdateMovie(sc, movies);
+        int update = 1;
+        System.out.println("Which movie to update?");
+        movieView.displayMovies(movies);
+        try {
+            update = sc.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please try again!");
+        }
+        if (update > movies.size()) {
+            System.out.println("Invalid input!");
+            return;
+        }
+        Movie movie = movieView.displayUpdateMovie(sc,update, movies);
         if (movie != null)
-            updateMovieDetails(movie);
+            updateMovieDetails(update,movie);
 
     }
 
@@ -92,13 +106,13 @@ public class MovieController {
         double overallRating = Math.round(getOverallRating(movie) * 100.0)/100.0;
         movie.setRating(overallRating);
         System.out.println(movie.getReviews().size());
-        updateMovieDetails(movie);
+        updateMovieDetails(movieChoice,movie);
     }
 
     public void getTopFiveMovieRating(){
         List<Movie> movieList = movies;
-        movieList.sort(Comparator.comparing(Movie::getRating));
-        List<Movie> topFive = movieList.subList(0,4);
+        movieList.sort(Collections.reverseOrder(Comparator.comparing(Movie::getRating)));
+        List<Movie> topFive = movieList.subList(0,5);
         movieView.displayMovieWithReviews(topFive);
     }
 
@@ -147,9 +161,8 @@ public class MovieController {
         return (total/count);
     }
 
-    private void updateMovieDetails(Movie movie) {
-        movies.remove(movie);
-        movies.add(movie);
+    private void updateMovieDetails(int choice,Movie movie) {
+        movies.set(choice,movie);
         databaseController.updateMovieDB(movies);
     }
 
