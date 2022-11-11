@@ -16,22 +16,47 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class CinemaController.
+ */
+
 public class CinemaController {
 
     private DatabaseController databaseController = DatabaseController.getInstance();
+    
+    /** List of Cineplex objects. */
 
     private List<Cineplex> cineplexes;
+    
+    /** The cinema view. 
+     * @see CinemaView#CinemaView()
+     * */
 
     private CinemaView cinemaView;
+    
+    /**
+     * Instantiates a new cinema controller.
+     */
 
     public CinemaController() {
         cinemaView = new CinemaView();
         cineplexes = databaseController.getCineplexFromDB();
     }
+    
+    /**
+     * Gets all cineplexes
+     *
+     * @return a list containing of Cineplex objects, representing all Cineplexes
+     */
 
     public List<Cineplex> getAllCineplex(){
         return cineplexes;
     }
+    
+    /**
+     * Display all cineplexes.
+     * 
+     */
 
     public int displayAllCineplex(){
         return cinemaView.displayCineplex(cineplexes);
@@ -40,28 +65,78 @@ public class CinemaController {
     public int displayShowtimeByDate(String date, String movieTitle) {
         return cinemaView.displayShowtimes(cineplexes, movieTitle, date);
     }
+    
+    /**
+     * Display all cineplex showtimes.
+     *
+     * @param movieName the movie name
+     */
     public int displayAllCineplexShowtimes(String movieName){
         return cinemaView.displayShowtimes(cineplexes, movieName);
     }
+    
+    /**
+     * Display showtime by cineplex.
+     *
+     * @param choice the choice
+     * @param movieName the movie name
+     */
 
     public int displayShowtimeByCineplex(int choice, String movieName){
         return cinemaView.displayShowtimeByCinema(cineplexes.get(choice), movieName);
     }
+    
+    /**
+     * Gets the cineplex all showtimes.
+     *
+     * @param showtimeChoice the showtime choice
+     * @param movieName the movie name
+     * @return the cineplex all showtimes
+     */
 
     public Showtime getCineplexAllShowtimes(int showtimeChoice, String movieName){
         return cinemaView.getShowtime(cineplexes,showtimeChoice,movieName);
     }
 
+    /**
+     * Display showtime info.
+     *
+     * @param showtime the showtime
+     */
+    
     public void displayShowtimeInfo(Showtime showtime){
         cinemaView.displayShowtime(showtime);
     }
+    
+    /**
+     * Gets the showtime by cineplex.
+     *
+     * @param cineplexChoice the cineplex choice
+     * @param showtimeChoice the showtime choice
+     * @param movieName the movie name
+     * @return the showtime by cineplex
+     */
 
     public Showtime getShowtimeByCineplex(int cineplexChoice, int showtimeChoice, String movieName){
         return cinemaView.getShowtimeByCineplex(cineplexes.get(cineplexChoice), showtimeChoice, movieName);
     }
+    
+    /**
+     * Gets the showtime by date.
+     *
+     * @param choice the choice
+     * @param date the date
+     * @param movieTitle the movie title
+     * @return the showtime by date
+     */
+    
     public Showtime getShowtimeByDate(int choice, String date, String movieTitle){
         return cinemaView.getShowtime(cineplexes, choice,  movieTitle, date);
     }
+    
+    /**
+     * Adds the new showtime.
+     */
 
     public void addNewShowtime(Scanner sc,MovieController movieController) throws InputMismatchException {
         Cinema cinema = getCinemaFromCineplex(sc);
@@ -70,6 +145,12 @@ public class CinemaController {
         addShowtimeToCineplex(cinema, sc, movieController);
         databaseController.updateCineplexDB(cineplexes);
     }
+    
+    /**
+     * Adds the showtime to cineplex.
+     *
+     * @param cinema the cinema
+     */
 
     private void addShowtimeToCineplex(Cinema cinema,Scanner sc, MovieController movieController) throws InputMismatchException {
         ArrayList<Showtime> showtimeList = cinema.getShowtimes();
@@ -98,6 +179,12 @@ public class CinemaController {
         cinemaView.displayCinemaShowtime(showtimeList);
 
     }
+    
+    /**
+     * Creates the local date time.
+     *
+     * @return the local date time
+     */
 
     public LocalDateTime createLocalDateTime(Scanner sc) {
         int hour = 0;
@@ -149,6 +236,10 @@ public class CinemaController {
         }
         return LocalDateTime.of(year, month, day, hour, minute);
     }
+    
+    /**
+     * Update showtime.
+     */
 
     public void updateShowtime(Scanner sc,MovieController movieController) throws InputMismatchException {
         displayAllCineplex();
@@ -197,6 +288,10 @@ public class CinemaController {
 
         databaseController.updateCineplexDB(cineplexes);
         }
+    
+    /**
+     * Removes the showtime.
+     */
 
     public void removeShowtime(Scanner sc) throws InputMismatchException{
         Cinema cinema = getCinemaFromCineplex(sc);

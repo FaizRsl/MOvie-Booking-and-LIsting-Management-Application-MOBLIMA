@@ -13,9 +13,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+/**
+ * The Class CinemaView, solely for displaying cinema data.
+ */
 public class CinemaView {
-
+    /**
+     * Displays cineplex.
+     * @param cineplexes: a list of Cineplex objects
+     * @see Cineplex
+     */
     public int displayCineplex(List<Cineplex> cineplexes){
         for(int i=0; i<cineplexes.size(); i++){
             System.out.println((i+1) + ") " + cineplexes.get(i).getCineplexName() + " Cineplex");
@@ -23,6 +29,14 @@ public class CinemaView {
         return cineplexes.size();
     }
 
+    /**
+     * Get showtimes.
+     * @param cineplexes: a list of Cineplex objects
+     * @param int showtimeChoice
+     * @param String movieName
+     * 
+     * @see Cineplex
+     */
     public Showtime getShowtime(List<Cineplex> cineplexes, int showtimeChoice, String movieName) {
         int count = 0;
         for (Cineplex cineplex : cineplexes) {
@@ -40,7 +54,18 @@ public class CinemaView {
             System.out.println("Sorry, there is no showtime on this date!");
         return null;
     }
-    public Showtime getShowtime(List < Cineplex > cineplexes,int showtimeChoice, String movieName, String date){
+    
+    /**
+     * Get showtimes by date filtering.
+     * 
+     * @param Cineplex cineplex
+     * @param int showtimeChoice
+     * @param String movieName
+     * @param String date
+     * 
+     * @see Cineplex
+     */
+    public Showtime getShowtime(List < Cineplex > cineplexes, int showtimeChoice, String movieName, String date){
         int count = 0;
         for (Cineplex cineplex : cineplexes) {
             for (Cinema cinema : cineplex.getCinemas()) {
@@ -58,7 +83,15 @@ public class CinemaView {
             System.out.println("Sorry, there is no showtime on this date!");
         return null;
     }
-
+    
+    /**
+     * Get showtimes by cineplex.
+     * @param cineplexes: a list of Cineplex objects
+     * @param int showtimeChoice
+     * @param String movieName
+     * 
+     * @see Cineplex
+     */
     public Showtime getShowtimeByCineplex(Cineplex cineplex, int showtimeChoice, String movieName){
         return getShowtime(Collections.singletonList(cineplex),showtimeChoice,movieName);
     }
@@ -80,6 +113,7 @@ public class CinemaView {
             System.out.println("Sorry, there is no showtime on this date");
         return count;
     }
+    
     public int displayShowtimes(List<Cineplex> cineplexes, String movieName, String date) {
         int count = 0;
         for (Cineplex cineplex : cineplexes) {
@@ -98,11 +132,22 @@ public class CinemaView {
             System.out.println("Sorry, there is no showtime on this date");
         return count;
     }
-
+    
+    /**
+     * Display showtime by cinema.
+     *
+     * @param Cineplex object cineplex
+     * @param movieName the String representing movie name
+     */
     public int displayShowtimeByCinema(Cineplex cineplex, String movieName){
         return displayShowtimes(Collections.singletonList(cineplex),movieName);
     }
-
+    /**
+     * Displays showtime.
+     *
+     * @param showtime of class Showtime
+     * @return formatted showtime string
+     */
     public void displayShowtime(Showtime showtime){
         StringBuilder sb = new StringBuilder();
         if (showtime.getCinema().getCinemaClass() != CinemaClass.NORMAL){
@@ -124,6 +169,12 @@ public class CinemaView {
         sb.append(String.format("%s \n",showtime.getDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm - EEEE "))));
         System.out.println(sb);
     }
+    
+    /**
+     * Display cinema showtime.
+     *
+     * @param showtimeList the showtime list
+     */
     public void displayCinemaShowtime(ArrayList<Showtime> showtimeList){
 
         Showtime showtime;
@@ -140,12 +191,22 @@ public class CinemaView {
         System.out.println();
 
     }
+    
+    /**
+     * Display cinemas.
+     *
+     * @param cineplex the cineplex
+     */
     public void displayCinemas(Cineplex cineplex){
         ArrayList<Cinema> cinemaList = cineplex.getCinemas();
         for(int i = 0; i < cinemaList.size(); i++){
             System.out.printf("%d ) Cinema Hall %d \n",i+1,cinemaList.get(i).getCinemaRoom());
         }
     }
+    
+    /**
+     * Display number of hours.
+     */
     public void displayTimeHours(){
         for(int i = 0; i <= 23; i++){
             if (i > 1 && i < 8)
@@ -153,6 +214,10 @@ public class CinemaView {
             System.out.printf("%d ) %s \n",i,LocalTime.of(i,0));
         }
     }
+    
+    /**
+     * Display number of minutes.
+     */
     public void displayTimeMinutes(){
         int index = 1;
         for(int i = 0; i < 60; i+=15){
@@ -160,12 +225,20 @@ public class CinemaView {
             index++;
         }
     }
+    
+    /**
+     * Display movie types.
+     */
     public void displayMovieTypes(){
         System.out.println("1) Normal");
         System.out.println("2) 3D");
         System.out.println("3) IMAX");
         System.out.println("4) Blockbuster");
     }
+    
+    /**
+     * Display update showtime options.
+     */
     public void displayUpdateShowtimeOptions(){
         System.out.println("What would you like to update?");
         System.out.println("1) Movie");

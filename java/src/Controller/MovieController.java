@@ -10,33 +10,69 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * The Class MovieController, responsible for managing and manipulating the MovieController database
+ */
+
 public class MovieController {
 
     private DatabaseController databaseController = DatabaseController.getInstance();
+    
+    /** List of Movie objects. */
+    
     private List<Movie> movies;
+    
+    /** List of MovieView objects */
+
     private MovieView movieView;
+    
+    /**
+     * Instantiates a new movie controller.
+     */
 
     public MovieController() {
         movieView = new MovieView();
         movies = databaseController.getMovieFromDB();
     }
+    
+    /**
+     * Gets the movies.
+     *
+     * @return the movies
+     */
 
     public List<Movie> getMovies() {
         movies = databaseController.getMovieFromDB();
         return movies;
     }
+    
+    /**
+     * Gets the non ended movies.
+     *
+     * @return the non ended movies, in a list of Movie objects.
+     */
 
     public List<Movie> getCurrentlyAvailableMovies() {
         return Stream.of(getMovieAccordingToStatus(MovieStatus.NOWSHOWING),getMovieAccordingToStatus(MovieStatus.PREVIEW))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
+    
+    /**
+     * Creates the movie.
+     *
+     * @param br the br
+     */
 
     public void createMovie(Scanner sc) {
         Movie movie = movieView.displayCreateMovie(sc);
         addMovie(movie);
         databaseController.updateMovieDB(movies);
     }
+    
+    /**
+     * Removes the movie by status. Updates movie status and after that, the movie database.
+     */
 
     public void removeMovieByStatus(Scanner sc) throws InputMismatchException {
         displayAllMovie();
@@ -64,30 +100,61 @@ public class MovieController {
         Movie movie = movieView.displayUpdateMovie(sc,update-1, movies);
         if (movie != null)
             updateMovieDetails(update-1,movie);
+
     }
 
     public int displayMovieFromMovieList(List<Movie> movieList) {
         movieView.displayMovies(movieList);
         return movieList.size();
     }
+    
+    /**
+     * Display currently showing movie.
+     */
+    
     public int displayCurrentShowingMovie() {
         return displayAccordingtoMovieStatus(MovieStatus.NOWSHOWING);
     }
+    
+    /**
+     * Display preview movie.
+     * 
+     * @return an integer
+     */
+    
     public int displayPreviewMovie() {
         return displayAccordingtoMovieStatus(MovieStatus.PREVIEW);
     }
+    
+    /**
+     * Display coming soon movie.
+     */
 
     public int displayComingSoonMovie() {
         return displayAccordingtoMovieStatus(MovieStatus.COMINGSOON);
     }
+    
+    /**
+     * Display ended movies.
+     */
 
     public int displayEndedMovies() {
         return displayAccordingtoMovieStatus(MovieStatus.ENDED);
     }
+    
+    /**
+     * Display all movies.
+     */
 
     public void displayAllMovie() {
         movieView.displayMovies(movies);
     }
+    
+    /**
+     * Show reviews by movie.
+     *
+     * @param choice the choice of movie
+     */
 
     public void showReviewsByMovie(int choice){
         ArrayList<Movie> showMovies = getMovieAccordingToStatus(MovieStatus.NOWSHOWING);
@@ -95,6 +162,16 @@ public class MovieController {
             movieView.displayReviewsByMovies(showMovies.get(choice-1));
         }
     }
+    
+    /**
+     * Adds the reviews.
+     *
+     * @param name the name
+     * @param rating the rating
+     * @param reviewContent the review content
+     * @param movieChoice the movie choice
+     * @param status the status
+     */
 
     public void addReviews(String name, double rating, String reviewContent, int movieChoice, MovieStatus status){
         Review review = new Review(name, rating, reviewContent);
@@ -106,13 +183,27 @@ public class MovieController {
         System.out.println(movie.getReviews().size());
         updateMovieDetails(movieChoice,movie);
     }
+    
+    /**
+     * Gets the top five movie rating.
+     *
+     * Calls {@link MovieView#displayMovieWithReviews(List)}
+     */
 
     public void getTopFiveMovieRating(){
         List<Movie> movieList = movies;
         movieList.sort(Collections.reverseOrder(Comparator.comparing(Movie::getRating)));
         List<Movie> topFive = movieList.subList(0,5);
-        movieView.displayMovieWithReviews(topFive);
+        movieView.getMovieRating(topFive);
     }
+    
+    /**
+     * Gets the movie by status and index.
+     *
+     * @param movieStatus the movie status
+     * @param movieIndex the movie index
+     * @return the movie by status and index
+     */
 
     public Movie getMovieByStatusAndIndex(MovieStatus movieStatus, int movieIndex){
         switch(movieStatus) {
@@ -125,6 +216,12 @@ public class MovieController {
                 return null;
         }
     }
+    
+    /**
+     * Show details.
+     *
+     * @param choice the choice
+     */
 
     public void showDetails(int choice, MovieStatus movieStatus) {
         ArrayList<Movie> movies = getMovieAccordingToStatus(movieStatus);
@@ -144,10 +241,24 @@ public class MovieController {
             System.out.println(mov.getTitle() + " (" + mov.getMovieDetails().getMovieStatus() + ")");
         }
     }
+    
+    /**
+     * Gets the movie by title.
+     *
+     * @param movieTitle the movie title
+     * @return the movie by title
+     */
 
     private Movie getMovieByTitle(String movieTitle) {
         return movies.stream().filter(movie -> movie.getTitle().equalsIgnoreCase(movieTitle)).findFirst().orElse(null);
     }
+    
+    /**
+     * Gets the overall rating.
+     *
+     * @param movie the movie
+     * @return the overall rating
+     */
 
     private double getOverallRating(Movie movie){
         double total = 0;
@@ -158,11 +269,23 @@ public class MovieController {
         }
         return (total/count);
     }
+    
+    /**
+     * Update movie details.
+     * @param choice the choice of movie
+     * @param movie the movie
+     */
 
     private void updateMovieDetails(int choice,Movie movie) {
         movies.set(choice,movie);
         databaseController.updateMovieDB(movies);
     }
+    
+    /**
+     * Display according to movie status, called by multiple functions with different movie statuses as inputs.
+     *
+     * @param movieStatus the choice of movie status
+     */
 
     private int displayAccordingtoMovieStatus(MovieStatus movieStatus) {
         ArrayList<Movie> currentShowing = movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == movieStatus).collect(Collectors.toCollection(ArrayList::new));

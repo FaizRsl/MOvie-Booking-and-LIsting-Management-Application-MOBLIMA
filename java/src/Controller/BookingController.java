@@ -8,13 +8,25 @@ import view.BookingView;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The Class BookingController.
+ */
+
 public class BookingController {
 
     private DatabaseController databaseController = DatabaseController.getInstance();
+    
+    /** The booking view. */
 
     private BookingView bookingView;
+    
+    /** List of Booking objects, representing bookings by moviegoers. */
 
     private List<Booking> bookings;
+    
+    /**
+     * Instantiates a new booking controller.
+     */
 
     public BookingController() {
         bookingView = new BookingView();
@@ -27,15 +39,38 @@ public class BookingController {
         List<Booking> bookingList = getBookingByUsername(username);
         bookingView.displayBookingHistory(sc,bookingList);
     }
+    
+    /**
+     * Adds the booking.
+     *
+     * @param booking the booking object to be added to list of Booking items, bookings
+     * @see #bookings
+     * @return void
+     */
 
     public void addBooking(Booking booking) {
         bookings.add(booking);
         databaseController.updateBookingDB(bookings);
     }
+    
+    /**
+     * Gets the booking by username. Calls findBookingByUsername(username)
+     *
+     * @param username the username
+     * @return the booking by username as a list of Booking object
+     */
 
     public List<Booking> getBookingByUsername(String username){
         return findBookingByUsername(username);
     }
+    
+    /**
+     * Displays the top five movies by ticket sales.
+     *
+     * @return void and calls displayTopFiveMovies
+     * 
+     * @see BookingView#displayTopFiveMovies(List, List)
+     */
 
     public void getTopFiveMovieByTicketSales(){
         MovieController movieController = new MovieController();
@@ -62,7 +97,9 @@ public class BookingController {
         List<Double> salesPriceList = new ArrayList<>(moviePrice.values()).subList(0,5);
         bookingView.displayTopFiveMovies(movies,salesPriceList);
     }
-
+    
+    
+    
     private List<Booking> findBookingByUsername(String username) {
         List<Booking> bookingList = new ArrayList<>();
         for(int i=(bookings.size()-1); i>=0; i--){

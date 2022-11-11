@@ -9,10 +9,7 @@ import Model.Cinema.Showtime;
 import Model.Movie.Movie;
 import Model.Movie.MovieStatus;
 import Model.Seat.Seats;
-import Model.Ticket.AdultTicket;
-import Model.Ticket.ChildrenTicket;
-import Model.Ticket.SeniorTicket;
-import Model.Ticket.Ticket;
+import Model.Ticket.*;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -536,10 +533,12 @@ public class CustomerView {
                 int adultCount = sc.nextInt();
                 System.out.println("How many children?");
                 int childrenCount = sc.nextInt();
+                System.out.println("How many students?");
+                int studentCount = sc.nextInt();
                 System.out.println("How many senior citizen?");
                 int seniorCitizenCount = sc.nextInt();
                 sc.nextLine();
-                int totalCount = adultCount + childrenCount + seniorCitizenCount;
+                int totalCount = adultCount + childrenCount + seniorCitizenCount + studentCount;
                 if (totalCount != size) {
                     System.out.println("Number does not tally with total tickets! Please try again.");
                     continue;
@@ -553,6 +552,8 @@ public class CustomerView {
                         ticket = new ChildrenTicket(seats.get(i), showtime);
                     else if (i < adultCount + childrenCount + seniorCitizenCount)
                         ticket = new SeniorTicket(seats.get(i), showtime);
+                    else if (i < adultCount + childrenCount + seniorCitizenCount + studentCount)
+                        ticket = new StudentTicket(seats.get(i), showtime);
                     assert ticket != null;
                     double price = priceController.calculateTicketPrice(ticket);
                     ticket.setPrice(price);
@@ -565,9 +566,9 @@ public class CustomerView {
                 System.out.println("Please enter your email:");
                 String userEmail = sc.nextLine();
                 Booking booking = new Booking(tickets, userName, userEmail); //add this to database;
-                bookingController.addBooking(booking);
                 totalPrice = Math.round(totalPrice * 100.00) / 100.00;
                 booking.setPrice(totalPrice);
+                bookingController.addBooking(booking);
                 printOrder(tickets, totalPrice, cinemaController,priceController);
                 break;
             } catch (InputMismatchException e) {
