@@ -344,7 +344,7 @@ public class CustomerView {
         return true;
     }
     private void handleShowtimeDisplay(Scanner sc, int choice, int movieChoice, MovieStatus movieStatus, MovieController movieController, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
-        Movie mov;
+        Movie mov = null;
         String date = "";
         int totalCount = 0;
         int cinemaChoice = -1;
@@ -373,27 +373,21 @@ public class CustomerView {
                     }
                 } while (cinemaChoice == -1);
                 mov = movieController.getMovieByStatusAndIndex(movieStatus, movieChoice);
-                totalCount = cinemaController.displayShowtimeByCineplex(cinemaChoice, mov.getTitle());
-                if (totalCount != 0) {
-                    handleShowtime(sc, totalCount, choice, mov, date, cinemaChoice, cinemaController, bookingController,priceController);
-                }
+                totalCount = cinemaController.displayShowtimeByCineplex(cinemaChoice-1, mov.getTitle());
                 break;
             case 2:
                 System.out.println("Input the date in this format (day/month/year) -> eg: 24/10/2022");
                 date = sc.nextLine();
                 mov = movieController.getMovieByStatusAndIndex(movieStatus, movieChoice);
                 totalCount = cinemaController.displayShowtimeByDate(date, mov.getTitle());
-                if (totalCount != 0) {
-                    handleShowtime(sc, totalCount, choice, mov, date, cinemaChoice, cinemaController, bookingController,priceController);
-                }
                 break;
             case 3:
                 mov = movieController.getMovieByStatusAndIndex(movieStatus, movieChoice);
                 totalCount = cinemaController.displayAllCineplexShowtimes(mov.getTitle());
-                if (totalCount != 0) {
-                    handleShowtime(sc, totalCount, choice, mov, date, cinemaChoice, cinemaController, bookingController,priceController);
-                }
                 break;
+        }
+        if (totalCount != 0) {
+            handleShowtime(sc, totalCount, choice, mov, date, cinemaChoice-1, cinemaController, bookingController,priceController);
         }
     }
     private void handleShowtime(Scanner sc, int totalCount, int choice, Movie mov, String date, int cinemaChoice, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
@@ -405,7 +399,7 @@ public class CustomerView {
         else if (choice == 2)
             showtimeSelected = cinemaController.getShowtimeByDate(showtimeChoice,date,mov.getTitle());
         else if (choice == 3)
-            showtimeSelected = cinemaController.getCineplexAllShowtimes(cinemaChoice,mov.getTitle());
+            showtimeSelected = cinemaController.getCineplexAllShowtimes(showtimeChoice,mov.getTitle());
         handleShowtimeBySelection(sc,showtimeSelected,bookingController,cinemaController,priceController);
 
 
@@ -473,6 +467,7 @@ public class CustomerView {
             try {
                 System.out.println("Choose one of the showtime available:");
                 showtimeChoice = sc.nextInt();
+                sc.nextLine();
                 if (showtimeChoice < 1 || showtimeChoice > totalCount) {
                     System.out.println("Invalid input. Please try again!");
                     showtimeChoice = -1;
