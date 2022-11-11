@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MovieController {
 
@@ -25,14 +26,15 @@ public class MovieController {
         return movies;
     }
 
+    public List<Movie> getCurrentlyAvailableMovies() {
+        return Stream.of(getMovieAccordingToStatus(MovieStatus.NOWSHOWING),getMovieAccordingToStatus(MovieStatus.PREVIEW))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
     public void createMovie(Scanner sc) {
         Movie movie = movieView.displayCreateMovie(sc);
         addMovie(movie);
-        databaseController.updateMovieDB(movies);
-    }
-
-    public void removeMovie(Movie movie) {
-        movies.remove(movie);
         databaseController.updateMovieDB(movies);
     }
 
@@ -47,17 +49,14 @@ public class MovieController {
 
     public void updateMovieDetailsFromInput(Scanner sc) {
         Movie movie = movieView.displayUpdateMovie(sc, movies);
-        updateMovieDetails(movie);
+        if (movie != null)
+            updateMovieDetails(movie);
 
     }
-    public void updateMovieDetails(Movie movie) {
-        movies.remove(movie);
-        movies.add(movie);
-        databaseController.updateMovieDB(movies);
-    }
 
-    public Movie getMovieByTitle(String movieTitle) {
-        return movies.stream().filter(movie -> movie.getTitle().equalsIgnoreCase(movieTitle)).findFirst().orElse(null);
+    public int displayMovieFromMovieList(List<Movie> movieList) {
+        movieView.displayMovies(movieList);
+        return movieList.size();
     }
     public int displayCurrentShowingMovie() {
         return displayAccordingtoMovieStatus(MovieStatus.NOWSHOWING);
@@ -78,12 +77,6 @@ public class MovieController {
         movieView.displayMovies(movies);
     }
 
-    public void showDetails(int choice) {
-        if (choice <= movies.size()) {
-         movieView.displayMovieDetails(choice,movies.get(choice-1));
-        }
-    }
-
     public void showReviewsByMovie(int choice){
         ArrayList<Movie> showMovies = getMovieAccordingToStatus(MovieStatus.NOWSHOWING);
         if (choice <= showMovies.size()) {
@@ -100,16 +93,6 @@ public class MovieController {
         movie.setRating(overallRating);
         System.out.println(movie.getReviews().size());
         updateMovieDetails(movie);
-    }
-
-    public double getOverallRating(Movie movie){
-        double total = 0;
-        int count = 0;
-        for(int i=0; i<movie.getReviews().size(); i++){
-            total += movie.getReviews().get(i).getRating();
-            count++;
-        }
-        return (total/count);
     }
 
     public void getTopFiveMovieRating(){
@@ -150,6 +133,26 @@ public class MovieController {
         }
     }
 
+    private Movie getMovieByTitle(String movieTitle) {
+        return movies.stream().filter(movie -> movie.getTitle().equalsIgnoreCase(movieTitle)).findFirst().orElse(null);
+    }
+
+    private double getOverallRating(Movie movie){
+        double total = 0;
+        int count = 0;
+        for(int i=0; i<movie.getReviews().size(); i++){
+            total += movie.getReviews().get(i).getRating();
+            count++;
+        }
+        return (total/count);
+    }
+
+    private void updateMovieDetails(Movie movie) {
+        movies.remove(movie);
+        movies.add(movie);
+        databaseController.updateMovieDB(movies);
+    }
+
     private int displayAccordingtoMovieStatus(MovieStatus movieStatus) {
         ArrayList<Movie> currentShowing = movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == movieStatus).collect(Collectors.toCollection(ArrayList::new));
         movieView.displayMovies(currentShowing);
@@ -160,10 +163,6 @@ public class MovieController {
         return movies.stream().filter(movie -> movie.getMovieDetails().getMovieStatus() == movieStatus).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private List<Movie> getMoviesFromDB() {
-        movies = databaseController.getMovieFromDB();
-        return movies;
-    }
 
     private void addMovie(Movie movie) {
         movies.add(movie);

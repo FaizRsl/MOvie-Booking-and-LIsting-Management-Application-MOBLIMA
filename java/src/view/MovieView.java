@@ -2,14 +2,10 @@ package view;
 
 import Model.Movie.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import Model.Movie.Movie;
 import Model.Movie.MovieCensorship;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+
+import java.util.*;
 
 public class MovieView {
 
@@ -84,80 +80,92 @@ public class MovieView {
     }
 
     public Movie displayUpdateMovie(Scanner sc, List<Movie> movies) {
+        int count = 0;
+        Movie movie = null;
         System.out.println("Which movie to update?");
         displayMovies(movies);
-        int update = sc.nextInt();
+        try {
+            int update = sc.nextInt();
 
-        Movie movie = movies.get(update-1);
-        boolean loop = true;
-        int choice;
-        while(loop){
-            displayMovieDetails(update, movie );
-            displayUpdateOptions();
-            choice = sc.nextInt();
-            switch(choice){
-                case 1:
-                    System.out.println("Input new movie title: ");
-                    movie.setTitle(sc.nextLine());
-                    break;
-                case 2:
-                    System.out.println("Input new director(s): ");
-                    movie.setDirector(sc.nextLine());
-                    break;
-                case 3:
-                    boolean castLoop = true;
-                    while(castLoop){
-                        displayUpdateCastOptions();
-                        int castChoice = sc.nextInt();
-                        ArrayList<String> castList = movie.getCasts();
-                        switch(castChoice){
-                            case 1:
-                                System.out.println("Cast Name: ");
-                                castList.add(sc.nextLine());
-                                break;
-                            case 2:
-                                System.out.println("Select which cast member to remove: ");
-                                for(int i = 0; i < castList.size(); i++){
-                                    System.out.println(i+1 + ") " + castList.get(i));
-                                }
-                                castList.remove(sc.nextInt()-1);
-                                break;
-                            case 3:
-                                System.out.println("Select which cast member to update: ");
-                                for(int i = 0; i < castList.size(); i++){
-                                    System.out.println(i+1 + ") " + castList.get(i));
-                                }
-                                int castIndex = sc.nextInt()-1;
-                                System.out.println("New Cast Name: ");
-                                castList.set(castIndex, sc.nextLine());
-                                break;
-                            case 4:
-                                castLoop = false;
-                                break;
+            movie = movies.get(update-1);
+            boolean loop = true;
+            int choice;
+            while(loop) {
+                displayMovieDetails(update, movie);
+                displayUpdateOptions();
+                choice = sc.nextInt();
+                switch (choice) {
+                    case 1:
+                        System.out.println("Input new movie title: ");
+                        movie.setTitle(sc.nextLine());
+                        break;
+                    case 2:
+                        System.out.println("Input new director(s): ");
+                        movie.setDirector(sc.nextLine());
+                        break;
+                    case 3:
+                        boolean castLoop = true;
+                        while (castLoop) {
+                            displayUpdateCastOptions();
+                            int castChoice = sc.nextInt();
+                            ArrayList<String> castList = movie.getCasts();
+                            switch (castChoice) {
+                                case 1:
+                                    System.out.println("Cast Name: ");
+                                    castList.add(sc.nextLine());
+                                    break;
+                                case 2:
+                                    System.out.println("Select which cast member to remove: ");
+                                    for (int i = 0; i < castList.size(); i++) {
+                                        System.out.println(i + 1 + ") " + castList.get(i));
+                                    }
+                                    castList.remove(sc.nextInt() - 1);
+                                    break;
+                                case 3:
+                                    System.out.println("Select which cast member to update: ");
+                                    for (int i = 0; i < castList.size(); i++) {
+                                        System.out.println(i + 1 + ") " + castList.get(i));
+                                    }
+                                    int castIndex = sc.nextInt() - 1;
+                                    System.out.println("New Cast Name: ");
+                                    castList.set(castIndex, sc.nextLine());
+                                    break;
+                                case 4:
+                                    castLoop = false;
+                                    break;
+                            }
                         }
-                    }
-                    break;
-                case 4:
-                    displayUpdateAgeRatingOptions();
-                    int censorChoice = sc.nextInt();
-                    movie.getMovieDetails().setMovieCensorship(setCensorship(censorChoice));
-                    break;
-                case 5:
-                    System.out.println("Input new synopsis: ");
-                    movie.setSynopsis(sc.nextLine());
-                    break;
-                case 6:
-                    displayUpdateMovieStatusOptions();
-                    int statusChoice = sc.nextInt();
-                    movie.getMovieDetails().setMovieStatus(setMovieStatus(statusChoice));
-                    break;
+                        break;
+                    case 4:
+                        displayUpdateAgeRatingOptions();
+                        int censorChoice = sc.nextInt();
+                        movie.getMovieDetails().setMovieCensorship(setCensorship(censorChoice));
+                        break;
+                    case 5:
+                        System.out.println("Input new synopsis: ");
+                        movie.setSynopsis(sc.nextLine());
+                        break;
+                    case 6:
+                        displayUpdateMovieStatusOptions();
+                        int statusChoice = sc.nextInt();
+                        movie.getMovieDetails().setMovieStatus(setMovieStatus(statusChoice));
+                        break;
 
+                }
+                System.out.println("Continue Changes?");
+                System.out.println("1) Yes");
+                System.out.println("2) No");
+                if (sc.nextInt() != 1)
+                    loop = false;
             }
-            System.out.println("Continue Changes?");
-            System.out.println("1) Yes");
-            System.out.println("2) No");
-            if(sc.nextInt()!= 1)
-                loop = false;
+        } catch (InputMismatchException e) {
+            if (count > 3)
+                throw e;
+            System.out.println("Unable to recognize your input. Please try again!");
+            System.out.println("Expected Input: Integer");
+            System.out.println("Input:" + e.getMessage());
+            count++;
+            sc.nextLine();
         }
         return movie;
     }

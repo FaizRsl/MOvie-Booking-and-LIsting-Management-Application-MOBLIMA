@@ -9,6 +9,7 @@ import Model.Movie.MovieType;
 import view.CinemaView;
 import view.MovieView;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -22,10 +23,8 @@ public class CinemaController {
     private List<Cineplex> cineplexes;
 
     private CinemaView cinemaView;
-    private MovieView movieView;
 
     public CinemaController() {
-        movieView = new MovieView();
         cinemaView = new CinemaView();
         cineplexes = databaseController.getCineplexFromDB();
     }
@@ -64,33 +63,23 @@ public class CinemaController {
         return cinemaView.getShowtime(cineplexes, choice,  movieTitle, date);
     }
 
-    public Cinema getCinemaFromCineplex(){
+    public void addNewShowtime(Scanner sc,MovieController movieController) throws InputMismatchException {
         displayAllCineplex();
         System.out.println("Select Cineplex: ");
-        Scanner sc = new Scanner(System.in);
-        int cineplexChoice = sc.nextInt();
-        sc.nextLine();
-        System.out.println("Select cinema: ");
-        cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
-        int choice = sc.nextInt();
-        sc.nextLine();
-        return cineplexes.get(cineplexChoice).getCinemas().get(choice);
-    }
-
-    public void addNewShowtime(Scanner sc) {
-        addShowtimeToCineplex(getCinemaFromCineplex(), sc);
+        int cineplexChoice = selectCineplex(sc);
+        System.out.println("Select Cinema: ");
+        int cinemaChoice = selectCinema(sc, cineplexChoice);
+        addShowtimeToCineplex(getCinemaFromCineplex(cineplexChoice, cinemaChoice), sc, movieController);
         databaseController.updateCineplexDB(cineplexes);
     }
 
-    public void addShowtimeToCineplex(Cinema cinema,Scanner sc) {
+    public void addShowtimeToCineplex(Cinema cinema,Scanner sc, MovieController movieController) throws InputMismatchException {
         ArrayList<Showtime> showtimeList = cinema.getShowtimes();
-        List<Movie> movieList = databaseController.getMovieFromDB();
-        List<Movie> availableMovieList;
-        availableMovieList = getAvailableMovies(movieList);
+        List<Movie> availableMovieList = movieController.getCurrentlyAvailableMovies();
 
         System.out.println("Creating Showtime: ");
         System.out.println("==================");
-        movieView.displayMovies(availableMovieList);
+        movieController.displayMovieFromMovieList(availableMovieList);
         System.out.println("Select Movie: ");
         int movieChoice = sc.nextInt();
         Movie mov = availableMovieList.get(movieChoice-1);
@@ -105,35 +94,6 @@ public class CinemaController {
         cinema.addShowTime(showtime);
         
         cinemaView.displayCinemaShowtime(showtimeList);
-    }
-
-    private MovieType getMovieType(int movieType, MovieType type) {
-        switch(movieType){
-            case 1:
-                type = MovieType.NORMAL;
-                break;
-            case 2:
-                type = MovieType.THREED;
-                break;
-            case 3:
-                type = MovieType.IMAX;
-                break;
-            case 4:
-                type = MovieType.BLOCKBUSTER;
-                break;
-        }
-        return type;
-    }
-
-    public List<Movie> getAvailableMovies(List<Movie> movieList){
-        List<Movie> availableMovies = new ArrayList<Movie>();
-        for(int i = 0; i < movieList.size(); i++){
-            if(movieList.get(i).getMovieDetails().getMovieStatus() == MovieStatus.PREVIEW || movieList.get(i).getMovieDetails().getMovieStatus() == MovieStatus.NOWSHOWING){
-                availableMovies.add(movieList.get(i));
-            }
-        }
-
-        return availableMovies;
     }
 
     public LocalDateTime createLocalDateTime(Scanner sc) {
@@ -187,31 +147,28 @@ public class CinemaController {
         return LocalDateTime.of(year, month, day, hour, minute);
     }
 
-    public void updateShowtime(Scanner sc) {
+    public void updateShowtime(Scanner sc,MovieController movieController) throws InputMismatchException {
         displayAllCineplex();
         System.out.println("Select Cineplex: ");
-        int cineplexChoice = sc.nextInt();
-        cineplexChoice--;
-        System.out.println("Select cinema: ");
-        cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
-        int cinemaChoice = sc.nextInt();
-        cinemaChoice--;
-
-        List<Movie> availableMovieList = getAvailableMovies(databaseController.getMovieFromDB());
+        int cineplexChoice = selectCineplex(sc);
+        System.out.println("Select Cinema: ");
+        int cinemaChoice = selectCinema(sc,cineplexChoice);
+        Cinema cinema = getCinemaFromCineplex(cineplexChoice,cinemaChoice);
+        List<Movie> availableMovieList = movieController.getCurrentlyAvailableMovies();
         cinemaView.displayUpdateShowtimeOptions();
         int choice = sc.nextInt();
 
-        cinemaView.displayCinemaShowtime(cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes());
+        cinemaView.displayCinemaShowtime(cinema.getShowtimes());
         System.out.println("Input showtime index to update");
         int index = sc.nextInt();
         index--;
-        switch(choice){
+        switch (choice) {
             case 1:
-                movieView.displayMovies(availableMovieList);
+                movieController.displayMovieFromMovieList(availableMovieList);
                 System.out.println("Select Movie: ");
                 int movieChoice = sc.nextInt();
-                Movie mov = availableMovieList.get(movieChoice-1);
-                cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index).setMovie(mov);
+                Movie mov = availableMovieList.get(movieChoice - 1);
+                cinema.getShowtimes().get(index).setMovie(mov);
                 break;
             case 2:
                 System.out.println("Type of Movie: ");
@@ -219,47 +176,71 @@ public class CinemaController {
                 int movieType = sc.nextInt();
                 MovieType type = null;
                 type = getMovieType(movieType, type);
-                cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index).setMovieType(type);
+                cinema.getShowtimes().get(index).setMovieType(type);
                 break;
             case 3:
                 LocalDateTime date = createLocalDateTime(sc);
-                cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index).setDateTime(date);
+                cinema.getShowtimes().get(index).setDateTime(date);
                 break;
             case 4:
                 displayAllCineplex();
                 System.out.println("New Cinema Location");
                 System.out.println("====================");
                 System.out.println("Select New Cineplex: ");
-                int newCineplexChoice = sc.nextInt();
-                newCineplexChoice--;
+                int newCineplexChoice = selectCineplex(sc);
                 System.out.println("Select New Cinema: ");
-                cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
-                int newCinemaChoice = sc.nextInt();
-                newCinemaChoice--;
-                Showtime showtime = cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().get(index);
-                cineplexes.get(newCineplexChoice).getCinemas().get(newCinemaChoice).getShowtimes().add(showtime);
+                int newCinemaChoice = selectCinema(sc,newCineplexChoice);
+                Showtime showtime = cinema.getShowtimes().get(index);
+                getCinemaFromCineplex(newCineplexChoice,newCinemaChoice).getShowtimes().add(showtime);
 
-                cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice).getShowtimes().remove(showtime);
+                cinema.getShowtimes().remove(showtime);
 
                 break;
         }
 
-        databaseController.updateCineplexDB(cineplexes);    }
+        databaseController.updateCineplexDB(cineplexes);
+        }
 
-    public void removeShowtime(Scanner sc)  {
+    public void removeShowtime(Scanner sc) throws InputMismatchException{
         displayAllCineplex();
-        System.out.println("Select Cineplex: ");
-        int cineplexChoice = sc.nextInt();
-        cineplexChoice--;
-        System.out.println("Select cinema: ");
-        cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
-        int choice = sc.nextInt();
-        choice--;
-
-        cinemaView.displayCinemaShowtime(cineplexes.get(cineplexChoice).getCinemas().get(choice).getShowtimes());
+        int cineplexChoice = selectCineplex(sc);
+        int cinemaChoice = selectCinema(sc,cineplexChoice);
+        Cinema cinema = getCinemaFromCineplex(cineplexChoice,cinemaChoice);
+        cinemaView.displayCinemaShowtime(cinema.getShowtimes());
         System.out.println("Input showtime index to remove");
         int index = sc.nextInt();
-        cineplexes.get(cineplexChoice).getCinemas().get(choice).getShowtimes().remove(index-1);
+        cinema.getShowtimes().remove(index - 1);
         databaseController.updateCineplexDB(cineplexes);
+    }
+
+    private Cinema getCinemaFromCineplex(int cineplexChoice, int cinemaChoice){
+        return cineplexes.get(cineplexChoice).getCinemas().get(cinemaChoice);
+    }
+    private int selectCineplex(Scanner sc) throws InputMismatchException {
+        int cineplexChoice = sc.nextInt();
+        return --cineplexChoice;
+    }
+
+    private int selectCinema(Scanner sc,int cineplexChoice) throws InputMismatchException {
+        cinemaView.displayCinemas(cineplexes.get(cineplexChoice));
+        int cinemaChoice = sc.nextInt();
+        return --cinemaChoice;
+    }
+    private MovieType getMovieType(int movieType, MovieType type) {
+        switch(movieType){
+            case 1:
+                type = MovieType.NORMAL;
+                break;
+            case 2:
+                type = MovieType.THREED;
+                break;
+            case 3:
+                type = MovieType.IMAX;
+                break;
+            case 4:
+                type = MovieType.BLOCKBUSTER;
+                break;
+        }
+        return type;
     }
 }
