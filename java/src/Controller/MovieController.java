@@ -14,7 +14,6 @@ public class MovieController {
 
     private DatabaseController databaseController = DatabaseController.getInstance();
     private List<Movie> movies;
-
     private MovieView movieView;
 
     public MovieController() {
@@ -62,10 +61,9 @@ public class MovieController {
             System.out.println("Invalid input!");
             return;
         }
-        Movie movie = movieView.displayUpdateMovie(sc,update, movies);
+        Movie movie = movieView.displayUpdateMovie(sc,update-1, movies);
         if (movie != null)
-            updateMovieDetails(update,movie);
-
+            updateMovieDetails(update-1,movie);
     }
 
     public int displayMovieFromMovieList(List<Movie> movieList) {

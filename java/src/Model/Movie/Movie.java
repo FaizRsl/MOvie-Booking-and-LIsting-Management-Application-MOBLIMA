@@ -16,7 +16,7 @@ public class Movie implements Serializable{
     private ArrayList<String> casts;
     private MovieDetails movieDetails;
 
-    public Movie(){}
+    //public Movie(){}
     public Movie(String title, MovieDetails movieDetails){
         this.title = title;
         this.movieDetails = movieDetails;

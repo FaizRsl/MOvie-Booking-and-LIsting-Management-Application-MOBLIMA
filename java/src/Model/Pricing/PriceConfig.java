@@ -9,31 +9,18 @@ import java.util.ArrayList;
 public class PriceConfig implements Serializable {
 
     private static double ticketBasePrice = 10;
-
     private static double ticketPlatinumBasePrice = 20;
-
     private static double ticketGoldBasePrice = 30;
-
     private static double weekendIncrease = 5;
-
     private static double publicHolidayIncrease = 7;
-
     private static double threeDMovieIncrease = 5;
-
     private static double blockbusterIncrease = 4;
-
     private static double IMAXIncrease = 6;
-
     private static double childDiscount = 0.5;
-
     private static double studentDiscount = 0.9;
-
     private static double seniorDiscount = 0.7;
-
     private static double gstPercentageIncrease = 0.07;
-
     private ArrayList<PublicHoliday> publicHolidays = new ArrayList<>();
-
 
     public PriceConfig(){
     }

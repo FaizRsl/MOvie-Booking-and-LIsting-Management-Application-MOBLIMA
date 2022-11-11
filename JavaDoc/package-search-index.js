@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"Controller"},{"l":"Model.Booking"},{"l":"Model.Cinema"},{"l":"Model.Movie"},{"l":"Model.Pricing"},{"l":"Model.Seat"},{"l":"Model.Ticket"},{"l":"Model.User"},{"l":"view"}];updateSearchResults();

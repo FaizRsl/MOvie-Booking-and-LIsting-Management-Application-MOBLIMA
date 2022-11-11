@@ -165,10 +165,20 @@ public class PriceController {
 
         System.out.println("Holiday Name:");
         String holidayName = sc.nextLine();
-        int year, month = 0;
-        year = LocalDate.now().getYear();
+        int year = 0, month = 0;
 
         boolean loop = true;
+
+        while(loop){
+            System.out.println("Input Year: ");
+            year = sc.nextInt();
+            if(year < LocalDate.now().getYear()){
+                System.out.println("Invalid year");
+            } else {
+                loop = false;
+            }
+        }
+        loop = true;
 
         while(loop){
             System.out.println("Input month (as a number): ");
@@ -182,11 +192,6 @@ public class PriceController {
 
         }
 
-        if(month < LocalDate.now().getMonthValue()){
-            year++;
-        }
-
-
         YearMonth yearMonth = YearMonth.of(year, month);
         int lengthOfMonth = yearMonth.lengthOfMonth();
         int day = 0;
@@ -199,7 +204,6 @@ public class PriceController {
                 loop = false;
             }
         }
-
 
         LocalDate date = LocalDate.of(year, month, day);
 
