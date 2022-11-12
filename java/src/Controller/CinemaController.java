@@ -199,6 +199,12 @@ public class CinemaController {
         cinemaView.displayCinemaShowtime(showtimeList);
 
     }
+    
+    /**
+     * Creates the local date time.
+     *
+     * @return the local date time
+     */
 
     public boolean checkShowtimes(ArrayList<Showtime> showtimeList, LocalDateTime showDate){
         ArrayList<Showtime> sameDates = new ArrayList<Showtime>();
