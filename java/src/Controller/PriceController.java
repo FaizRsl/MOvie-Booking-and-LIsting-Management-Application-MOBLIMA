@@ -17,6 +17,11 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * The Class PriceController in Controller Package. Responsible for calculating prices for the abstract Ticket class.
+ * @see Ticket
+ */
+
 public class PriceController {
     //factors to consider: age(student/senior), cinema class(gold/platinum), day of the week(ph/weekends/weekdays), type of movie(3D/blockbuster)
     private DatabaseController databaseController = DatabaseController.getInstance();
@@ -29,6 +34,13 @@ public class PriceController {
         priceConfig = databaseController.retrievePriceConfig();
         priceConfigMenu = new PriceConfigView();
     }
+    
+    /**
+     * GST calculation.
+     *
+     * @param price the price to be increased based on GST
+     * @return a double representing price increase based on {@link PriceConfig#getGstPercentageIncrease()}
+     */
 
     public double GSTCalculation(double price){
         return (price + price * priceConfig.getGstPercentageIncrease());
@@ -104,7 +116,7 @@ public class PriceController {
     public void configDiscounts(PriceConfig priceConfig, Scanner sc) throws InputMismatchException{
         priceConfigMenu.printDiscountConfig(priceConfig);
         int choice = sc.nextInt();
-
+        
         double discount = 0;
 
         System.out.println("Change Discount:");
@@ -134,7 +146,7 @@ public class PriceController {
     public void configHolidays(PriceConfig priceConfig,Scanner sc) throws InputMismatchException{
         priceConfigMenu.printHolidaysConfig();
         int choice = sc.nextInt();
-
+        sc.nextLine();
         ArrayList<PublicHoliday> publicHolidays = priceConfig.getPublicHolidays();
 
 
@@ -161,53 +173,63 @@ public class PriceController {
     }
 
     private PublicHoliday addHoliday(Scanner sc){
-        PublicHoliday ph = null;
+    	PublicHoliday ph = null;System.out.println("Holiday Name:");
+    	String holidayName = sc.nextLine();
+    	int year = 0, month = 0;
+    	boolean loop = true;
+    	while(loop){
+    	    System.out.println("Input Year: ");
+    	    year = sc.nextInt();    
+    	    if(year < LocalDate.now().getYear())
+    	    {
+    	        System.out.println("Invalid year");
+    	    } 
+    	    else {
+    	        loop = false;    
+    	        }
+    	}
+    	loop = true;
+    	while(loop){
+    	    System.out.println("Input month (as a number): ");    
+    	    month = sc.nextInt();    
+    	    sc.nextLine();    
+    	    if(month <= 12 || month >= 1){
+    	        loop = false;    
+    	        } 
+    	    else {
+    	        System.out.println("Invalid month");    }
 
-        System.out.println("Holiday Name:");
-        String holidayName = sc.nextLine();
-        int year, month = 0;
-        year = LocalDate.now().getYear();
+    	}
 
-        boolean loop = true;
+    	YearMonth yearMonth = YearMonth.of(year, month);
+    	
+    	int lengthOfMonth = yearMonth.lengthOfMonth();
+    	int day = 0;
+    	loop = true;
+    	while(loop){
+    	    System.out.println("Input day: ");    
+    	    day = sc.nextInt();    
+    	    sc.nextLine();    
+    	    if(day >= 1 || day <= lengthOfMonth)
+    	    	{
+    	        loop = false;    
+    	        }
+    	}
 
-        while(loop){
-            System.out.println("Input month (as a number): ");
-            month = sc.nextInt();
-            sc.nextLine();
-            if(month <= 12 || month >= 1){
-                loop = false;
-            } else {
-                System.out.println("Invalid month");
-            }
-
-        }
-
-        if(month < LocalDate.now().getMonthValue()){
-            year++;
-        }
-
-
-        YearMonth yearMonth = YearMonth.of(year, month);
-        int lengthOfMonth = yearMonth.lengthOfMonth();
-        int day = 0;
-        loop = true;
-        while(loop){
-            System.out.println("Input day: ");
-            day = sc.nextInt();
-            sc.nextLine();
-            if(day >= 1 || day <= lengthOfMonth){
-                loop = false;
-            }
-        }
-
-
-        LocalDate date = LocalDate.of(year, month, day);
-
-        ph = new PublicHoliday(holidayName, date);
-
-        return ph;
+    	LocalDate date = LocalDate.of(year, month, day);
+    	
+    	ph = new PublicHoliday(holidayName, date);
+    	
+    	return ph;
 
     }
+    
+    /**
+     * Calculate ticket price.
+     *
+     * @param ticket Ticket object
+     * @return ticket price of type double
+     */
 
     public double calculateTicketPrice(Ticket ticket){
         double price = 0;
@@ -222,10 +244,25 @@ public class PriceController {
 
         return price;
     }
+    
+    /**
+     * Cinema class calculation.
+     *
+     * @param cinemaClass the class of cinema, CinemaClass object
+     * @return a double representing price increase based on cinema class.
+     */
 
     private double cinemaClassCalculation(CinemaClass cinemaClass){
         return getPriceIncrease(cinemaClass);
     }
+    
+    /**
+     * Day of week PH calculation.
+     *
+     * @param price the price
+     * @param date the date
+     * @return a double representing price increase calculation based on date
+     */
 
     private double dayOfWeekPHCalculation(double price, LocalDate date){
         PublicHoliday ph;
@@ -242,10 +279,26 @@ public class PriceController {
 
         return price; //weekdays
     }
+    
+    /**
+     * Movie type calculation.
+     *
+     * @param price the price
+     * @param movieType the movie type
+     * @return a double representing price increase calculation based on movieType
+     */
 
     private double movieTypeCalculation(double price, MovieType movieType){
         return price + getPriceIncrease(movieType);
     }
+    
+    /**
+     * Age calculation.
+     *
+     * @param price the base price to be discounted
+     * @param ticket the ticket
+     * @return a double representing price increase calculation based on user's age type
+     */
 
     private double ageCalculation(double price, Ticket ticket){
         int ticketType = ticket.getTicketType();

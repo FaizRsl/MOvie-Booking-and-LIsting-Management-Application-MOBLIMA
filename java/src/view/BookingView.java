@@ -4,8 +4,19 @@ import Model.Booking.Booking;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ * The Class BookingView, for displaying bookings for a user in a readable format.
+ */
 public class BookingView {
+	
+	/**
+	 * Displays top five movies. Prints data of movie titles and corresponding gross ticket sales respectively.
+	 * 
+	 * @param List<String> movieTitles
+	 * @param List<Double> salesPriceList
+	 * 
+	 * 
+	 */
     public void displayTopFiveMovies(List<String> movieTitles, List<Double> salesPriceList) {
         System.out.println("Movie Title : Gross Ticket Sales");
         System.out.println("--------------------------------------------");
@@ -13,7 +24,13 @@ public class BookingView {
             System.out.printf("%s: $%.1f \n",movieTitles.get(i),Math.round(salesPriceList.get(i) * 100.00) /100.00);
         }
     }
-
+	/**
+	 * Displays booking history of a user.
+	 * 
+	 * @param Scanner sc
+	 * @param List<Booking> bookingList
+	 * 
+	 */
     public void displayBookingHistory(Scanner sc,List<Booking> bookingList) {
         int count = 0;
         if(bookingList.size() == 0)

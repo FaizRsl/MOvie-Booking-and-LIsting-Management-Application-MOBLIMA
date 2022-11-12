@@ -8,8 +8,24 @@ import Controller.PriceController;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * The Class MainMenuView, called in MOBLIMA to generate the main menu.
+ */
 public class MainMenuView {
+    
+    /** The customer menu, for generating the option menu for customers. */
     private CustomerView customerMenu = new CustomerView();
+    
+    /**
+	 * Main menu.
+	 *
+	 * @param sc                the sc
+	 * @param adminController   the admin controller
+	 * @param movieController   the movie controller
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 */
     public void mainMenu(Scanner sc, AdminController adminController, MovieController movieController, CinemaController cinemaController, BookingController bookingController, PriceController priceController)  {
         boolean loop = true;
         int count = 0;
@@ -45,6 +61,12 @@ public class MainMenuView {
         };
         sc.close();
     }
+    
+    /**
+	 * Prints the menu upon running the MOBLIMA class.
+	 * 
+	 * @see MOBLIMA.java
+	 */
     private void printMenu() {
         System.out.println("----------------Main Menu-----------------");
         System.out.println("------------------------------------------");

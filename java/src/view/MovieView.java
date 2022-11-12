@@ -6,10 +6,16 @@ import Model.Movie.Movie;
 import Model.Movie.MovieCensorship;
 
 import java.util.*;
-
+/**
+ * The Class MovieView.
+ */
 public class MovieView {
 
-    //movie function
+    /**
+     * Function to display movies.
+     *
+     * @param movieList list of Movie objects
+     */
     public void displayMovies(List<Movie> movieList) {
         System.out.println("Movie Title(s)");
         System.out.println("========================");
@@ -18,10 +24,22 @@ public class MovieView {
         }
         System.out.println("========================");
     }
+    
+    /**
+     * Display movie details.
+     *
+     * @param int index
+     * @param Movie object movie
+     */
     public void displayMovieDetails(int index,Movie movie) {
         System.out.printf("%d)\n%s",index,movie.toString());
     }
-
+    
+    /**
+     * Display reviews by movies.
+     *
+     * @param Movie object movie
+     */
     public void displayReviewsByMovies(Movie movie){
         System.out.printf("Movie Title: %s \n",movie.getTitle());
         if(movie.getReviews().size() == 0){
@@ -38,6 +56,11 @@ public class MovieView {
             System.out.println();
         }
     }
+    
+
+    /**
+     * Display update options.
+     */
     public void displayUpdateOptions(){
         System.out.println("What would you like to update?");
         System.out.println("1) Movie Title");
@@ -48,12 +71,20 @@ public class MovieView {
         System.out.println("6) Movie Status");
 
     }
+    
+    /**
+     * Display option menu to update movie cast.
+     */
     public void displayUpdateCastOptions(){
         System.out.println("1) Add Cast Member");
         System.out.println("2) Remove Cast Member");
         System.out.println("3) Change Cast Member's Name");
         System.out.println("4) Quit");
     }
+    
+    /**
+     * Display option menu to update age rating.
+     */
     public void displayUpdateAgeRatingOptions(){
         System.out.println("New Age Rating: ");
         System.out.println("1) G");
@@ -64,6 +95,10 @@ public class MovieView {
         System.out.println("6) R21");
 
     }
+    
+    /**
+     * Display option menu to update current movie status.
+     */
     public void displayUpdateMovieStatusOptions(){
         System.out.println("New Movie Status: ");
         System.out.println("1) Coming Soon");
@@ -71,8 +106,13 @@ public class MovieView {
         System.out.println("3) Now Showing");
         System.out.println("4) Ending");
     }
-
-    public void displayMovieWithReviews(List<Movie> movies) {
+    
+    /**
+     * Display formatted data of top 5 Movie titles, represented in parameter movies, along with ratings.
+     * 
+     * @see MovieController#getTopFiveMovieRating
+     */
+    public void getMovieRating(List<Movie> movies) {
         System.out.println("Movie Title: Rating");
         System.out.println("--------------------------------------------");
         movies.forEach(movie -> {
@@ -80,6 +120,15 @@ public class MovieView {
         });
     }
 
+    /**
+     * Display option menu to update a movie.
+     * 
+     * @param Scanner sc
+     * @param int update
+     * @param List<Movie> movies
+     * 
+     * @return updated Movie object
+     */
     public Movie displayUpdateMovie(Scanner sc, int update, List<Movie> movies) {
         int count = 0;
         Movie movie;
@@ -172,6 +221,12 @@ public class MovieView {
         return movie;
     }
 
+    
+    /**
+     * Display option menu to create a movie object.
+     * 
+     * @return new Movie object
+     */
     public Movie displayCreateMovie(Scanner sc) {
         ArrayList<Review> reviews = new ArrayList<Review>();
         ArrayList<String> casts = new ArrayList<String>();
