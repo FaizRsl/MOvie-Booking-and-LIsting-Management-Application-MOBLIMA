@@ -9,13 +9,31 @@ import Model.Cinema.Showtime;
 import Model.Movie.Movie;
 import Model.Movie.MovieStatus;
 import Model.Seat.Seats;
-import Model.Ticket.*;
+import Model.Ticket.AdultTicket;
+import Model.Ticket.ChildrenTicket;
+import Model.Ticket.SeniorTicket;
+import Model.Ticket.StudentTicket;
+import Model.Ticket.Ticket;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * The Class CustomerView.
+ */
 public class CustomerView {
+    
+    /**
+	 * Customer menu.
+	 *
+	 * @param sc                the sc
+	 * @param movieController   the movie controller
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 * @return true, if successful
+	 */
     //menus
     public boolean customerMenu(Scanner sc, MovieController movieController, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
         boolean loop = true;
@@ -57,6 +75,17 @@ public class CustomerView {
         }
         return true;
     }
+    
+    /**
+	 * Movie menu.
+	 *
+	 * @param sc                the sc
+	 * @param movieController   the movie controller
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 * @return true, if successful
+	 */
     private boolean movieMenu(Scanner sc, MovieController movieController, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
         boolean loop = true;
         int choice;
@@ -116,6 +145,18 @@ public class CustomerView {
         }
         return true;
     }
+    
+    /**
+	 * List movie by status.
+	 *
+	 * @param sc                the sc
+	 * @param status            the status
+	 * @param movieController   the movie controller
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 * @return true, if successful
+	 */
     private boolean listMovieByStatus(Scanner sc, MovieStatus status, MovieController movieController, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
         boolean loop;
         int max;
@@ -157,6 +198,13 @@ public class CustomerView {
         return loop;
     }
 
+    /**
+	 * Display movie based on status.
+	 *
+	 * @param movieStatus     the movie status
+	 * @param movieController the movie controller
+	 * @return integer corresponding to movie status
+	 */
     private int displayMovieBasedonStatus(MovieStatus movieStatus,MovieController movieController) {
         int max = 0;
         switch (movieStatus) {
@@ -176,6 +224,15 @@ public class CustomerView {
         return max;
     }
 
+    /**
+	 * Generates menu options for movies that are coming soon, and takes a choice from the user.
+	 *
+	 * @param sc              the sc
+	 * @param movieChoice     the movie choice
+	 * @param movieStatus     the movie status
+	 * @param movieController the movie controller
+	 * @return true, if successful
+	 */
     private boolean comingSoonBookingsMenu(Scanner sc, int movieChoice, MovieStatus movieStatus, MovieController movieController) {
         boolean loop = true;
         int choice;
@@ -208,6 +265,16 @@ public class CustomerView {
         }
         return true;
     }
+    
+    /**
+	 * Function to generate history of ended movie bookings, and then take the corresponding choice of the user.
+	 *
+	 * @param sc              the sc
+	 * @param movieChoice     the movie choice
+	 * @param movieStatus     the movie status
+	 * @param movieController the movie controller
+	 * @return true, if successful
+	 */
     private boolean endedMovieBookingsMenu(Scanner sc, int movieChoice, MovieStatus movieStatus, MovieController movieController) {
         boolean loop = true;
         int count = 0;
@@ -252,6 +319,19 @@ public class CustomerView {
         }
         return true;
     }
+    
+    /**
+	 * Movie bookings menu. Calls {@link CustomerView#printListMovieMenu()} and takes a choice from the user.
+	 *
+	 * @param sc                the sc
+	 * @param movieChoice       the movie choice
+	 * @param movieStatus       the movie status
+	 * @param movieController   the movie controller
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 * @return true, if successful
+	 */
     private boolean movieBookingsMenu(Scanner sc, int movieChoice, MovieStatus movieStatus, MovieController movieController, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
         boolean loop = true;
         int count = 0;
@@ -303,6 +383,19 @@ public class CustomerView {
         }
         return true;
     }
+    
+    /**
+	 * Main function to generate options for showtime displays, filtered by cineplex or date.
+	 *
+	 * @param sc                the sc
+	 * @param movieChoice       the movie choice
+	 * @param movieStatus       the movie status
+	 * @param movieController   the movie controller
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 * @return true, if successful
+	 */
     private boolean showtimeMenu(Scanner sc, int movieChoice, MovieStatus movieStatus, MovieController movieController, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
         boolean loop = true;
         int choice;
@@ -340,6 +433,19 @@ public class CustomerView {
         }
         return true;
     }
+    
+    /**
+	 * Handle displays of available showtimes.
+	 *
+	 * @param sc                the sc
+	 * @param choice            the choice
+	 * @param movieChoice       the movie choice
+	 * @param movieStatus       the movie status
+	 * @param movieController   the movie controller
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 */
     private void handleShowtimeDisplay(Scanner sc, int choice, int movieChoice, MovieStatus movieStatus, MovieController movieController, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
         Movie mov = null;
         String date = "";
@@ -387,6 +493,20 @@ public class CustomerView {
             handleShowtime(sc, totalCount, choice, mov, date, cinemaChoice-1, cinemaController, bookingController,priceController);
         }
     }
+    
+    /**
+	 * Handle showtime.
+	 *
+	 * @param sc                the sc
+	 * @param totalCount        the total count
+	 * @param choice            the choice
+	 * @param mov               the mov
+	 * @param date              the date
+	 * @param cinemaChoice      the cinema choice
+	 * @param cinemaController  the cinema controller
+	 * @param bookingController the booking controller
+	 * @param priceController   the price controller
+	 */
     private void handleShowtime(Scanner sc, int totalCount, int choice, Movie mov, String date, int cinemaChoice, CinemaController cinemaController, BookingController bookingController,PriceController priceController) {
         int showtimeChoice;
         Showtime showtimeSelected = null;
@@ -401,6 +521,16 @@ public class CustomerView {
 
 
     }
+    
+    /**
+	 * Handle showtime by selection.
+	 *
+	 * @param sc                the sc
+	 * @param showtimeSelected  the showtime selected
+	 * @param bookingController the booking controller
+	 * @param cinemaController  the cinema controller
+	 * @param priceController   the price controller
+	 */
     private void handleShowtimeBySelection(Scanner sc,Showtime showtimeSelected, BookingController bookingController, CinemaController cinemaController,PriceController priceController){
         boolean loop = true;
         int count = 0;
@@ -456,6 +586,13 @@ public class CustomerView {
         }
     }
 
+    /**
+	 * Function to get choice of showtime from user.
+	 *
+	 * @param sc         the sc
+	 * @param totalCount the total count
+	 * @return the showtime choice
+	 */
     //bookings function
     private int getShowtimeChoice(Scanner sc,int totalCount){
         int showtimeChoice = -1;
@@ -482,6 +619,14 @@ public class CustomerView {
         } while(showtimeChoice == -1);
         return showtimeChoice;
     }
+    
+    /**
+	 * Function to handle seat bookings.
+	 *
+	 * @param sc       the sc
+	 * @param showtime the showtime
+	 * @return the seats
+	 */
     private Seats handleSeatBookings(Scanner sc,Showtime showtime){
         int row;
         int col;
@@ -521,6 +666,18 @@ public class CustomerView {
             return chosenSeats;
         }
     }
+    
+    /**
+	 * Purchase ticket, calls printOrder to generate order details upon success.
+	 *
+	 * @param sc                the sc
+	 * @param size              the size
+	 * @param seats             the seats
+	 * @param showtime          the showtime
+	 * @param bookingController the booking controller
+	 * @param cinemaController  the cinema controller
+	 * @param priceController   the price controller
+	 */
     private void purchaseTicket(Scanner sc,int size, ArrayList<Seats> seats, Showtime showtime, BookingController bookingController, CinemaController cinemaController,PriceController priceController){
         int count = 0;
         while(true){
@@ -538,7 +695,7 @@ public class CustomerView {
                 System.out.println("How many senior citizen?");
                 int seniorCitizenCount = sc.nextInt();
                 sc.nextLine();
-                int totalCount = adultCount + childrenCount + seniorCitizenCount + studentCount;
+                int totalCount = adultCount + childrenCount + seniorCitizenCount;
                 if (totalCount != size) {
                     System.out.println("Number does not tally with total tickets! Please try again.");
                     continue;
@@ -552,7 +709,7 @@ public class CustomerView {
                         ticket = new ChildrenTicket(seats.get(i), showtime);
                     else if (i < adultCount + childrenCount + seniorCitizenCount)
                         ticket = new SeniorTicket(seats.get(i), showtime);
-                    else if (i < adultCount + childrenCount + seniorCitizenCount + studentCount)
+                    else if(i < adultCount + childrenCount + seniorCitizenCount + studentCount)
                         ticket = new StudentTicket(seats.get(i), showtime);
                     assert ticket != null;
                     double price = priceController.calculateTicketPrice(ticket);
@@ -583,6 +740,14 @@ public class CustomerView {
         }
     }
 
+    /**
+	 * Prints the customer's orders upon purchasing tickets.
+	 *
+	 * @param tickets          the tickets
+	 * @param totalPrice       the total price
+	 * @param cinemaController the cinema controller
+	 * @param priceController  the price controller
+	 */
     private void printOrder(ArrayList<Ticket> tickets, double totalPrice, CinemaController cinemaController,PriceController priceController){
         System.out.println("----------------ORDERS -----------------");
         System.out.println("----------------------------------------");
@@ -601,17 +766,28 @@ public class CustomerView {
 
     }
 
+    /**
+	 * Prints the list coming soon movie option menu.
+	 */
     //printMenus
     private void printListComingSoonMovieOptionMenu(){
         System.out.println("1. View Movie Detail");
         System.out.println("2. Go back to Main Menu");
     }
+    
+    /**
+	 * Prints the list ended movie options menu.
+	 */
     private void printListEndedMovieOptionsMenu(){
         System.out.println("1. View Movie Detail");
         System.out.println("2. Leave Review");
         System.out.println("3. Read Reviews");
         System.out.println("4. Go back to Main Menu");
     }
+    
+    /**
+	 * Prints the list movie options menu.
+	 */
     private void printListMovieOptionsMenu(){
         System.out.println("1. View Movie Detail");
         System.out.println("2. Book Ticket");
@@ -619,12 +795,20 @@ public class CustomerView {
         System.out.println("4. Read Reviews");
         System.out.println("5. Go back to Main Menu");
     }
+    
+    /**
+	 * Function to print the menu options for booking seat for movies.
+	 */
     private void printUserBookingsMenu(){
         System.out.println("----------------Booking Menu -----------------");
         System.out.println("----------------------------------------------");
         System.out.println("1. Book Seat");
         System.out.println("2. Go back to Showtime Menu");
     }
+    
+    /**
+	 * Function to print the menu options for listing movies.
+	 */
     private void printListMovieMenu(){
         System.out.println("----------------Customer Menu -----------------");
         System.out.println("-----------------------------------------------");
@@ -639,6 +823,10 @@ public class CustomerView {
         System.out.println("9. Go back to Main Menu");
         System.out.println("10. Exit Menu");
     }
+    
+    /**
+	 * Function to print the options for showtime menu.
+	 */
     private void showtimePrintMenu(){
         System.out.println("----------------Showtime Menu -----------------");
         System.out.println("-----------------------------------------------");
@@ -647,6 +835,10 @@ public class CustomerView {
         System.out.println("3. Show all");
         System.out.println("4. Go back to Main Menu");
     }
+    
+    /**
+	 * Function to print the options for the primary customer menu.
+	 */
     private void printCustomerMenu() {
         System.out.println("----------------Customer Menu -----------------");
         System.out.println("-----------------------------------------------");
