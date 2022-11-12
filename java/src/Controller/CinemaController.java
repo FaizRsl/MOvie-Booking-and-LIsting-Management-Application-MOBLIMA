@@ -161,7 +161,7 @@ public class CinemaController {
         movieController.displayMovieFromMovieList(availableMovieList);
         System.out.println("Select Movie: ");
         int movieChoice = sc.nextInt();
-        if (movieChoice > availableMovieList.size()) {
+        if (movieChoice > availableMovieList.size() || movieChoice < 1) {
             System.out.println("Input is out of range. Please enter within the range!");
             return;
         }
@@ -261,9 +261,20 @@ public class CinemaController {
         }
         System.out.println("Hour: " + hour);
 
-        System.out.println("What time (minutes):" );
-        cinemaView.displayTimeMinutes();
-        int minute = (sc.nextInt()-1) * 15;
+        
+        int minute = 0;
+        while(true){
+            System.out.println("What time (minutes):" );
+            cinemaView.displayTimeMinutes();
+            minute = sc.nextInt();
+            if(minute < 1 && minute > 4){
+                System.out.println("Please choose from 1 to 4.");
+                continue;
+            }
+            minute = (sc.nextInt()-1) * 15;
+            break;
+        }
+        
 
         int year, month = 0;
         year = LocalDateTime.now().getYear();
@@ -361,8 +372,15 @@ public class CinemaController {
         if (cinema == null)
             return;
         cinemaView.displayCinemaShowtime(cinema.getShowtimes());
+        
+
+
         System.out.println("Input showtime index to remove");
         int index = sc.nextInt();
+        if(index > cinema.getShowtimes().size() && index < 1){
+            System.out.println("Invalid Index!");
+            return;
+        }
         cinema.getShowtimes().remove(index - 1);
         databaseController.updateCineplexDB(cineplexes);
     }
