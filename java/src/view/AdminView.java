@@ -8,7 +8,21 @@ import Controller.PriceController;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * The Class AdminView, for generating views specific to admin user.
+ */
 public class AdminView {
+    
+    /**
+	 * Admin menu.
+	 *
+	 * @param sc               the sc
+	 * @param adminController  the admin controller
+	 * @param movieController  the movie controller
+	 * @param cinemaController the cinema controller
+	 * @param priceController  the price controller
+	 * @return true, if successful
+	 */
     public boolean adminMenu(Scanner sc, AdminController adminController, MovieController movieController, CinemaController cinemaController, PriceController priceController) {
         boolean loop = true;
         int count = 0;
@@ -87,6 +101,10 @@ public class AdminView {
         }
         return true;
     }
+    
+    /**
+	 * Prints the option menu for admin users.
+	 */
     private void printAdminMenu() {
         System.out.println("----------------Admin Menu -----------------");
         System.out.println("--------------------------------------------");
