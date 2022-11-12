@@ -7,7 +7,14 @@ import javax.swing.plaf.synth.SynthScrollBarUI;
 import Model.Pricing.PriceConfig;
 import Model.Pricing.PublicHoliday;
 
+/**
+ * The Class PriceConfigView.
+ */
 public class PriceConfigView {
+    
+    /**
+	 * Prints the price option menu.
+	 */
     public void printPriceConfigMenu(){
         System.out.println("----------------Price Config----------------");
         System.out.println("--------------------------------------------");
@@ -20,6 +27,11 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
+    /**
+	 * Prints the option menu for cinema price config.
+	 *
+	 * @param priceConfig the price config
+	 */
     public void printCinemaPriceConfig(PriceConfig priceConfig){
         System.out.println("-----------Cinema Type Prices---------------");
         System.out.println("Base Ticket Price: " + priceConfig.getTicketBasePrice());
@@ -33,6 +45,11 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
     
+    /**
+	 * Prints the option menu for movie price config.
+	 *
+	 * @param priceConfig the price config
+	 */
     public void printMoviePriceConfig(PriceConfig priceConfig){
         System.out.println("-------------Movie Type Prices-------------");
         System.out.println("3D Ticket Price Increase: " + priceConfig.getThreeDMovieIncrease());
@@ -46,6 +63,11 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
+    /**
+	 * Prints the option menu for discount config.
+	 *
+	 * @param priceConfig the price config
+	 */
     public void printDiscountConfig(PriceConfig priceConfig){
         System.out.println("--------------Set Discounts-----------------");
         System.out.println("Child Discount: " + priceConfig.getChildDiscount() + "%");
@@ -59,6 +81,11 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
+    /**
+	 * Prints output upon reconfigurating the GST config.
+	 *
+	 * @param priceConfig the price config
+	 */
     public void printGSTconfig(PriceConfig priceConfig){
         System.out.println("-----------------Set GST--------------------");
         System.out.println("Current GST: " + priceConfig.getGstPercentageIncrease() + "%");
@@ -66,6 +93,9 @@ public class PriceConfigView {
         System.out.println("Set new percentage:");
     }
 
+    /**
+	 * Prints the option menu for holiday settings.
+	 */
     public void printHolidaysConfig(){
         System.out.println("-------------Holiday Settings---------------");
         System.out.println("--------------------------------------------");
@@ -76,6 +106,11 @@ public class PriceConfigView {
         System.out.println("Please enter your choice:");
     }
 
+    /**
+	 * Prints the holidays in an ArrayList of objects PublicHoliday.
+	 *
+	 * @param publicHolidays the public holidays
+	 */
     public void printHolidays(ArrayList<PublicHoliday> publicHolidays){
         for(int i = 0; i < publicHolidays.size(); i++){
             System.out.println((i+1) + ". " + publicHolidays.get(i).getName() + "(" + publicHolidays.get(i).getDate() + ")");
